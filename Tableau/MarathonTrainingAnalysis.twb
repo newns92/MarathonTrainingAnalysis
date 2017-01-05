@@ -1,0 +1,1259 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 10000.16.1004.1720                               -->
+<workbook source-build='10.0.2 (10000.16.1004.1720)' source-platform='win' version='10.0' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <datasources>
+    <datasource caption='garminData+' inline='true' name='federated.05bau2f11hb1vf16w9efx1y9vemm' version='10.0'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='garminData' name='textscan.1m3c1b1151pukk1h3btcn1k0bgek'>
+            <connection class='textscan' directory='C:/Users/snewns/Dropbox/RunningAnalysis/Data' filename='garminData.csv' password='' server='' />
+          </named-connection>
+        </named-connections>
+        <relation join='inner' type='join'>
+          <clause type='join'>
+            <expression op='='>
+              <expression op='[garminData.csv].[DateNum]' />
+              <expression op='[veloViewerData.csv].[DateNum]' />
+            </expression>
+          </clause>
+          <relation connection='textscan.1m3c1b1151pukk1h3btcn1k0bgek' name='garminData.csv' table='[garminData#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='string' name='Activity Name' ordinal='0' />
+              <column datatype='string' name='Start' ordinal='1' />
+              <column datatype='date' name='Date' ordinal='2' />
+              <column datatype='integer' name='DateNum' ordinal='3' />
+              <column datatype='string' name='Start Time' ordinal='4' />
+              <column datatype='string' name='Day' ordinal='5' />
+              <column datatype='string' name='Time' ordinal='6' />
+              <column datatype='real' name='Distance' ordinal='7' />
+              <column datatype='integer' name='Elevation Gain' ordinal='8' />
+              <column datatype='string' name='Avg Speed(Avg Pace)' ordinal='9' />
+              <column datatype='string' name='Max Speed(Best Pace)' ordinal='10' />
+              <column datatype='integer' name='Avg HR' ordinal='11' />
+              <column datatype='integer' name='Max HR' ordinal='12' />
+              <column datatype='integer' name='Calories' ordinal='13' />
+              <column datatype='integer' name='Treadmill' ordinal='14' />
+            </columns>
+          </relation>
+          <relation connection='textscan.1m3c1b1151pukk1h3btcn1k0bgek' name='veloViewerData.csv' table='[veloViewerData#csv]' type='table'>
+            <columns character-set='UTF-8' header='yes' locale='en_US' separator=','>
+              <column datatype='integer' name='Activity Id' ordinal='0' />
+              <column datatype='datetime' name='When' ordinal='1' />
+              <column datatype='integer' name='DateNum' ordinal='2' />
+              <column datatype='string' name='Type' ordinal='3' />
+              <column datatype='string' name='Gear' ordinal='4' />
+              <column datatype='string' name='Name' ordinal='5' />
+              <column datatype='real' name='Dist mi' ordinal='6' />
+              <column datatype='real' name='Elv ft' ordinal='7' />
+              <column datatype='integer' name='Elapsed Time' ordinal='8' />
+              <column datatype='integer' name='Moving Time' ordinal='9' />
+              <column datatype='real' name='Speed mph' ordinal='10' />
+              <column datatype='real' name='Max Speed mph' ordinal='11' />
+              <column datatype='real' name='Pace /mi' ordinal='12' />
+              <column datatype='real' name='Pace /100yds' ordinal='13' />
+              <column datatype='real' name='Max Pace /100yds' ordinal='14' />
+              <column datatype='real' name='Cad' ordinal='15' />
+              <column datatype='real' name='Heart' ordinal='16' />
+              <column datatype='integer' name='Max Heart' ordinal='17' />
+              <column datatype='real' name='Cal' ordinal='18' />
+              <column datatype='string' name='Ride/Run Type' ordinal='19' />
+              <column datatype='integer' name='400m' ordinal='20' />
+              <column datatype='integer' name='1 km' ordinal='21' />
+              <column datatype='integer' name='5 km' ordinal='22' />
+              <column datatype='integer' name='10 km' ordinal='23' />
+              <column datatype='integer' name='15 km' ordinal='24' />
+              <column datatype='integer' name='20 km' ordinal='25' />
+              <column datatype='integer' name='30 km' ordinal='26' />
+              <column datatype='string' name='50 km' ordinal='27' />
+              <column datatype='integer' name='1/2 Mile' ordinal='28' />
+              <column datatype='integer' name='1 mile' ordinal='29' />
+              <column datatype='integer' name='2 mile' ordinal='30' />
+              <column datatype='integer' name='10 mile' ordinal='31' />
+              <column datatype='integer' name='Half Marathon' ordinal='32' />
+              <column datatype='string' name='Marathon' ordinal='33' />
+              <column datatype='string' name='Description' ordinal='34' />
+              <column datatype='string' name='City' ordinal='35' />
+              <column datatype='string' name='State' ordinal='36' />
+            </columns>
+          </relation>
+        </relation>
+        <cols>
+          <map key='[1 km]' value='[veloViewerData.csv].[1 km]' />
+          <map key='[1 mile]' value='[veloViewerData.csv].[1 mile]' />
+          <map key='[1/2 Mile]' value='[veloViewerData.csv].[1/2 Mile]' />
+          <map key='[10 km]' value='[veloViewerData.csv].[10 km]' />
+          <map key='[10 mile]' value='[veloViewerData.csv].[10 mile]' />
+          <map key='[15 km]' value='[veloViewerData.csv].[15 km]' />
+          <map key='[2 mile]' value='[veloViewerData.csv].[2 mile]' />
+          <map key='[20 km]' value='[veloViewerData.csv].[20 km]' />
+          <map key='[30 km]' value='[veloViewerData.csv].[30 km]' />
+          <map key='[400m]' value='[veloViewerData.csv].[400m]' />
+          <map key='[5 km]' value='[veloViewerData.csv].[5 km]' />
+          <map key='[50 km]' value='[veloViewerData.csv].[50 km]' />
+          <map key='[Activity Id]' value='[veloViewerData.csv].[Activity Id]' />
+          <map key='[Activity Name]' value='[garminData.csv].[Activity Name]' />
+          <map key='[Avg HR]' value='[garminData.csv].[Avg HR]' />
+          <map key='[Avg Speed(Avg Pace)]' value='[garminData.csv].[Avg Speed(Avg Pace)]' />
+          <map key='[Cad]' value='[veloViewerData.csv].[Cad]' />
+          <map key='[Cal]' value='[veloViewerData.csv].[Cal]' />
+          <map key='[Calories]' value='[garminData.csv].[Calories]' />
+          <map key='[City]' value='[veloViewerData.csv].[City]' />
+          <map key='[DateNum (veloViewerData.csv)]' value='[veloViewerData.csv].[DateNum]' />
+          <map key='[DateNum]' value='[garminData.csv].[DateNum]' />
+          <map key='[Date]' value='[garminData.csv].[Date]' />
+          <map key='[Day]' value='[garminData.csv].[Day]' />
+          <map key='[Description]' value='[veloViewerData.csv].[Description]' />
+          <map key='[Dist mi]' value='[veloViewerData.csv].[Dist mi]' />
+          <map key='[Distance]' value='[garminData.csv].[Distance]' />
+          <map key='[Elapsed Time]' value='[veloViewerData.csv].[Elapsed Time]' />
+          <map key='[Elevation Gain]' value='[garminData.csv].[Elevation Gain]' />
+          <map key='[Elv ft]' value='[veloViewerData.csv].[Elv ft]' />
+          <map key='[F16]' value='[garminData.csv].[F16]' />
+          <map key='[F17]' value='[garminData.csv].[F17]' />
+          <map key='[Gear]' value='[veloViewerData.csv].[Gear]' />
+          <map key='[Half Marathon]' value='[veloViewerData.csv].[Half Marathon]' />
+          <map key='[Heart]' value='[veloViewerData.csv].[Heart]' />
+          <map key='[Marathon]' value='[veloViewerData.csv].[Marathon]' />
+          <map key='[Max HR]' value='[garminData.csv].[Max HR]' />
+          <map key='[Max Heart]' value='[veloViewerData.csv].[Max Heart]' />
+          <map key='[Max Pace /100yds]' value='[veloViewerData.csv].[Max Pace /100yds]' />
+          <map key='[Max Speed mph]' value='[veloViewerData.csv].[Max Speed mph]' />
+          <map key='[Max Speed(Best Pace)]' value='[garminData.csv].[Max Speed(Best Pace)]' />
+          <map key='[Moving Time]' value='[veloViewerData.csv].[Moving Time]' />
+          <map key='[Name]' value='[veloViewerData.csv].[Name]' />
+          <map key='[Pace /100yds]' value='[veloViewerData.csv].[Pace /100yds]' />
+          <map key='[Pace /mi]' value='[veloViewerData.csv].[Pace /mi]' />
+          <map key='[Ride/Run Type]' value='[veloViewerData.csv].[Ride/Run Type]' />
+          <map key='[Speed mph]' value='[veloViewerData.csv].[Speed mph]' />
+          <map key='[Start Time]' value='[garminData.csv].[Start Time]' />
+          <map key='[Start]' value='[garminData.csv].[Start]' />
+          <map key='[State]' value='[veloViewerData.csv].[State]' />
+          <map key='[Time]' value='[garminData.csv].[Time]' />
+          <map key='[Treadmill]' value='[garminData.csv].[Treadmill]' />
+          <map key='[Type]' value='[veloViewerData.csv].[Type]' />
+          <map key='[When]' value='[veloViewerData.csv].[When]' />
+        </cols>
+        <metadata-records>
+          <metadata-record class='column'>
+            <remote-name>Activity Name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Activity Name]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Activity Name</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Start</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Start]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Start</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Date</remote-name>
+            <remote-type>133</remote-type>
+            <local-name>[Date]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Date</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>date</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;date&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>DateNum</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[DateNum]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>DateNum</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Start Time</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Start Time]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Start Time</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Day</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Day]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Day</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Time</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Time]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Time</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Distance</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Distance]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Distance</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Elevation Gain</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Elevation Gain]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Elevation Gain</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Avg Speed(Avg Pace)</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Avg Speed(Avg Pace)]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Avg Speed(Avg Pace)</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max Speed(Best Pace)</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Max Speed(Best Pace)]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Max Speed(Best Pace)</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Avg HR</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Avg HR]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Avg HR</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max HR</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max HR]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Max HR</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Calories</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Calories]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Calories</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Treadmill</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Treadmill]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>Treadmill</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>F16</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[F16]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>F16</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <approx-count>1</approx-count>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>F17</remote-name>
+            <remote-type>134</remote-type>
+            <local-name>[F17]</local-name>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias>F17</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Hour</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;duration&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[garminData.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Activity Id</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Activity Id]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Activity Id</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>When</remote-name>
+            <remote-type>135</remote-type>
+            <local-name>[When]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>When</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>datetime</local-type>
+            <aggregation>Year</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;datetime&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>DateNum</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[DateNum (veloViewerData.csv)]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>DateNum</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Type</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Type]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Type</remote-alias>
+            <ordinal>20</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Gear</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Gear]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Gear</remote-alias>
+            <ordinal>21</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Name</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Name]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Name</remote-alias>
+            <ordinal>22</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Dist mi</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Dist mi]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Dist mi</remote-alias>
+            <ordinal>23</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Elv ft</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Elv ft]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Elv ft</remote-alias>
+            <ordinal>24</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Elapsed Time</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Elapsed Time]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Elapsed Time</remote-alias>
+            <ordinal>25</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Moving Time</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Moving Time]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Moving Time</remote-alias>
+            <ordinal>26</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Speed mph</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Speed mph]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Speed mph</remote-alias>
+            <ordinal>27</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max Speed mph</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Max Speed mph]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Max Speed mph</remote-alias>
+            <ordinal>28</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Pace /mi</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Pace /mi]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Pace /mi</remote-alias>
+            <ordinal>29</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Pace /100yds</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Pace /100yds]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Pace /100yds</remote-alias>
+            <ordinal>30</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max Pace /100yds</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Max Pace /100yds]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Max Pace /100yds</remote-alias>
+            <ordinal>31</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Cad</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Cad]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Cad</remote-alias>
+            <ordinal>32</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Heart</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Heart]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Heart</remote-alias>
+            <ordinal>33</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Max Heart</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Max Heart]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Max Heart</remote-alias>
+            <ordinal>34</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Cal</remote-name>
+            <remote-type>5</remote-type>
+            <local-name>[Cal]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Cal</remote-alias>
+            <ordinal>35</ordinal>
+            <local-type>real</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;double&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Ride/Run Type</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Ride/Run Type]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Ride/Run Type</remote-alias>
+            <ordinal>36</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>400m</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[400m]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>400m</remote-alias>
+            <ordinal>37</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>1 km</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[1 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>1 km</remote-alias>
+            <ordinal>38</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>5 km</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[5 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>5 km</remote-alias>
+            <ordinal>39</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>10 km</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[10 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>10 km</remote-alias>
+            <ordinal>40</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>15 km</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[15 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>15 km</remote-alias>
+            <ordinal>41</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>20 km</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[20 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>20 km</remote-alias>
+            <ordinal>42</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>30 km</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[30 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>30 km</remote-alias>
+            <ordinal>43</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>50 km</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[50 km]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>50 km</remote-alias>
+            <ordinal>44</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <approx-count>1</approx-count>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>1/2 Mile</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[1/2 Mile]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>1/2 Mile</remote-alias>
+            <ordinal>45</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>1 mile</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[1 mile]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>1 mile</remote-alias>
+            <ordinal>46</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>2 mile</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[2 mile]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>2 mile</remote-alias>
+            <ordinal>47</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>10 mile</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[10 mile]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>10 mile</remote-alias>
+            <ordinal>48</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Half Marathon</remote-name>
+            <remote-type>20</remote-type>
+            <local-name>[Half Marathon]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Half Marathon</remote-alias>
+            <ordinal>49</ordinal>
+            <local-type>integer</local-type>
+            <aggregation>Sum</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;sint64&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Marathon</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Marathon]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Marathon</remote-alias>
+            <ordinal>50</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <approx-count>1</approx-count>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>Description</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[Description]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>Description</remote-alias>
+            <ordinal>51</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>City</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[City]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>City</remote-alias>
+            <ordinal>52</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>State</remote-name>
+            <remote-type>129</remote-type>
+            <local-name>[State]</local-name>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias>State</remote-alias>
+            <ordinal>53</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <scale>1</scale>
+            <width>1073741823</width>
+            <contains-null>true</contains-null>
+            <collation flag='0' name='LEN_RUS' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteCollation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='DebugRemoteMetadata (compression)'>&quot;heap&quot;</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (size)'>4294967292</attribute>
+              <attribute datatype='integer' name='DebugRemoteMetadata (storagewidth)'>8</attribute>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;str&quot;</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[veloViewerData.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='string' name='character-set'>&quot;UTF-8&quot;</attribute>
+              <attribute datatype='string' name='collation'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='field-delimiter'>&quot;,&quot;</attribute>
+              <attribute datatype='string' name='header-row'>&quot;true&quot;</attribute>
+              <attribute datatype='string' name='locale'>&quot;en_US&quot;</attribute>
+              <attribute datatype='string' name='single-char'>&quot;&quot;</attribute>
+            </attributes>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='1 Km' datatype='integer' hidden='true' name='[1 km]' role='measure' type='quantitative' />
+      <column caption='1 Mile' datatype='integer' hidden='true' name='[1 mile]' role='measure' type='quantitative' />
+      <column datatype='integer' hidden='true' name='[1/2 Mile]' role='measure' type='quantitative' />
+      <column caption='10 Km' datatype='integer' hidden='true' name='[10 km]' role='measure' type='quantitative' />
+      <column caption='10 Mile' datatype='integer' hidden='true' name='[10 mile]' role='measure' type='quantitative' />
+      <column caption='15 Km' datatype='integer' hidden='true' name='[15 km]' role='measure' type='quantitative' />
+      <column caption='2 Mile' datatype='integer' hidden='true' name='[2 mile]' role='measure' type='quantitative' />
+      <column caption='20 Km' datatype='integer' hidden='true' name='[20 km]' role='measure' type='quantitative' />
+      <column caption='30 Km' datatype='integer' hidden='true' name='[30 km]' role='measure' type='quantitative' />
+      <column caption='400M' datatype='integer' hidden='true' name='[400m]' role='measure' type='quantitative' />
+      <column caption='5 Km' datatype='integer' hidden='true' name='[5 km]' role='measure' type='quantitative' />
+      <column caption='50 Km' datatype='string' hidden='true' name='[50 km]' role='dimension' type='nominal' />
+      <column datatype='integer' hidden='true' name='[Activity Id]' role='dimension' type='ordinal' />
+      <column datatype='real' hidden='true' name='[Cad]' role='measure' type='quantitative' />
+      <column datatype='real' hidden='true' name='[Cal]' role='measure' type='quantitative' />
+      <column caption='Run Category' datatype='string' name='[Calculation_405886917704482816]' role='dimension' type='nominal'>
+        <calculation class='tableau' formula='IFNULL([Ride/Run Type],&apos;Run&apos;)' />
+      </column>
+      <column datatype='string' name='[City]' role='dimension' semantic-role='[City].[Name]' type='nominal' />
+      <column datatype='integer' name='[DateNum (veloViewerData.csv)]' role='dimension' type='ordinal' />
+      <column caption='Date Num' datatype='integer' hidden='true' name='[DateNum]' role='dimension' type='ordinal' />
+      <column datatype='string' hidden='true' name='[Description]' role='dimension' type='nominal' />
+      <column datatype='real' hidden='true' name='[Dist mi]' role='measure' type='quantitative' />
+      <column datatype='real' hidden='true' name='[Elv ft]' role='measure' type='quantitative' />
+      <column caption='Shoes' datatype='string' name='[Gear]' role='dimension' type='nominal' />
+      <column datatype='integer' hidden='true' name='[Half Marathon]' role='measure' type='quantitative' />
+      <column datatype='real' hidden='true' name='[Heart]' role='measure' type='quantitative' />
+      <column datatype='string' hidden='true' name='[Marathon]' role='dimension' type='nominal' />
+      <column datatype='integer' hidden='true' name='[Max Heart]' role='measure' type='quantitative' />
+      <column datatype='real' hidden='true' name='[Max Pace /100yds]' role='measure' type='quantitative' />
+      <column datatype='real' hidden='true' name='[Max Speed mph]' role='measure' type='quantitative' />
+      <column caption='Run Type' datatype='string' name='[Name]' role='dimension' type='nominal' />
+      <column datatype='integer' name='[Number of Records]' role='measure' type='quantitative' user:auto-column='numrec'>
+        <calculation class='tableau' formula='1' />
+      </column>
+      <column datatype='real' hidden='true' name='[Pace /100yds]' role='measure' type='quantitative' />
+      <column datatype='string' hidden='true' name='[Ride/Run Type]' role='dimension' type='nominal' />
+      <column datatype='real' hidden='true' name='[Speed mph]' role='measure' type='quantitative' />
+      <column datatype='string' hidden='true' name='[Start]' role='dimension' type='nominal' />
+      <column datatype='string' name='[State]' role='dimension' semantic-role='[State].[Name]' type='nominal' />
+      <column datatype='string' hidden='true' name='[Type]' role='dimension' type='nominal' />
+      <column datatype='datetime' hidden='true' name='[When]' role='dimension' type='ordinal' />
+      <drill-paths>
+        <drill-path name='State, City'>
+          <field>[State]</field>
+          <field>[City]</field>
+        </drill-path>
+      </drill-paths>
+      <layout dim-ordering='alphabetic' dim-percentage='0.528889' measure-ordering='alphabetic' measure-percentage='0.471111' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;United States&quot;' />
+      </semantic-values>
+      <field-sort-info field-sort-order-type='custom-order'>
+        <field-sort-custom-order field='Activity Name' />
+        <field-sort-custom-order field='Date' />
+        <field-sort-custom-order field='Start Time' />
+        <field-sort-custom-order field='Calculation_405886917704880129' />
+        <field-sort-custom-order field='Day' />
+        <field-sort-custom-order field='Time' />
+        <field-sort-custom-order field='Calculation_405886917705273346' />
+        <field-sort-custom-order field='Distance' />
+        <field-sort-custom-order field='Elevation Gain' />
+        <field-sort-custom-order field='Avg Speed(Avg Pace)' />
+        <field-sort-custom-order field='Max Speed(Best Pace)' />
+        <field-sort-custom-order field='Avg HR' />
+        <field-sort-custom-order field='Max HR' />
+        <field-sort-custom-order field='Calories' />
+        <field-sort-custom-order field='Treadmill' />
+        <field-sort-custom-order field='DateNum (veloViewerData.csv)' />
+        <field-sort-custom-order field='Gear' />
+        <field-sort-custom-order field='Name' />
+        <field-sort-custom-order field='Dist mi' />
+        <field-sort-custom-order field='Elv ft' />
+        <field-sort-custom-order field='Elapsed Time' />
+        <field-sort-custom-order field='Moving Time' />
+        <field-sort-custom-order field='Speed mph' />
+        <field-sort-custom-order field='Max Speed mph' />
+        <field-sort-custom-order field='Pace /mi' />
+        <field-sort-custom-order field='Pace /100yds' />
+        <field-sort-custom-order field='Max Pace /100yds' />
+        <field-sort-custom-order field='Cad' />
+        <field-sort-custom-order field='Heart' />
+        <field-sort-custom-order field='Max Heart' />
+        <field-sort-custom-order field='Cal' />
+        <field-sort-custom-order field='Ride/Run Type' />
+        <field-sort-custom-order field='Calculation_405886917704482816' />
+        <field-sort-custom-order field='400m' />
+        <field-sort-custom-order field='1 km' />
+        <field-sort-custom-order field='5 km' />
+        <field-sort-custom-order field='10 km' />
+        <field-sort-custom-order field='15 km' />
+        <field-sort-custom-order field='20 km' />
+        <field-sort-custom-order field='30 km' />
+        <field-sort-custom-order field='50 km' />
+        <field-sort-custom-order field='1/2 Mile' />
+        <field-sort-custom-order field='1 mile' />
+        <field-sort-custom-order field='2 mile' />
+        <field-sort-custom-order field='10 mile' />
+        <field-sort-custom-order field='Half Marathon' />
+        <field-sort-custom-order field='Marathon' />
+        <field-sort-custom-order field='Description' />
+        <field-sort-custom-order field='City' />
+        <field-sort-custom-order field='State' />
+      </field-sort-info>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources />
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+    </worksheet>
+  </worksheets>
+  <windows source-height='30'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAAA7EAAAOxAGVKw4b
+      AAACFUlEQVR4nO3TMQEAIAzAMMC/5yFjRxMFfXpnZg5Eve0A2GQA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQD
+      kGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBp
+      BiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA
+      0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDN
+      AKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxA
+      mgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKR9Y+0F
+      fBUOM1sAAAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>
