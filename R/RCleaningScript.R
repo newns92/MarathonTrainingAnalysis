@@ -1,4 +1,5 @@
 setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
+setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
 
 garmin <- read.csv("garmin.csv")
 str(garmin)
@@ -14,7 +15,7 @@ str(newGarmin)
 head(newGarmin)
 
 
-##sOME DATA CLEANING --> REMOVE 2 ROWS AT TOP OF STRAVA FILES
+##PRIOR DATA CLEANING --> REMOVE 2 ROWS AT TOP OF STRAVA FILES
 
 strava1 <- read.csv("strava1.csv")
 
@@ -36,6 +37,11 @@ strava5 <- read.csv("strava5.csv")
 
 stravaFull <- Reduce(function(...) merge(..., all=TRUE), list(strava1, strava2, strava3, strava4, 
                                                               strava5, strava6))
+
+#2 random records throwing things off, delete in Excel and reload 
+write.csv(stravaFull, file = "fullStrava.csv", row.names = FALSE)
+stravaFull <- read.csv("fullStrava.csv")
+
 str(stravaFull)
 summary(stravaFull)
 #multiple runs on August 12? Maybe a bike ride?
@@ -46,23 +52,42 @@ library(stringr)
 newGarmin$Date <- str_split_fixed(newGarmin$When, " ", 2)[,1]
 newGarmin$StartTime <- str_split_fixed(newGarmin$When, " ", 2)[,2]
 
-which(newGarmin$Date == '9/12/2016')
-newGarmin[68:71,]
-#looks like I just ran twice that day. back to Strava
+which(newGarmin$Date == '8/12/2016')
+newGarmin[95:96,]
+#looks like I just ran twice that day in Sea Isle. Back to the Strava data cleaning
 head(stravaFull)
 
 install.packages("tidyr")
 library(tidyr)
 # specify the new column names:
 vars <- c("Date", "StartTime")
+vars2 <- c("DOW", "Date")
 # then separate the "Details" column according to regex and drop extra columns:
-?separate(stravaFull, Start, into = vars, sep = "[d]:", extra = "drop", remove = TRUE)
-#    ID      Description    gn            os
-#1 id_1 box1_homodomain  box1  homo sapiens 
-#2 id_2   sox2_plurinet   plu  mus musculus
+testStravaFull <- separate(stravaFull, Start, into = vars, sep = "(?<=6 )", extra = "merge", remove = TRUE)
+testStravaFull <- separate(testStravaFull, Date, into = vars2, sep = ", ", extra = "merge", remove = TRUE)
 
-stravaFull$Date <- str_split_fixed(stravaFull$Start, "2016 ", 2)[,1]
-stravaFull$StartTime <- str_split_fixed(stravaFull$When, " ", 2)[,2]
+testStravaFull[order(testStravaFull$Date),]
+
+testStravaFull$monthNum <- ifelse(grepl("Jan",testStravaFull$Date),1,
+                            ifelse(grepl("Feb",testStravaFull$Date),2,
+                            ifelse(grepl("Mar",testStravaFull$Date),3,
+                            ifelse(grepl("Apr",testStravaFull$Date),4,
+                            ifelse(grepl("May",testStravaFull$Date),5,
+                            ifelse(grepl("Jun",testStravaFull$Date),6,
+                            ifelse(grepl("Jul",testStravaFull$Date),7,
+                            ifelse(grepl("Aug",testStravaFull$Date),8,
+                            ifelse(grepl("Sep",testStravaFull$Date),9,
+                            ifelse(grepl("Oct",testStravaFull$Date),10,
+                            ifelse(grepl("Nov",testStravaFull$Date),11,
+                            ifelse(grepl("Dec",testStravaFull$Date),12,NA))))))))))))
+head(testStravaFull)
+
+
+stravaFull$DayOfWeek <- str_split_fixed(stravaFull$Start, ", ", 2)[,1]
+#stravaFull$DayOfWeek <- (str_split_fixed(stravaFull$Start, ", ", 2)[,2])
+
+stravaFull$MonthDay <- str_split_fixed((str_split_fixed(stravaFull$Start, ", ", 2)[,2]), ", ", 2)[,1]
+
 stravaFull[order(stravaFull$Start, decreasing = TRUE),]
 
 
