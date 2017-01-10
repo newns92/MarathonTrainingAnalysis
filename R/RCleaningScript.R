@@ -82,6 +82,24 @@ testStravaFull$monthNum <- ifelse(grepl("Jan",testStravaFull$Date),1,
                             ifelse(grepl("Dec",testStravaFull$Date),12,NA))))))))))))
 head(testStravaFull)
 
+vars3 <- c("Month", "Date")
+testStravaFull <- separate(testStravaFull, Date, into = vars3, sep = " ", extra = "merge", remove = TRUE)
+head(testStravaFull)
+vars4 <- c("Day", "Year")
+testStravaFull <- separate(testStravaFull, Date, into = vars4, sep = ", ", extra = "merge", remove = TRUE)
+
+testDates <- as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="-")), "%Y-%m-%d")
+as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="/")), "%m/%d/%Y")
+testStravaFull$Day <- as.numeric(testStravaFull$Day)
+testStravaFull$Year <- as.numeric(testStravaFull$Day)
+
+testStravaFull$Date <- format(testDates, "%m/%d/%Y")
+
+
+
+
+
+
 
 stravaFull$DayOfWeek <- str_split_fixed(stravaFull$Start, ", ", 2)[,1]
 #stravaFull$DayOfWeek <- (str_split_fixed(stravaFull$Start, ", ", 2)[,2])
@@ -91,7 +109,8 @@ stravaFull$MonthDay <- str_split_fixed((str_split_fixed(stravaFull$Start, ", ", 
 stravaFull[order(stravaFull$Start, decreasing = TRUE),]
 
 
-keepCols <- NA
-keepCols <- c("Activity.Id", "When", "Type", "Gear", "Name", "Dist.mi", "Elv.ft", "Elapsed.Time", "Moving.Time",
-              "Speed.mph", "Pace..mi", "Max.Pace..mi", "Cad", "Heart", "Max.Heart", "Elev.Dist.ft.mi",
+keepColsStrava  <- NA
+keepCols <- c("DOW", "Month", "StartTime", "Time", "Distance", "Elevation.Gain", "Avg.Speed.Avg.Pace", "Avg.HR", "Max.HR",
+              "Calories", "Date", "Max.Pace..mi", "Cad", "Heart", "Max.Heart", "Elev.Dist.ft.mi",
               "Elev.Time.ft.h", "Cal", "Segs", "PRs", "Kudos")
+
