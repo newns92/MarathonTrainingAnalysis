@@ -1,5 +1,5 @@
 setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
-setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
+#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
 
 garmin <- read.csv("garmin.csv")
 str(garmin)
@@ -14,8 +14,7 @@ newGarmin <- garmin[keepCols]
 str(newGarmin)
 head(newGarmin)
 
-
-##PRIOR DATA CLEANING --> REMOVE 2 ROWS AT TOP OF STRAVA FILES
+'##PRIOR DATA CLEANING --> REMOVE 2 ROWS AT TOP OF STRAVA FILES
 
 strava1 <- read.csv("strava1.csv")
 
@@ -39,7 +38,7 @@ stravaFull <- Reduce(function(...) merge(..., all=TRUE), list(strava1, strava2, 
                                                               strava5, strava6))
 
 #2 random records throwing things off, delete in Excel and reload 
-write.csv(stravaFull, file = "fullStrava.csv", row.names = FALSE)
+write.csv(stravaFull, file = "fullStrava.csv", row.names = FALSE)'
 stravaFull <- read.csv("fullStrava.csv")
 
 str(stravaFull)
@@ -47,8 +46,8 @@ summary(stravaFull)
 #multiple runs on August 12? Maybe a bike ride?
 #check type in newGarmin
 
-install.packages("stringr")
-library(stringr)
+#install.packages("stringr")
+#library(stringr)
 newGarmin$Date <- str_split_fixed(newGarmin$When, " ", 2)[,1]
 newGarmin$StartTime <- str_split_fixed(newGarmin$When, " ", 2)[,2]
 
@@ -57,8 +56,8 @@ newGarmin[95:96,]
 #looks like I just ran twice that day in Sea Isle. Back to the Strava data cleaning
 head(stravaFull)
 
-install.packages("tidyr")
-library(tidyr)
+#install.packages("tidyr")
+#library(tidyr)
 # specify the new column names:
 vars <- c("Date", "StartTime")
 vars2 <- c("DOW", "Date")
@@ -87,30 +86,71 @@ testStravaFull <- separate(testStravaFull, Date, into = vars3, sep = " ", extra 
 head(testStravaFull)
 vars4 <- c("Day", "Year")
 testStravaFull <- separate(testStravaFull, Date, into = vars4, sep = ", ", extra = "merge", remove = TRUE)
+head(testStravaFull)
 
-testDates <- as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="-")), "%Y-%m-%d")
-as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="/")), "%m/%d/%Y")
-testStravaFull$Day <- as.numeric(testStravaFull$Day)
-testStravaFull$Year <- as.numeric(testStravaFull$Day)
+#testDates <- as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="-")), "%Y-%m-%d")
+#as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="/")), "%m/%d/%Y")
+#testStravaFull$Day <- as.numeric(testStravaFull$Day)
+#testStravaFull$Year <- as.numeric(testStravaFull$Day)
 
-testStravaFull$Date <- format(testDates, "%m/%d/%Y")
-
-
-
-
-
-
-
-stravaFull$DayOfWeek <- str_split_fixed(stravaFull$Start, ", ", 2)[,1]
-#stravaFull$DayOfWeek <- (str_split_fixed(stravaFull$Start, ", ", 2)[,2])
-
-stravaFull$MonthDay <- str_split_fixed((str_split_fixed(stravaFull$Start, ", ", 2)[,2]), ", ", 2)[,1]
-
-stravaFull[order(stravaFull$Start, decreasing = TRUE),]
-
+testStravaFull$Year <- trimws(testStravaFull$Year)
+testStravaFull$Date <- format(as.Date(with(testStravaFull, paste(Year, monthNum, Day,sep="-")), "%Y-%m-%d"), "%m/%d/%Y")
+str(testStravaFull$Date)
 
 keepColsStrava  <- NA
-keepCols <- c("DOW", "Month", "StartTime", "Time", "Distance", "Elevation.Gain", "Avg.Speed.Avg.Pace", "Avg.HR", "Max.HR",
-              "Calories", "Date", "Max.Pace..mi", "Cad", "Heart", "Max.Heart", "Elev.Dist.ft.mi",
-              "Elev.Time.ft.h", "Cal", "Segs", "PRs", "Kudos")
+keepColsStrava <- c("DOW", "Month", "StartTime", "Time", "Distance", "Elevation.Gain", "Avg.Speed.Avg.Pace.", "Avg.HR", 
+                    "Max.HR", "Calories", "Date", "monthNum")
+newStrava <- testStravaFull[keepColsStrava]
+head(newStrava)
 
+newGarmin$Date <- as.Date(newGarmin$Date,"%m/%d/%Y")
+newStrava$Date <- as.Date(newStrava$Date,"%m/%d/%Y")
+str(newStrava$Date)
+str(newGarmin$Date)
+
+newStrava <- newStrava[order(newStrava$Date, decreasing = FALSE),]
+newGarmin <- newGarmin[order(newGarmin$Date, decreasing = FALSE),] #3 extra runs in Jan 2016, remove
+head(newGarmin)#$Gear)
+head(newStrava)
+
+summary(newGarmin$Date)
+
+#newGarmin$Date <- format(newGarmin$Date, "%m/%d/%Y")
+
+
+newGarmin <- newGarmin[!newGarmin$Date == c("2016-01-20","2016-01-30","2016-01-31")]
+#newGarmin <- newGarmin[!newGarmin$Date == "2016-01-30",]
+#newGarmin <- newGarmin[!newGarmin$Date == "2016-01-31",]
+newGarmin <- newGarmin[!newGarmin$Date < "2016-07-18",]
+
+nrow(newGarmin)
+nrow(newStrava) #3 extra
+
+tail(newGarmin)
+tail(newStrava)
+
+#write.csv(newStrava$Date, file = "fullStravaDates.csv", row.names = FALSE)
+#write.csv(newGarmin$Date, file = "fullGarminDates.csv", row.names = FALSE)
+
+#check in excel (how in R?)
+#remove false runs
+newStrava <- newStrava[!newStrava$Date == "2016-08-27",]
+newStrava <- newStrava[!newStrava$Date == "2016-09-01",]
+newStrava[newStrava$Date == "2016-10-23",]
+#remove bike ride
+newStrava <- newStrava[!(newStrava$Date == "2016-10-23" & newStrava$Elevation.Gain == 657),]
+
+nrow(newGarmin)
+nrow(newStrava) #match now
+
+head(newGarmin)
+head(newStrava)
+install.packages("plyr") #for rename cols
+library(plyr)
+newStrava <- rename(newStrava, c("Date"="date_strava"))
+newGarmin$When <- NULL
+
+newFullData <- cbind(newGarmin,newStrava)
+head(newFullData)
+newFullData[,c("Date","date_strava")]
+#dates match
