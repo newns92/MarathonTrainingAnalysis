@@ -1,5 +1,5 @@
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
-#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
+#setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
+setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
 
 garmin <- read.csv("garmin.csv")
 str(garmin)
@@ -47,7 +47,7 @@ summary(stravaFull)
 #check type in newGarmin
 
 #install.packages("stringr")
-#library(stringr)
+library(stringr)
 newGarmin$Date <- str_split_fixed(newGarmin$When, " ", 2)[,1]
 newGarmin$StartTime <- str_split_fixed(newGarmin$When, " ", 2)[,2]
 
@@ -57,7 +57,7 @@ newGarmin[95:96,]
 head(stravaFull)
 
 #install.packages("tidyr")
-#library(tidyr)
+library(tidyr)
 # specify the new column names:
 vars <- c("Date", "StartTime")
 vars2 <- c("DOW", "Date")
@@ -145,12 +145,44 @@ nrow(newStrava) #match now
 
 head(newGarmin)
 head(newStrava)
-install.packages("plyr") #for rename cols
+#install.packages("plyr") #for rename cols
 library(plyr)
 newStrava <- rename(newStrava, c("Date"="date_strava"))
+newStrava <- rename(newStrava, c("StartTime"="StartTime_AM_PM"))
 newGarmin$When <- NULL
 
 newFullData <- cbind(newGarmin,newStrava)
 head(newFullData)
 newFullData[,c("Date","date_strava")]
 #dates match
+
+newFullData <- rename(newFullData, c("Activity.Id"="ID"))
+names(newFullData)
+keepColsFull  <- NA
+keepColsFull <- c("ID", "Gear", "Name", "Speed.mph", "Cad", "Date", "StartTime", "DOW", "Month",  "Time", "Distance", 
+                  "Elevation.Gain", "Avg.Speed.Avg.Pace.", "Avg.HR", "Max.HR", "Calories", "monthNum")
+newFullData <- newFullData[keepColsFull]
+#rearrange columns
+newFullData <- newFullData[, c("ID", "Name", "Gear", "Date", "Month", "monthNum", "DOW", "StartTime",  "Distance", 
+                               "Time", "Avg.Speed.Avg.Pace.", "Speed.mph", "Cad",  "Elevation.Gain", "Avg.HR", "Max.HR", 
+                               "Calories")]
+newFullData$Type <- ?ifelse(?is.element('Middle Long' %in% newFullData$Name),"yes","no")
+table(newFullData$Name)
+
+newFullData$Name <- if (newFullData$Name == "MIddle Long Run") {
+                              newFullData$Name <- "Middle Long Run"
+                      }
+newFullData$Name <- ifelse(grepl("ML Run",newFullData$Name),"Middle Long Run",newFullData$Name)
+
+newFullData$Type <- ifelse(grepl(c("V02","Tempo","Tune Up","LT","Tempo"),testStravaFull$Date),"Workout",
+                                  ifelse(grepl("Long",testStravaFull$Date),"Long",
+                                         ifelse(grepl("Middle","MIddle","ML")testStravaFull$Date),"Run",
+                                                ifelse(grepl("Recovery",testStravaFull$Date),"Recovery",
+                                                       ifelse(grepl("May",testStravaFull$Date),5,
+                                                              ifelse(grepl("Jun",testStravaFull$Date),6,
+                                                                     ifelse(grepl("Jul",testStravaFull$Date),7,
+                                                                            ifelse(grepl("Aug",testStravaFull$Date),8,
+                                                                                   ifelse(grepl("Sep",testStravaFull$Date),9,
+                                                                                          ifelse(grepl("Oct",testStravaFull$Date),10,
+                                                                                                 ifelse(grepl("Nov",testStravaFull$Date),11,
+                                                                                                        ifelse(grepl("Dec",testStravaFull$Date),12,NA))))))))))))
