@@ -1,12 +1,90 @@
+---
+title: "R Cleaning RMarkdown"
+author: "Steve Newns"
+date: "January 13, 2017"
+output:
+  html_document: default
+  word_document: default
+---
 
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
-#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
+## R Markdown
 
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+##Data Inspection
+
+First, I load in the CSV file containing the Strava data file created by and downloaded from **VeloViewer** and check the structure of the dataset.
+
+```{r strava data inspection}
 strava <- read.csv("strava.csv")
 str(strava)
 head(strava)
+```
 
-#remove unneccessary cols
+##PRIOR DATA CLEANING --> REMOVE 2 ROWS AT TOP OF GARMIN FILES
+
+Then, I load in the first CSV file containing the Garmin data file created by and downloaded from **Garmin Connect** and check the structure of the dataset.
+
+```{r garmin data inspection}
+garmin1 <- read.csv("garmin1.csv")
+str(garmin1)
+head(garmin1)
+```
+
+Let's look at another Garmin data file.
+#get most recent data
+```{r garmin data inspection2}
+garmin6 <- read.csv("garmin6.csv")
+head(garmin6)
+```
+Okay, now it's time to load in the rest of the Garmin data file and combine them into a single data frame for all the Garmin data
+
+```{r load rest of garmin data}
+
+#load in rest of garmin files and combine into 1 DF
+garmin2 <- read.csv("garmin2.csv")
+garmin3 <- read.csv("garmin3.csv")
+garmin4 <- read.csv("garmin4.csv")
+garmin5 <- read.csv("garmin5.csv")
+
+garminFull <- Reduce(function(...) merge(..., all=TRUE), list(garmin1, garmin2, garmin3, garmin4, 
+                                                              garmin5, garmin6))
+str(garminFull)
+summary(garminFull)
+head(garminFull)
+```
+
+It looks like there's 2 random records throwing things off, maybe from the way Garmin delivers the data when you download the activities from the Garmin Connect site. 
+
+So we have to remove these top 2 blank rows
+
+```{r clean garmin data}
+garminFull <- garminFull[-c(1,2),]
+head(garminFull)
+
+str(garminFull)
+summary(garminFull)
+```
+
+So now it's time to remove the Strava columns that would be unneccessary for my analysis, based on what I could pull from Garmin
+
+```{r remove strava columns}
 keepCols <- NA
 keepCols <- c("Activity.Id", "When", "Type", "Gear", "Name", "Dist.mi", "Elv.ft", "Elapsed.Time", "Moving.Time",
               "Speed.mph", "Pace..mi", "Max.Pace..mi", "Cad", "Heart", "Max.Heart", "Elev.Dist.ft.mi",
@@ -15,42 +93,8 @@ newStrava <- strava[keepCols]
 str(newStrava)
 head(newStrava)
 tail(newStrava)
+```
 
-##PRIOR DATA CLEANING --> REMOVE 2 ROWS AT TOP OF GARMIN FILES
-
-garmin1 <- read.csv("garmin1.csv")
-
-#check for interesting cols from garmin to keep
-str(garmin1)
-names(garmin1)
-#Look at them more closely
-head(garmin1)
-tail(garmin1)
-
-#get most recent data
-garmin6 <- read.csv("garmin6.csv")
-head(garmin6)
-tail(garmin6)
-
-#load in rest of garmin files and combine into 1 DF
-garmin2 <- read.csv("garmin2.csv")
-garmin3 <- read.csv("garmin3.csv")
-garmin4 <- read.csv("garmin4.csv")
-garmin5 <- read.csv("garmin5.csv")
-
-head(garmin5)
-tail(garmin4)
-
-garminFull <- Reduce(function(...) merge(..., all=TRUE), list(garmin1, garmin2, garmin3, garmin4, 
-                                                              garmin5, garmin6))
-summary(garminFull)
-head(garminFull)
-
-garminFull <- garminFull[-c(1,2),]
-head(garminFull)
-
-str(garminFull)
-summary(garminFull)
 #multiple runs on August 12? Maybe a bike ride?
 #check type in Strava
 
