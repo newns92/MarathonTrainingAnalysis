@@ -146,7 +146,8 @@ $(document).ready(function () {
 <div id="data-inspection" class="section level2">
 <h2>Data Inspection</h2>
 <p>First, I load in the CSV file containing the Strava data file created by and downloaded from <strong>VeloViewer</strong> and check the structure of the dataset.</p>
-<pre class="r"><code>strava &lt;- read.csv(&quot;strava.csv&quot;)
+<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
+strava &lt;- read.csv(&quot;strava.csv&quot;)
 str(strava)</code></pre>
 <pre><code>## 'data.frame':    201 obs. of  85 variables:
 ##  $ Activity.Score                   : num  50 0 0 0 0 ...
@@ -340,11 +341,13 @@ str(strava)</code></pre>
 ## 4                   NA    NA   777917114
 ## 5                   NA    NA   777267101
 ## 6 2 mi @ MP (3-4)   NA    NA   776017804</code></pre>
+<p>Okay, so there’s a lot of columns here, with a majority of them not being useful for my purposes right now. Now I want to explore the Garmin data as well before moving on the removing unneccessary columns</p>
 </div>
-<div id="prior-data-cleaning-remove-2-rows-at-top-of-garmin-files" class="section level2">
-<h2>PRIOR DATA CLEANING –&gt; REMOVE 2 ROWS AT TOP OF GARMIN FILES</h2>
+<div id="garmin-data-files" class="section level2">
+<h2>GARMIN DATA FILES</h2>
 <p>Then, I load in the first CSV file containing the Garmin data file created by and downloaded from <strong>Garmin Connect</strong> and check the structure of the dataset.</p>
-<pre class="r"><code>garmin1 &lt;- read.csv(&quot;garmin1.csv&quot;)
+<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
+garmin1 &lt;- read.csv(&quot;garmin1.csv&quot;)
 str(garmin1)</code></pre>
 <pre><code>## 'data.frame':    21 obs. of  16 variables:
 ##  $ Activity.Name       : Factor w/ 5 levels &quot; &quot;,&quot; Chalfont Running&quot;,..: 5 5 5 3 2 2 2 2 2 2 ...
@@ -392,8 +395,9 @@ str(garmin1)</code></pre>
 ## 4              --
 ## 5              --
 ## 6              --</code></pre>
-<p>Let’s look at another Garmin data file. #get most recent data</p>
-<pre class="r"><code>garmin6 &lt;- read.csv(&quot;garmin6.csv&quot;)
+<p>Let’s look at another Garmin data file.</p>
+<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
+garmin6 &lt;- read.csv(&quot;garmin6.csv&quot;)
 head(garmin6)</code></pre>
 <pre><code>##           Activity.Name                      Start     Time Distance
 ## 1  Philadelphia Running  Sun, Nov 20, 2016 7:00 AM  3:07:15    26.27
@@ -423,13 +427,14 @@ head(garmin6)</code></pre>
 ## 4              --
 ## 5              --
 ## 6              --</code></pre>
-<p>Okay, now it’s time to load in the rest of the Garmin data file and combine them into a single data frame for all the Garmin data</p>
-<pre class="r"><code>#load in rest of garmin files and combine into 1 DF
+<p>Okay, good, now it’s time to load in the rest of the Garmin data files and combine them into a single data frame to contain all of the Garmin data</p>
+<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
 garmin2 &lt;- read.csv(&quot;garmin2.csv&quot;)
 garmin3 &lt;- read.csv(&quot;garmin3.csv&quot;)
 garmin4 &lt;- read.csv(&quot;garmin4.csv&quot;)
 garmin5 &lt;- read.csv(&quot;garmin5.csv&quot;)
 
+#Combine data files into 1 data frame
 garminFull &lt;- Reduce(function(...) merge(..., all=TRUE), list(garmin1, garmin2, garmin3, garmin4, 
                                                               garmin5, garmin6))
 str(garminFull)</code></pre>
@@ -512,7 +517,7 @@ str(garminFull)</code></pre>
 ## 4              --
 ## 5              --
 ## 6              --</code></pre>
-<p>It looks like there’s 2 random records throwing things off, maybe from the way Garmin delivers the data when you download the activities from the Garmin Connect site.</p>
+<p>It looks like there’s 2 random NULL records at the top of the data frame records throwing things off that maybe from the way Garmin delivers the data when I downloaded the activities from the Garmin Connect site. Or maybe I did something wrong. I dunno really.</p>
 <p>So we have to remove these top 2 blank rows</p>
 <pre class="r"><code>garminFull &lt;- garminFull[-c(1,2),]
 head(garminFull)</code></pre>
@@ -595,7 +600,7 @@ head(garminFull)</code></pre>
 ##                                                                         
 ##                                                                         
 ## </code></pre>
-<p>So now it’s time to remove the Strava columns that would be unneccessary for my analysis, based on what I could pull from Garmin</p>
+<p>So now it’s time to remove the Strava columns that would be unneccessary for what I’m doing here, based on what I could pull from Garmin</p>
 <pre class="r"><code>keepCols &lt;- NA
 keepCols &lt;- c(&quot;Activity.Id&quot;, &quot;When&quot;, &quot;Type&quot;, &quot;Gear&quot;, &quot;Name&quot;, &quot;Dist.mi&quot;, &quot;Elv.ft&quot;, &quot;Elapsed.Time&quot;, &quot;Moving.Time&quot;,
               &quot;Speed.mph&quot;, &quot;Pace..mi&quot;, &quot;Max.Pace..mi&quot;, &quot;Cad&quot;, &quot;Heart&quot;, &quot;Max.Heart&quot;, &quot;Elev.Dist.ft.mi&quot;,
@@ -675,38 +680,266 @@ str(newStrava)</code></pre>
 ## 199         0            7.03           79.9 666.7    1   0     0
 ## 200       161           10.61          125.0 217.8    0   0     0
 ## 201       168            7.30           84.9 637.9    1   0     0</code></pre>
+<p>There seems to be multiple runs on August 12? I was down the shore that weekend. Maybe it was a bike ride?</p>
+<pre class="r"><code>#install.packages(&quot;stringr&quot;)
+library(stringr)
+newStrava$Date &lt;- str_split_fixed(newStrava$When, &quot; &quot;, 2)[,1]
+newStrava$StartTime &lt;- str_split_fixed(newStrava$When, &quot; &quot;, 2)[,2]
+
+#Find the records from August 12
+which(newStrava$Date == '8/12/2016')</code></pre>
+<pre><code>## [1] 95 96</code></pre>
+<pre class="r"><code>newStrava[95:96,]</code></pre>
+<pre><code>##    Activity.Id            When Type                   Gear         Name
+## 95   677460614 8/12/2016 18:12  Run Brooks Ghost Red/Black Recovery Run
+## 96   673389413  8/12/2016 8:47  Run Brooks Ghost Red/Black       GA Run
+##    Dist.mi Elv.ft Elapsed.Time Moving.Time Speed.mph Pace..mi Max.Pace..mi
+## 95  2290.8      0          747         693    3.3056 486.8266     412.6519
+## 96 16107.4      0         5209        4764    3.3811 476.0440     282.3433
+##     Cad Heart Max.Heart Elev.Dist.ft.mi Elev.Time.ft.h    Cal Segs PRs
+## 95 85.8    NA         0               0              0  223.3    0   0
+## 96 87.0 149.3       168               0              0 1571.0    0   0
+##    Kudos      Date StartTime
+## 95     0 8/12/2016     18:12
+## 96     0 8/12/2016      8:47</code></pre>
+<p>It looks like I just ran twice that day down the shore, which I vaguely remember, but cannot fathom why I did so. Anyway, now to the Garmin data cleaning</p>
+<pre class="r"><code>head(garminFull)</code></pre>
+<pre><code>##       Activity.Name                     Start     Time Distance
+## 3  Chalfont Running  Fri, Aug 5, 2016 5:30 AM  1:30:35    12.00
+## 4  Chalfont Running Fri, Jul 22, 2016 5:29 AM  1:24:31    11.00
+## 5  Chalfont Running Fri, Jul 29, 2016 5:14 AM  1:34:55    12.02
+## 6  Chalfont Running Sat, Jul 23, 2016 7:29 AM 48:25:00     6.00
+## 7  Chalfont Running Sat, Jul 30, 2016 7:28 AM 49:29:00     6.01
+## 8  Chalfont Running Sun, Jul 24, 2016 8:17 AM  2:03:17    16.02
+##   Elevation.Gain Avg.Speed.Avg.Pace. Max.Speed.Best.Pace. Avg.HR Max.HR
+## 3            459                7:33                 5:05    148    158
+## 4            468                7:41                 5:48    150    161
+## 5            477                7:54                 5:35    149    160
+## 6            230                8:04                 6:36    131    155
+## 7            244                8:14                 7:01    134    150
+## 8            572                7:42                 5:48    154    165
+##   Calories sumStrokes Avg.Strokes Min.Strokes Avg.SWOLF Best.SWOLF
+## 3    1,260         --          --          --        --         --
+## 4    1,170         --          --          --        --         --
+## 5    1,241         --          --          --        --         --
+## 6      721         --          --          --        --         --
+## 7      617         --          --          --        --         --
+## 8    1,653         --          --          --        --         --
+##   Training.Effect
+## 3              --
+## 4              --
+## 5              --
+## 6              --
+## 7              --
+## 8              --</code></pre>
+<pre class="r"><code>#Create Date, Time, and Month Number fields
+#install.packages(&quot;tidyr&quot;)
+library(tidyr)
+# specify the new column names:
+vars &lt;- c(&quot;Date&quot;, &quot;StartTime&quot;)
+vars2 &lt;- c(&quot;DOW&quot;, &quot;Date&quot;)
+# then separate the &quot;Details&quot; column according to regex and drop extra columns:
+garminFull &lt;- separate(garminFull, Start, into = vars, sep = &quot;(?&lt;=6 )&quot;, extra = &quot;merge&quot;, remove = TRUE)
+garminFull &lt;- separate(garminFull, Date, into = vars2, sep = &quot;, &quot;, extra = &quot;merge&quot;, remove = TRUE)
+
+#garminFull[order(garminFull$Date),]
+
+garminFull$monthNum &lt;- ifelse(grepl(&quot;Jan&quot;,garminFull$Date),1,
+                            ifelse(grepl(&quot;Feb&quot;,garminFull$Date),2,
+                            ifelse(grepl(&quot;Mar&quot;,garminFull$Date),3,
+                            ifelse(grepl(&quot;Apr&quot;,garminFull$Date),4,
+                            ifelse(grepl(&quot;May&quot;,garminFull$Date),5,
+                            ifelse(grepl(&quot;Jun&quot;,garminFull$Date),6,
+                            ifelse(grepl(&quot;Jul&quot;,garminFull$Date),7,
+                            ifelse(grepl(&quot;Aug&quot;,garminFull$Date),8,
+                            ifelse(grepl(&quot;Sep&quot;,garminFull$Date),9,
+                            ifelse(grepl(&quot;Oct&quot;,garminFull$Date),10,
+                            ifelse(grepl(&quot;Nov&quot;,garminFull$Date),11,
+                            ifelse(grepl(&quot;Dec&quot;,garminFull$Date),12,NA))))))))))))
+head(garminFull)</code></pre>
+<pre><code>##       Activity.Name DOW          Date StartTime     Time Distance
+## 3  Chalfont Running Fri  Aug 5, 2016    5:30 AM  1:30:35    12.00
+## 4  Chalfont Running Fri Jul 22, 2016    5:29 AM  1:24:31    11.00
+## 5  Chalfont Running Fri Jul 29, 2016    5:14 AM  1:34:55    12.02
+## 6  Chalfont Running Sat Jul 23, 2016    7:29 AM 48:25:00     6.00
+## 7  Chalfont Running Sat Jul 30, 2016    7:28 AM 49:29:00     6.01
+## 8  Chalfont Running Sun Jul 24, 2016    8:17 AM  2:03:17    16.02
+##   Elevation.Gain Avg.Speed.Avg.Pace. Max.Speed.Best.Pace. Avg.HR Max.HR
+## 3            459                7:33                 5:05    148    158
+## 4            468                7:41                 5:48    150    161
+## 5            477                7:54                 5:35    149    160
+## 6            230                8:04                 6:36    131    155
+## 7            244                8:14                 7:01    134    150
+## 8            572                7:42                 5:48    154    165
+##   Calories sumStrokes Avg.Strokes Min.Strokes Avg.SWOLF Best.SWOLF
+## 3    1,260         --          --          --        --         --
+## 4    1,170         --          --          --        --         --
+## 5    1,241         --          --          --        --         --
+## 6      721         --          --          --        --         --
+## 7      617         --          --          --        --         --
+## 8    1,653         --          --          --        --         --
+##   Training.Effect monthNum
+## 3              --        8
+## 4              --        7
+## 5              --        7
+## 6              --        7
+## 7              --        7
+## 8              --        7</code></pre>
+<p>Now I’ve got Date, Start Time, Day of Week, and Month Number columns, and I can seperate the Date column in Day, Month, and Year.</p>
+<pre class="r"><code>vars3 &lt;- c(&quot;Month&quot;, &quot;Date&quot;)
+garminFull &lt;- separate(garminFull, Date, into = vars3, sep = &quot; &quot;, extra = &quot;merge&quot;, remove = TRUE)
+#head(garminFull)
+vars4 &lt;- c(&quot;Day&quot;, &quot;Year&quot;)
+garminFull &lt;- separate(garminFull, Date, into = vars4, sep = &quot;, &quot;, extra = &quot;merge&quot;, remove = TRUE)
+head(garminFull)</code></pre>
+<pre><code>##       Activity.Name DOW Month Day  Year StartTime     Time Distance
+## 3  Chalfont Running Fri   Aug   5 2016    5:30 AM  1:30:35    12.00
+## 4  Chalfont Running Fri   Jul  22 2016    5:29 AM  1:24:31    11.00
+## 5  Chalfont Running Fri   Jul  29 2016    5:14 AM  1:34:55    12.02
+## 6  Chalfont Running Sat   Jul  23 2016    7:29 AM 48:25:00     6.00
+## 7  Chalfont Running Sat   Jul  30 2016    7:28 AM 49:29:00     6.01
+## 8  Chalfont Running Sun   Jul  24 2016    8:17 AM  2:03:17    16.02
+##   Elevation.Gain Avg.Speed.Avg.Pace. Max.Speed.Best.Pace. Avg.HR Max.HR
+## 3            459                7:33                 5:05    148    158
+## 4            468                7:41                 5:48    150    161
+## 5            477                7:54                 5:35    149    160
+## 6            230                8:04                 6:36    131    155
+## 7            244                8:14                 7:01    134    150
+## 8            572                7:42                 5:48    154    165
+##   Calories sumStrokes Avg.Strokes Min.Strokes Avg.SWOLF Best.SWOLF
+## 3    1,260         --          --          --        --         --
+## 4    1,170         --          --          --        --         --
+## 5    1,241         --          --          --        --         --
+## 6      721         --          --          --        --         --
+## 7      617         --          --          --        --         --
+## 8    1,653         --          --          --        --         --
+##   Training.Effect monthNum
+## 3              --        8
+## 4              --        7
+## 5              --        7
+## 6              --        7
+## 7              --        7
+## 8              --        7</code></pre>
+<pre class="r"><code>#Remove extra space in front of Year field
+garminFull$Year &lt;- trimws(garminFull$Year)
+
+#Create Date field from its 3 components: Day, Month, Year
+garminFull$Date &lt;- format(as.Date(with(garminFull, paste(Year, monthNum, Day,sep=&quot;-&quot;)), &quot;%Y-%m-%d&quot;), &quot;%m/%d/%Y&quot;)
+str(garminFull$Date)</code></pre>
+<pre><code>##  chr [1:120] &quot;08/05/2016&quot; &quot;07/22/2016&quot; &quot;07/29/2016&quot; ...</code></pre>
+<p>Now I can remove my unneccesary Garmin columns</p>
+<pre class="r"><code>#Remove
+keepColsGarmin  &lt;- NA
+keepColsGarmin &lt;- c(&quot;DOW&quot;, &quot;Month&quot;, &quot;StartTime&quot;, &quot;Time&quot;, &quot;Distance&quot;, &quot;Elevation.Gain&quot;, &quot;Avg.Speed.Avg.Pace.&quot;, &quot;Avg.HR&quot;, 
+                    &quot;Max.HR&quot;, &quot;Calories&quot;, &quot;Date&quot;, &quot;monthNum&quot;)
+newGarmin &lt;- garminFull[keepColsGarmin]
+head(newGarmin)</code></pre>
+<pre><code>##   DOW Month StartTime     Time Distance Elevation.Gain Avg.Speed.Avg.Pace.
+## 3 Fri   Aug   5:30 AM  1:30:35    12.00            459                7:33
+## 4 Fri   Jul   5:29 AM  1:24:31    11.00            468                7:41
+## 5 Fri   Jul   5:14 AM  1:34:55    12.02            477                7:54
+## 6 Sat   Jul   7:29 AM 48:25:00     6.00            230                8:04
+## 7 Sat   Jul   7:28 AM 49:29:00     6.01            244                8:14
+## 8 Sun   Jul   8:17 AM  2:03:17    16.02            572                7:42
+##   Avg.HR Max.HR Calories       Date monthNum
+## 3    148    158    1,260 08/05/2016        8
+## 4    150    161    1,170 07/22/2016        7
+## 5    149    160    1,241 07/29/2016        7
+## 6    131    155      721 07/23/2016        7
+## 7    134    150      617 07/30/2016        7
+## 8    154    165    1,653 07/24/2016        7</code></pre>
+<p>I also want to change my format for my Date field, just as a personal preference</p>
+<pre class="r"><code>newGarmin$Date &lt;- as.Date(newGarmin$Date,&quot;%m/%d/%Y&quot;)
+newStrava$Date &lt;- as.Date(newStrava$Date,&quot;%m/%d/%Y&quot;)
+
+#Check data type
+str(newGarmin$Date)</code></pre>
+<pre><code>##  Date[1:120], format: &quot;2016-08-05&quot; &quot;2016-07-22&quot; &quot;2016-07-29&quot; &quot;2016-07-23&quot; ...</code></pre>
+<pre class="r"><code>str(newStrava$Date)</code></pre>
+<pre><code>##  Date[1:201], format: &quot;2016-11-20&quot; &quot;2016-11-19&quot; &quot;2016-11-18&quot; &quot;2016-11-17&quot; ...</code></pre>
+<pre class="r"><code>#Sort data frames from earliest to last date
+newGarmin &lt;- newGarmin[order(newGarmin$Date, decreasing = FALSE),] 
+newStrava &lt;- newStrava[order(newStrava$Date, decreasing = FALSE),]
+head(newGarmin)</code></pre>
+<pre><code>##    DOW Month StartTime     Time Distance Elevation.Gain
+## 12 Tue   Jul   5:51 AM  1:04:59     9.01            351
+## 15 Wed   Jul   5:36 AM  1:23:29    11.00            461
+## 94 Thu   Jul   6:45 AM 32:40:00     4.00             --
+## 4  Fri   Jul   5:29 AM  1:24:31    11.00            468
+## 6  Sat   Jul   7:29 AM 48:25:00     6.00            230
+## 8  Sun   Jul   8:17 AM  2:03:17    16.02            572
+##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date monthNum
+## 12                7:13    149    167      943 2016-07-19        7
+## 15                7:35    150    160    1,176 2016-07-20        7
+## 94                8:10    139    149      442 2016-07-21        7
+## 4                 7:41    150    161    1,170 2016-07-22        7
+## 6                 8:04    131    155      721 2016-07-23        7
+## 8                 7:42    154    165    1,653 2016-07-24        7</code></pre>
+<pre class="r"><code>head(newStrava)</code></pre>
+<pre><code>##     Activity.Id            When Type Gear          Name Dist.mi Elv.ft
+## 201   579011362  1/20/2016 6:18  Run  n/a   Morning Run  6450.5   47.1
+## 200   579011438 1/30/2016 16:18  Run  n/a Afternoon Run  2196.5   23.3
+## 199   579011578  1/31/2016 8:06  Run  n/a   Morning Run  6769.8   47.6
+## 198   579011711  2/2/2016 16:39  Run  n/a Afternoon Run  4835.3   27.8
+## 197   579011895   2/3/2016 6:54  Run  n/a   Morning Run  6447.5   45.1
+## 196   579011991  2/4/2016 16:38  Run  n/a Afternoon Run  4832.6   27.8
+##     Elapsed.Time Moving.Time Speed.mph Pace..mi Max.Pace..mi  Cad Heart
+## 201         1996        1996    3.2317 497.9310     392.5190 81.6 151.9
+## 200          671         671    3.2735 491.6546     374.2690 80.7 145.8
+## 199         2192        2144    3.1576 509.6792     402.3360 80.9    NA
+## 198         1492        1475    3.2782 490.8499     287.3806 81.5 146.3
+## 197         2073        2005    3.2157 500.5060     402.3360 82.3 141.9
+## 196         1527        1403    3.4445 467.1926     365.7556 81.7 147.5
+##     Max.Heart Elev.Dist.ft.mi Elev.Time.ft.h   Cal Segs PRs Kudos
+## 201       168            7.30           84.9 637.9    1   0     0
+## 200       161           10.61          125.0 217.8    0   0     0
+## 199         0            7.03           79.9 666.7    1   0     0
+## 198       175            5.75           67.9 474.4    0   0     0
+## 197       162            6.99           81.0 636.7    1   0     0
+## 196       165            5.75           71.3 475.0    0   0     0
+##           Date StartTime
+## 201 2016-01-20      6:18
+## 200 2016-01-30     16:18
+## 199 2016-01-31      8:06
+## 198 2016-02-02     16:39
+## 197 2016-02-03      6:54
+## 196 2016-02-04     16:38</code></pre>
+<p>So my runs from Strava seem to be starting back in January which was <em>way</em> before my marathon training plan kicked in, and was mainly for the Broad Street Run. The marathon training plan started right after the Tour De Shore I did in July, so I need to remove all runs prior to that 1st training plan run on July 18.</p>
+<pre class="r"><code>newStrava &lt;- newStrava[!newStrava$Date &lt; &quot;2016-07-18&quot;,]</code></pre>
+<p>I need to double-check that the amount of rows in each data frame match so that they can be combined correctly</p>
+<pre class="r"><code>nrow(newGarmin)</code></pre>
+<pre><code>## [1] 120</code></pre>
+<pre class="r"><code>nrow(newStrava)</code></pre>
+<pre><code>## [1] 117</code></pre>
+<pre class="r"><code>summary(newGarmin)</code></pre>
+<pre><code>##      DOW               Month            StartTime               Time    
+##  Length:120         Length:120         Length:120         25:16:00:  2  
+##  Class :character   Class :character   Class :character   38:49:00:  2  
+##  Mode  :character   Mode  :character   Mode  :character   1:02:54 :  1  
+##                                                           1:04:59 :  1  
+##                                                           1:13:51 :  1  
+##                                                           1:15:58 :  1  
+##                                                           (Other) :112  
+##     Distance      Elevation.Gain Avg.Speed.Avg.Pace.    Avg.HR         
+##  Min.   : 0.120   --     :16     7:45   : 5          Length:120        
+##  1st Qu.: 5.010   0      : 6     7:43   : 5          Class :character  
+##  Median :10.000   238    : 3     7:30   : 4          Mode  :character  
+##  Mean   : 9.716   224    : 2     7:35   : 4                            
+##  3rd Qu.:13.000   468    : 2     7:48   : 4                            
+##  Max.   :26.270   467    : 2     8:04   : 4                            
+##                   (Other):89     (Other):94                            
+##     Max.HR             Calories        Date               monthNum     
+##  Length:120         1,090  :  2   Min.   :2016-07-19   Min.   : 7.000  
+##  Class :character   1,085  :  2   1st Qu.:2016-08-21   1st Qu.: 8.000  
+##  Mode  :character   191    :  2   Median :2016-09-21   Median : 9.000  
+##                     1,499  :  2   Mean   :2016-09-20   Mean   : 9.167  
+##                     1,018  :  1   3rd Qu.:2016-10-22   3rd Qu.:10.000  
+##                     1,170  :  1   Max.   :2016-11-20   Max.   :11.000  
+##                     (Other):110</code></pre>
+<p>So there’s still 3 extra Garmin runs from January 2016, which was not a part of my marathon training, so I need to remove them.</p>
 </div>
-<div id="multiple-runs-on-august-12-maybe-a-bike-ride" class="section level1">
-<h1>multiple runs on August 12? Maybe a bike ride?</h1>
-</div>
-<div id="check-type-in-strava" class="section level1">
-<h1>check type in Strava</h1>
-</div>
-<div id="install.packagesstringr" class="section level1">
-<h1>install.packages(“stringr”)</h1>
-<p>library(stringr) newStrava<span class="math inline">\(Date &lt;- str_split_fixed(newStrava\)</span>When, &quot; “, 2)[,1] newStrava<span class="math inline">\(StartTime &lt;- str_split_fixed(newStrava\)</span>When,” “, 2)[,2]</p>
-<p>which(newStrava$Date == ‘8/12/2016’) newStrava[95:96,] #looks like I just ran twice that day in Sea Isle. Back to the Garmin data cleaning head(garminFull)</p>
-</div>
-<div id="install.packagestidyr" class="section level1">
-<h1>install.packages(“tidyr”)</h1>
-<p>library(tidyr) # specify the new column names: vars &lt;- c(“Date”, “StartTime”) vars2 &lt;- c(“DOW”, “Date”) # then separate the “Details” column according to regex and drop extra columns: garminFull &lt;- separate(garminFull, Start, into = vars, sep = “(?&lt;=6 )”, extra = “merge”, remove = TRUE) garminFull &lt;- separate(garminFull, Date, into = vars2, sep = “,”, extra = “merge”, remove = TRUE)</p>
-<p>garminFull[order(garminFull$Date),]</p>
-<p>garminFull<span class="math inline">\(monthNum &lt;- ifelse(grepl(&quot;Jan&quot;,garminFull\)</span>Date),1, ifelse(grepl(“Feb”,garminFull<span class="math inline">\(Date),2,  ifelse(grepl(&quot;Mar&quot;,garminFull\)</span>Date),3, ifelse(grepl(“Apr”,garminFull<span class="math inline">\(Date),4,  ifelse(grepl(&quot;May&quot;,garminFull\)</span>Date),5, ifelse(grepl(“Jun”,garminFull<span class="math inline">\(Date),6,  ifelse(grepl(&quot;Jul&quot;,garminFull\)</span>Date),7, ifelse(grepl(“Aug”,garminFull<span class="math inline">\(Date),8,  ifelse(grepl(&quot;Sep&quot;,garminFull\)</span>Date),9, ifelse(grepl(“Oct”,garminFull<span class="math inline">\(Date),10,  ifelse(grepl(&quot;Nov&quot;,garminFull\)</span>Date),11, ifelse(grepl(“Dec”,garminFull$Date),12,NA)))))))))))) head(garminFull)</p>
-<p>vars3 &lt;- c(“Month”, “Date”) garminFull &lt;- separate(garminFull, Date, into = vars3, sep = &quot; “, extra =”merge“, remove = TRUE) head(garminFull) vars4 &lt;- c(”Day“,”Year“) garminFull &lt;- separate(garminFull, Date, into = vars4, sep =”, “, extra =”merge“, remove = TRUE) head(garminFull)</p>
-<p>garminFull<span class="math inline">\(Year &lt;- trimws(garminFull\)</span>Year) garminFull<span class="math inline">\(Date &lt;- format(as.Date(with(garminFull, paste(Year, monthNum, Day,sep=&quot;-&quot;)), &quot;%Y-%m-%d&quot;), &quot;%m/%d/%Y&quot;) str(garminFull\)</span>Date)</p>
-<p>keepColsGarmin &lt;- NA keepColsGarmin &lt;- c(“DOW”, “Month”, “StartTime”, “Time”, “Distance”, “Elevation.Gain”, “Avg.Speed.Avg.Pace.”, “Avg.HR”, “Max.HR”, “Calories”, “Date”, “monthNum”) newGarmin &lt;- garminFull[keepColsGarmin] head(newGarmin)</p>
-<p>newGarmin<span class="math inline">\(Date &lt;- as.Date(newGarmin\)</span>Date,“%m/%d/%Y”) newStrava<span class="math inline">\(Date &lt;- as.Date(newStrava\)</span>Date,“%m/%d/%Y”) str(newGarmin<span class="math inline">\(Date) str(newStrava\)</span>Date)</p>
-<p>newGarmin &lt;- newGarmin[order(newGarmin$Date, decreasing = FALSE),] newStrava &lt;- newStrava[order(newStrava$Date, decreasing = FALSE),] head(newGarmin) head(newStrava)</p>
-</div>
-<div id="extra-garmin-runs-in-jan-2016-remove" class="section level1">
-<h1>3 extra Garmin runs in Jan 2016, remove</h1>
-<p>summary(newGarmin$Date)</p>
-<p>newGarmin &lt;- newGarmin[!newGarmin$Date == c(“2016-01-20”,“2016-01-30”,“2016-01-31”)] #newGarmin &lt;- newGarmin[!newGarmin$Date == “2016-01-30”,] #newGarmin &lt;- newGarmin[!newGarmin$Date == “2016-01-31”,] newGarmin &lt;- newGarmin[!newGarmin$Date &lt; “2016-07-18”,] newStrava &lt;- newStrava[!newStrava$Date &lt; “2016-07-18”,]</p>
-<p>nrow(newGarmin) #3 extra nrow(newStrava)</p>
-<p>tail(newGarmin) tail(newStrava)</p>
 <div id="check-in-excel-how-in-r" class="section level2">
 <h2>check in excel (how in R?)</h2>
-</div>
 </div>
 <div id="write.csvnewstravadate-file-fullstravadates.csv-row.names-false-write.csvnewgarmindate-file-fullgarmindates.csv-row.names-false" class="section level1">
 <h1>write.csv(newStrava<span class="math inline">\(Date, file = &quot;fullStravaDates.csv&quot;, row.names = FALSE) #write.csv(newGarmin\)</span>Date, file = “fullGarminDates.csv”, row.names = FALSE)</h1>

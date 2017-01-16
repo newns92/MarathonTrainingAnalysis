@@ -32,37 +32,42 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 First, I load in the CSV file containing the Strava data file created by and downloaded from **VeloViewer** and check the structure of the dataset.
 
 ```{r strava data inspection}
+setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 strava <- read.csv("strava.csv")
 str(strava)
 head(strava)
 ```
 
-##PRIOR DATA CLEANING --> REMOVE 2 ROWS AT TOP OF GARMIN FILES
+Okay, so there's a lot of columns here, with a majority of them not being useful for my purposes right now. Now I want to explore the Garmin data as well before moving on the removing unneccessary columns
+
+##GARMIN DATA FILES
 
 Then, I load in the first CSV file containing the Garmin data file created by and downloaded from **Garmin Connect** and check the structure of the dataset.
 
 ```{r garmin data inspection}
+setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 garmin1 <- read.csv("garmin1.csv")
 str(garmin1)
 head(garmin1)
 ```
 
 Let's look at another Garmin data file.
-#get most recent data
 ```{r garmin data inspection2}
+setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 garmin6 <- read.csv("garmin6.csv")
 head(garmin6)
 ```
-Okay, now it's time to load in the rest of the Garmin data file and combine them into a single data frame for all the Garmin data
+
+Okay, good, now it's time to load in the rest of the Garmin data files and combine them into a single data frame to contain all of the Garmin data
 
 ```{r load rest of garmin data}
-
-#load in rest of garmin files and combine into 1 DF
+setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 garmin2 <- read.csv("garmin2.csv")
 garmin3 <- read.csv("garmin3.csv")
 garmin4 <- read.csv("garmin4.csv")
 garmin5 <- read.csv("garmin5.csv")
 
+#Combine data files into 1 data frame
 garminFull <- Reduce(function(...) merge(..., all=TRUE), list(garmin1, garmin2, garmin3, garmin4, 
                                                               garmin5, garmin6))
 str(garminFull)
@@ -70,7 +75,7 @@ summary(garminFull)
 head(garminFull)
 ```
 
-It looks like there's 2 random records throwing things off, maybe from the way Garmin delivers the data when you download the activities from the Garmin Connect site. 
+It looks like there's 2 random NULL records at the top of the data frame records throwing things off that maybe from the way Garmin delivers the data when I downloaded the activities from the Garmin Connect site. Or maybe I did something wrong. I dunno really.
 
 So we have to remove these top 2 blank rows
 
@@ -82,7 +87,7 @@ str(garminFull)
 summary(garminFull)
 ```
 
-So now it's time to remove the Strava columns that would be unneccessary for my analysis, based on what I could pull from Garmin
+So now it's time to remove the Strava columns that would be unneccessary for what I'm doing here, based on what I could pull from Garmin
 
 ```{r remove strava columns}
 keepCols <- NA
@@ -95,19 +100,23 @@ head(newStrava)
 tail(newStrava)
 ```
 
-#multiple runs on August 12? Maybe a bike ride?
-#check type in Strava
+There seems to be multiple runs on August 12? I was down the shore that weekend. Maybe it was a bike ride?
 
+```{r split strava dates and check dupes}
 #install.packages("stringr")
 library(stringr)
 newStrava$Date <- str_split_fixed(newStrava$When, " ", 2)[,1]
 newStrava$StartTime <- str_split_fixed(newStrava$When, " ", 2)[,2]
 
+#Find the records from August 12
 which(newStrava$Date == '8/12/2016')
 newStrava[95:96,]
-#looks like I just ran twice that day in Sea Isle. Back to the Garmin data cleaning
-head(garminFull)
+```
 
+It looks like I just ran twice that day down the shore, which I vaguely remember, but cannot fathom why I did so. Anyway, now to the Garmin data cleaning
+``` {r garmin data cleaning pt. 1}
+head(garminFull)
+#Create Date, Time, and Month Number fields
 #install.packages("tidyr")
 library(tidyr)
 # specify the new column names:
@@ -117,7 +126,7 @@ vars2 <- c("DOW", "Date")
 garminFull <- separate(garminFull, Start, into = vars, sep = "(?<=6 )", extra = "merge", remove = TRUE)
 garminFull <- separate(garminFull, Date, into = vars2, sep = ", ", extra = "merge", remove = TRUE)
 
-garminFull[order(garminFull$Date),]
+#garminFull[order(garminFull$Date),]
 
 garminFull$monthNum <- ifelse(grepl("Jan",garminFull$Date),1,
                             ifelse(grepl("Feb",garminFull$Date),2,
@@ -132,48 +141,67 @@ garminFull$monthNum <- ifelse(grepl("Jan",garminFull$Date),1,
                             ifelse(grepl("Nov",garminFull$Date),11,
                             ifelse(grepl("Dec",garminFull$Date),12,NA))))))))))))
 head(garminFull)
+```
 
+Now I've got Date, Start Time,  Day of Week, and Month Number columns, and I can seperate the Date column in Day, Month, and Year.
+
+```{r create dy, mth, yr fields}
 vars3 <- c("Month", "Date")
 garminFull <- separate(garminFull, Date, into = vars3, sep = " ", extra = "merge", remove = TRUE)
-head(garminFull)
+#head(garminFull)
 vars4 <- c("Day", "Year")
 garminFull <- separate(garminFull, Date, into = vars4, sep = ", ", extra = "merge", remove = TRUE)
 head(garminFull)
 
+#Remove extra space in front of Year field
 garminFull$Year <- trimws(garminFull$Year)
+
+#Create Date field from its 3 components: Day, Month, Year
 garminFull$Date <- format(as.Date(with(garminFull, paste(Year, monthNum, Day,sep="-")), "%Y-%m-%d"), "%m/%d/%Y")
 str(garminFull$Date)
+```
 
+Now I can remove my unneccesary Garmin columns
+```{r remove garmin cols}
+#Remove
 keepColsGarmin  <- NA
 keepColsGarmin <- c("DOW", "Month", "StartTime", "Time", "Distance", "Elevation.Gain", "Avg.Speed.Avg.Pace.", "Avg.HR", 
                     "Max.HR", "Calories", "Date", "monthNum")
 newGarmin <- garminFull[keepColsGarmin]
 head(newGarmin)
+```
 
+I also want to change my format for my Date field, just as a personal preference
+
+```{r format date}
 newGarmin$Date <- as.Date(newGarmin$Date,"%m/%d/%Y")
 newStrava$Date <- as.Date(newStrava$Date,"%m/%d/%Y")
+
+#Check data type
 str(newGarmin$Date)
 str(newStrava$Date)
 
+#Sort data frames from earliest to last date
 newGarmin <- newGarmin[order(newGarmin$Date, decreasing = FALSE),] 
 newStrava <- newStrava[order(newStrava$Date, decreasing = FALSE),]
 head(newGarmin)
 head(newStrava)
+```
 
-#3 extra Garmin runs in Jan 2016, remove
-summary(newGarmin$Date)
+So my runs from Strava seem to be starting back in January which was *way* before my marathon training plan kicked in, and was mainly for the Broad Street Run. The marathon training plan started right after the Tour De Shore I did in July, so I need to remove all runs prior to that 1st training plan run on July 18.
 
-newGarmin <- newGarmin[!newGarmin$Date == c("2016-01-20","2016-01-30","2016-01-31")]
-#newGarmin <- newGarmin[!newGarmin$Date == "2016-01-30",]
-#newGarmin <- newGarmin[!newGarmin$Date == "2016-01-31",]
-newGarmin <- newGarmin[!newGarmin$Date < "2016-07-18",]
+```{r remove excess strava runs}
 newStrava <- newStrava[!newStrava$Date < "2016-07-18",]
+```
 
-nrow(newGarmin) #3 extra
+I need to double-check that the amount of rows in each data frame match so that they can be combined correctly
+```{r check nrow pt 1}
+nrow(newGarmin)
 nrow(newStrava)
+summary(newGarmin)
+```
 
-tail(newGarmin)
-tail(newStrava)
+So there's still 3 extra Garmin runs from January 2016, which was not a part of my marathon training, so I need to remove them.
 
 ##check in excel (how in R?)
 #write.csv(newStrava$Date, file = "fullStravaDates.csv", row.names = FALSE)
