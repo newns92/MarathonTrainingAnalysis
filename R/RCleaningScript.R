@@ -131,6 +131,10 @@ nrow(newStrava)
 tail(newGarmin)
 tail(newStrava)
 
+newGarmin[newGarmin$Distance==0.12]  
+newGarmin[newGarmin$Distance==0.16]  
+newGarmin[newGarmin$Distance==1.42] 
+
 ##check in excel (how in R?)
 #write.csv(newStrava$Date, file = "fullStravaDates.csv", row.names = FALSE)
 #write.csv(newGarmin$Date, file = "fullGarminDates.csv", row.names = FALSE)
