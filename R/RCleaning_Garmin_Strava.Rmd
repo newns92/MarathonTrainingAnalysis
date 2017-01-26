@@ -332,7 +332,17 @@ newFullData$RunType <- ifelse(grepl('LT',newFullData$Name),'Workout',
 table(newFullData$RunType)
 ```
 
-Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run to race a marathon! Now to save this dataset to a file to read into another script so I can do some analysis.
+Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run to race a marathon! 
+
+The last thing I think I need to do it is to convert the factor "Month" factor variable into a character variable, based off of the monthNum variable. I should've done this earlier, but it just came to me now that the current class of Month won't work for time-series type data.
+
+```{r convert month}
+newFullData$Month <- month.abb[newFullData$monthNum]
+str(newFullData$Month)
+```
+
+
+Now to save this dataset to a file to read into another script so I can do some analysis.
 
 ```{r write dataset to file}
 write.csv(newFullData, file = "cleanedMarathonTrainingData.csv", row.names = TRUE)
