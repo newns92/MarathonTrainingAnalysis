@@ -133,8 +133,7 @@ $(document).ready(function () {
 #install.packages(&quot;tidyr&quot;)    - data cleansing
 #install.packages(&quot;plyr&quot;)     - for renaming columns</code></pre>
 <p>Next, I load in the CSV file containing the Strava data file created by and downloaded from <strong>VeloViewer.com</strong> and check out the dataset.</p>
-<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;) #MOVE TO C FOR FINAL DRAFT
-strava &lt;- read.csv(&quot;strava.csv&quot;)
+<pre class="r"><code>strava &lt;- read.csv(&quot;strava.csv&quot;)
 dim(strava)</code></pre>
 <pre><code>## [1] 201  85</code></pre>
 <pre class="r"><code>head(strava)</code></pre>
@@ -249,8 +248,7 @@ dim(strava)</code></pre>
 <div id="garmin-data-files" class="section level2">
 <h2>Garmin Data Files</h2>
 <p>First, I load in the first of the CSV files containing the Garmin data created by and downloaded from <strong>Garmin Connect</strong> and check out the dataset.</p>
-<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
-garmin1 &lt;- read.csv(&quot;garmin1.csv&quot;)
+<pre class="r"><code>garmin1 &lt;- read.csv(&quot;garmin1.csv&quot;)
 dim(garmin1)</code></pre>
 <pre><code>## [1] 21 16</code></pre>
 <pre class="r"><code>head(garmin1)</code></pre>
@@ -283,8 +281,7 @@ dim(garmin1)</code></pre>
 ## 5              --
 ## 6              --</code></pre>
 <p>So there’s 21 runs in here, with 16 variables. Let’s look at another Garmin data file.</p>
-<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
-garmin6 &lt;- read.csv(&quot;garmin6.csv&quot;)
+<pre class="r"><code>garmin6 &lt;- read.csv(&quot;garmin6.csv&quot;)
 dim(garmin1)</code></pre>
 <pre><code>## [1] 21 16</code></pre>
 <pre class="r"><code>head(garmin6)</code></pre>
@@ -317,8 +314,7 @@ dim(garmin1)</code></pre>
 ## 5              --
 ## 6              --</code></pre>
 <p>Okay, good, same amount of runs and variables. Now it’s time to load in the rest of the Garmin data files in and combine them all into a single data frame to hold all of the Garmin data.</p>
-<pre class="r"><code>setwd(&quot;C:/Users/snewns/Dropbox/RunningAnalysis/Data&quot;)
-garmin2 &lt;- read.csv(&quot;garmin2.csv&quot;)
+<pre class="r"><code>garmin2 &lt;- read.csv(&quot;garmin2.csv&quot;)
 garmin3 &lt;- read.csv(&quot;garmin3.csv&quot;)
 garmin4 &lt;- read.csv(&quot;garmin4.csv&quot;)
 garmin5 &lt;- read.csv(&quot;garmin5.csv&quot;)
@@ -870,7 +866,15 @@ table(newFullData$RunType)</code></pre>
 <pre><code>## 
 ##     Long Run         Race Recovery Run          Run      Workout 
 ##           13            1           41           46           16</code></pre>
-<p>Looks like I’ve got a lot of “plain” runs and a lot of recovery runs. Just goes to show that you don’t need to kill yourself out there every time you run to race a marathon! Now to save this dataset to a file to read into another script so I can do some analysis.</p>
+<p>Looks like I’ve got a lot of “plain” runs and a lot of recovery runs. Just goes to show that you don’t need to kill yourself out there every time you run to race a marathon!</p>
+<p>The last thing I think I need to do it is to convert the factor <strong>Month</strong> factor variable into a character variable, based off of the <strong>monthNum</strong> variable, and then remove <strong>monthNum</strong>, since it then would no longer be needed.</p>
+<p>I should’ve done this earlier, but it just came to me now that the current class of <strong>Month</strong> won’t work for time-series-type data.</p>
+<pre class="r"><code>newFullData$Month &lt;- month.abb[newFullData$monthNum]
+newFullData$monthNum &lt;- NULL
+str(newFullData$Month)</code></pre>
+<pre><code>##  chr [1:117] &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; ...</code></pre>
+<p>Alright, cool.</p>
+<p>Now to save this dataset to a file to read into another script so I can do some analysis.</p>
 <pre class="r"><code>write.csv(newFullData, file = &quot;cleanedMarathonTrainingData.csv&quot;, row.names = TRUE)</code></pre>
 </div>
 </div>

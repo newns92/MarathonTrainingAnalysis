@@ -3,8 +3,8 @@ title: "Marathon Training Plan Data Cleaning"
 author: "Steve Newns"
 date: "January 18, 2017"
 output:
-  word_document: default
   html_document: default
+  word_document: default
 ---
 
 # *Initial Data Inspection*
@@ -22,7 +22,6 @@ First, I install packages
 Next, I load in the CSV file containing the Strava data file created by and downloaded from **VeloViewer.com** and check out the dataset.
 
 ```{r strava data inspection, }
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data") #MOVE TO C FOR FINAL DRAFT
 strava <- read.csv("strava.csv")
 dim(strava)
 head(strava)
@@ -37,7 +36,6 @@ Now I want to explore the Garmin data as well before moving on the removing thos
 First, I load in the first of the CSV files containing the Garmin data created by and downloaded from **Garmin Connect** and check out the dataset.
 
 ```{r garmin data inspection}
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 garmin1 <- read.csv("garmin1.csv")
 dim(garmin1)
 head(garmin1)
@@ -46,7 +44,6 @@ head(garmin1)
 So there's 21 runs in here, with 16 variables. Let's look at another Garmin data file.
 
 ```{r garmin data inspection2}
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 garmin6 <- read.csv("garmin6.csv")
 dim(garmin1)
 head(garmin6)
@@ -55,7 +52,6 @@ head(garmin6)
 Okay, good, same amount of runs and variables. Now it's time to load in the rest of the Garmin data files in and combine them all into a single data frame to hold all of the Garmin data.
 
 ```{r load rest of garmin data}
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 garmin2 <- read.csv("garmin2.csv")
 garmin3 <- read.csv("garmin3.csv")
 garmin4 <- read.csv("garmin4.csv")
@@ -334,13 +330,17 @@ table(newFullData$RunType)
 
 Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run to race a marathon! 
 
-The last thing I think I need to do it is to convert the factor "Month" factor variable into a character variable, based off of the monthNum variable. I should've done this earlier, but it just came to me now that the current class of Month won't work for time-series type data.
+The last thing I think I need to do it is to convert the factor **Month** factor variable into a character variable, based off of the **monthNum** variable, and then remove **monthNum**, since it then would no longer be needed. 
+
+I should've done this earlier, but it just came to me now that the current class of **Month** won't work for time-series-type data.
 
 ```{r convert month}
 newFullData$Month <- month.abb[newFullData$monthNum]
+newFullData$monthNum <- NULL
 str(newFullData$Month)
 ```
 
+Alright, cool.
 
 Now to save this dataset to a file to read into another script so I can do some analysis.
 
