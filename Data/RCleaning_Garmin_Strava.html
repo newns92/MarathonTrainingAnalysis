@@ -867,10 +867,10 @@ table(newFullData$RunType)</code></pre>
 ##     Long Run         Race Recovery Run          Run      Workout 
 ##           13            1           41           46           16</code></pre>
 <p>Looks like I’ve got a lot of “plain” runs and a lot of recovery runs. Just goes to show that you don’t need to kill yourself out there every time you run to race a marathon!</p>
-<p>The last thing I think I need to do it is to convert the factor <strong>Month</strong> factor variable into a character variable, based off of the <strong>monthNum</strong> variable, and then remove <strong>monthNum</strong>, since it then would no longer be needed.</p>
+<p>//The last thing I think I need to do it is to convert the factor <strong>Month</strong> factor variable into a character variable, //based #off of the <strong>monthNum</strong> variable, and then remove <strong>monthNum</strong>, since it then would no longer be needed.</p>
 <p>I should’ve done this earlier, but it just came to me now that the current class of <strong>Month</strong> won’t work for time-series-type data.</p>
 <pre class="r"><code>newFullData$Month &lt;- month.abb[newFullData$monthNum]
-newFullData$monthNum &lt;- NULL
+#newFullData$monthNum &lt;- NULL
 str(newFullData$Month)</code></pre>
 <pre><code>##  chr [1:117] &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; ...</code></pre>
 <p>Alright, cool.</p>

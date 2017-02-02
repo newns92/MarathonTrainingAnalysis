@@ -29,43 +29,46 @@ tapply(runs$Distance,runs$Month,sum)
 #Aug    Jul    Nov    Oct    Sep 
 #251.50 118.08 168.44 304.45 308.14
 
-ggplot(data = runs, aes(x = monthNum, y = Distance, fill = monthNum)) + 
+#ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
+ # geom_bar(stat="identity") +
+ # xlab("Month") + 
+#  ylab("Total Miles") + 
+#  ggtitle("Sum of Miles by Month") + 
+ # labs(caption="*The largest number of miles ran, 308 miles, was in September")
+#most miles in September, not October, still more in November than in June
+
+ggplot(data = runs, aes(x = monthNum, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Month") + 
   ylab("Total Miles") + 
   ggtitle("Sum of Miles by Month") + 
   labs(caption="*The largest number of miles ran, 308 miles, was in September")
-#most miles in August, not October, still more in November than in June
-
 
 #boxplot(Cad ~ monthNum, data = runs)
 
-ggplot(data = runs, aes(factor(monthNum), Cad)) + 
-  geom_boxplot(aes(fill = factor(monthNum)), outlier.colour = "red") + #geom_jitter()
+ggplot(data = runs, aes(monthNum, Cad)) + 
+  geom_boxplot(aes(fill = factor(runs$Month, levels = runs$Month[order(runs$monthNum)], ordered = TRUE)), 
+               outlier.colour = "red") + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
   ggtitle("Cadence per Month") + 
-  labs(caption="*Cadence increases month over month, due to more workouts, or improved form?")
+  labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
 
-ggplot(data = runs, aes(factor(monthNum), Avg.HR)) + 
-  geom_boxplot(aes(fill = factor(monthNum)), outlier.colour = "red") + #geom_jitter()
+
+table(runs$RunType)
+
+table(runs$monthNum) #most runs in Oct
+table(runs$RunType,runs$monthNum) #most workouts in Oct
+
+
+ggplot(data = runs, aes(factor(Month), mean(Avg.HR))) + 
+  geom_boxplot(aes(fill = factor(Month)), outlier.colour = "red") + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
   ggtitle("Cadence per Month") + 
-  labs(caption="*Cadence increases month over month, due to more workouts, or improved form?")
+  labs(caption="*HR?")
 
 head(runs[sort(runs$Cad),])
-
-as.Date(runs$Month), format = "%B")
-
-runs$month2 <- month.abb[runs$monthNum]
-
-ggplot(data = runs, aes(factor(month2), Cad)) + 
-  geom_boxplot(aes(fill = factor(month2)), outlier.colour = "red") + #geom_jitter()
-  xlab("Month") + 
-  ylab("Cadence") + 
-  ggtitle("Cadence per Month") + 
-  labs(caption="*Cadence increases month over month, due to more workouts, or improved form?")
 
 as.numeric(runs$Cad)
 
