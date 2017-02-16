@@ -13,6 +13,9 @@ runs$X <- NULL
 str(runs)
 summary(runs)
 
+#put month name labels to monthNum to display names in numerical in order
+runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month))
+
 
 library(ggplot2)
 
@@ -76,3 +79,10 @@ as.date(runs$Avg.Speed.Avg.Pace.,'m:s')
 as.Date.(runs$Avg.Speed.Avg.Pace.,'m:s')
 
 sum(runs$Distance)
+
+ggplot(data = runs, aes(x = monthNum2, y = Distance, fill = Month)) + 
+  geom_bar(stat="identity") +
+  xlab("Month") + 
+  ylab("Total Miles") + 
+  ggtitle("Sum of Miles by Month") + 
+  labs(caption="*The largest number of miles ran, 308 miles, was in September")
