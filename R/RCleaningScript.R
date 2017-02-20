@@ -199,9 +199,7 @@ newFullData$RunType <- ifelse(grepl('LT',newFullData$Name),'Workout',
                                     ifelse(grepl('Marathon',newFullData$Name),'Race','Run')))))))#)
 table(newFullData$RunType)
 
-#add month name labels to month number and store as factor in new "Month" variable
-#newFullData$Month <- factor(newFullData$monthNum, labels = unique(newFullData$Month))
-#str(newFullData)
+newFullData$Cad <- newFullData$Cad*2
 
 #write data to file
 write.csv(newFullData, file = "cleanedMarathonTrainingData.csv", row.names = TRUE)

@@ -6,21 +6,20 @@ setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 #setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
 
 runs <- read.csv("cleanedMarathonTrainingData.csv")
-str(runs)
+#str(runs)
 
 #remove 1st col
 runs$X <- NULL
-str(runs)
-summary(runs)
+#str(runs)
+#summary(runs)
 
 #put month name labels to monthNum to display names in numerical in order
-runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month))
+runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month[order(runs$monthNum)]))
 
-
+#load ggplot2
 library(ggplot2)
 
-#?barplot(sum(runs$Distance),runs$monthNum)
-
+#distance histogram
 ggplot(data = runs, aes(x = Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = ..count..)) + 
   xlab("Distance (mi)") + 
@@ -28,7 +27,7 @@ ggplot(data = runs, aes(x = Distance)) +
   ggtitle("Distribution of Miles Ran in All Runs") + 
   labs(caption="*Majority of runs were between 9 and 11 miles, with a suprisingly low number of runs between 7 and 9 miles")
 
-tapply(runs$Distance,runs$Month,sum)
+#tapply(runs$Distance,runs$Month,sum)
 #Aug    Jul    Nov    Oct    Sep 
 #251.50 118.08 168.44 304.45 308.14
 
@@ -44,6 +43,8 @@ ggplot(data = runs, aes(x = monthNum, y = Distance, fill = Month)) +
   geom_bar(stat="identity") +
   xlab("Month") + 
   ylab("Total Miles") + 
+  coord_flip() + 
+  #geom_text(vjust=0, colour="red") +
   ggtitle("Sum of Miles by Month") + 
   labs(caption="*The largest number of miles ran, 308 miles, was in September")
 
@@ -56,6 +57,22 @@ ggplot(data = runs, aes(monthNum, Cad)) +
   ylab("Cadence") + 
   ggtitle("Cadence per Month") + 
   labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 table(runs$RunType)
