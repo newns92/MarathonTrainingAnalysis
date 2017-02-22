@@ -133,8 +133,11 @@ newGarmin <- newGarmin[!newGarmin$Date == "2016-09-01",]
 table(newGarmin$Date) > 1
 
 #check august garmin runs
-which(newStrava$Date == '8/12/2016') #runs 95 and 96
+which(newStrava$Date == '2016-08-12') #runs 95 and 96
 newStrava[95:96,]
+
+#remove random run
+newGarmin <- newGarmin[!newGarmin$Distance=="1.42",]
 
 #check october garmin runs
 newGarmin[newGarmin$Date == "2016-10-23",]
@@ -198,6 +201,11 @@ newFullData$RunType <- ifelse(grepl('LT',newFullData$Name),'Workout',
                                   ifelse(grepl('Recovery',newFullData$Name),'Recovery Run',
                                     ifelse(grepl('Marathon',newFullData$Name),'Race','Run')))))))#)
 table(newFullData$RunType)
+
+install.packages("chron")
+library(chron)
+times(fu)
+
 
 newFullData$Cad <- newFullData$Cad*2
 
