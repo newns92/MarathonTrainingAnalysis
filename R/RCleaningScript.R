@@ -134,10 +134,11 @@ table(newGarmin$Date) > 1
 
 #check august garmin runs
 which(newStrava$Date == '2016-08-12') #runs 95 and 96
-newStrava[95:96,]
+newStrava[22:23,]
 
 #remove random run
 newGarmin <- newGarmin[!newGarmin$Distance=="1.42",]
+newStrava <- newStrava[!newStrava$Activity.Id=="677460614",]
 
 #check october garmin runs
 newGarmin[newGarmin$Date == "2016-10-23",]
@@ -202,11 +203,11 @@ newFullData$RunType <- ifelse(grepl('LT',newFullData$Name),'Workout',
                                     ifelse(grepl('Marathon',newFullData$Name),'Race','Run')))))))#)
 table(newFullData$RunType)
 
-install.packages("chron")
-library(chron)
-times(fu)
+#install.packages("chron")
+#library(chron)
+#times(fu)
 
-
+#Fix Cadence figures
 newFullData$Cad <- newFullData$Cad*2
 
 #write data to file

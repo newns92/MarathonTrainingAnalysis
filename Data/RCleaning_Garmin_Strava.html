@@ -657,24 +657,28 @@ newGarmin &lt;- newGarmin[!newGarmin$Date == &quot;2016-09-01&quot;,]</code></pr
 ## 2016-11-19 2016-11-20 
 ##      FALSE      FALSE</code></pre>
 <p>There was probably an easier way to do this, but I see that there’s the 2 runs on August 12, and also 2 on October 23.</p>
-<pre class="r"><code>which(newStrava$Date == '8/12/2016') #runs 95 and 96</code></pre>
-<pre><code>## integer(0)</code></pre>
+<pre class="r"><code>which(newStrava$Date == '2016-08-12') #runs 95 and 96</code></pre>
+<pre><code>## [1] 22 23</code></pre>
 <p>Let’s check those records.</p>
-<pre class="r"><code>newStrava[95:96,]</code></pre>
-<pre><code>##    Activity.Id             When Type                      Gear     Name
-## 23   759408079 10/29/2016 10:09  Run    Brooks Ghost Red/Black   GA Run
-## 22   760801450  10/30/2016 9:13  Run Hoka One One Clifton Reds Long Run
+<pre class="r"><code>newStrava[22:23,]</code></pre>
+<pre><code>##    Activity.Id            When Type                   Gear         Name
+## 95   677460614 8/12/2016 18:12  Run Brooks Ghost Red/Black Recovery Run
+## 96   673389413  8/12/2016 8:47  Run Brooks Ghost Red/Black       GA Run
 ##    Dist.mi Elv.ft Elapsed.Time Moving.Time Speed.mph Pace..mi Max.Pace..mi
-## 23 11269.6   48.0         3244        3144    3.5845 449.0070     328.4349
-## 22 35408.8  205.4        11757        9772    3.6235 444.1789     335.2746
+## 95  2290.8      0          747         693    3.3056 486.8266     412.6519
+## 96 16107.4      0         5209        4764    3.3811 476.0440     282.3433
 ##     Cad Heart Max.Heart Elev.Dist.ft.mi Elev.Time.ft.h    Cal Segs PRs
-## 23 92.7 144.3       161            4.26           55.0 1103.4    0   0
-## 22 84.8 139.9       155            5.80           75.7 3471.1    4   0
+## 95 85.8    NA         0               0              0  223.3    0   0
+## 96 87.0 149.3       168               0              0 1571.0    0   0
 ##    Kudos       Date StartTime
-## 23     0 2016-10-29     10:09
-## 22     0 2016-10-30      9:13</code></pre>
-<p>Looks like I just ran twice that day. I know I was down the shore, maybe I was just bored? Now to check the October 23 runs.</p>
-<pre class="r"><code>newGarmin[newGarmin$Date == &quot;2016-10-23&quot;,]</code></pre>
+## 95     0 2016-08-12     18:12
+## 96     0 2016-08-12      8:47</code></pre>
+<p>Looks like I just ran twice that day. I know I was down the shore, maybe I was just bored? I’ll remove that run and move on to check the October 23 runs.</p>
+<pre class="r"><code>#check october garmin runs
+newGarmin &lt;- newGarmin[!newGarmin$Distance==&quot;1.42&quot;,]
+newStrava &lt;- newStrava[!newStrava$Activity.Id==&quot;677460614&quot;,]
+
+newGarmin[newGarmin$Date == &quot;2016-10-23&quot;,]</code></pre>
 <pre><code>##     DOW Month StartTime    Time Distance Elevation.Gain
 ## 69  Sun   Oct  11:43 AM 1:04:28    15.01            657
 ## 108 Sun   Oct   1:08 PM    7:53     1.00             --
@@ -685,9 +689,9 @@ newGarmin &lt;- newGarmin[!newGarmin$Date == &quot;2016-09-01&quot;,]</code></pr
 <pre class="r"><code>newGarmin &lt;- newGarmin[!(newGarmin$Date == &quot;2016-10-23&quot; &amp; newGarmin$Elevation.Gain == 657),]
 
 nrow(newGarmin)</code></pre>
-<pre><code>## [1] 117</code></pre>
+<pre><code>## [1] 116</code></pre>
 <pre class="r"><code>nrow(newStrava)</code></pre>
-<pre><code>## [1] 117</code></pre>
+<pre><code>## [1] 116</code></pre>
 <p>Great, now I have the same amount of runs in each data set. Let’s check the first couple of records just to make sure they line up.</p>
 <pre class="r"><code>head(newGarmin)</code></pre>
 <pre><code>##    DOW Month StartTime     Time Distance Elevation.Gain
@@ -829,7 +833,7 @@ newFullData &lt;- newFullData[, c(&quot;ID&quot;, &quot;Name&quot;, &quot;Gear&q
 ## Oh My God So Freakin Windy Philly Marathon 
 ##                                          1 
 ##                               Recovery Run 
-##                                         40 
+##                                         39 
 ##                                  Tempo Run 
 ##                                          5 
 ##                                Tune-Up Run 
@@ -865,14 +869,10 @@ newFullData$Name[newFullData$ID == 655096239] &lt;- 'ML Run'</code></pre>
 table(newFullData$RunType)</code></pre>
 <pre><code>## 
 ##     Long Run         Race Recovery Run          Run      Workout 
-##           13            1           41           46           16</code></pre>
+##           13            1           40           46           16</code></pre>
 <p>Looks like I’ve got a lot of “plain” runs and a lot of recovery runs. Just goes to show that you don’t need to kill yourself out there every time you run to race a marathon!</p>
-<p>//The last thing I think I need to do it is to convert the factor <strong>Month</strong> factor variable into a character variable, //based #off of the <strong>monthNum</strong> variable, and then remove <strong>monthNum</strong>, since it then would no longer be needed.</p>
-<p>I should’ve done this earlier, but it just came to me now that the current class of <strong>Month</strong> won’t work for time-series-type data.</p>
-<pre class="r"><code>newFullData$Month &lt;- month.abb[newFullData$monthNum]
-#newFullData$monthNum &lt;- NULL
-str(newFullData$Month)</code></pre>
-<pre><code>##  chr [1:117] &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; &quot;Jul&quot; ...</code></pre>
+<p>Now time to fix my Cadence figures, since it seems like they are half of what they should be.</p>
+<pre class="r"><code>newFullData$Cad &lt;- newFullData$Cad*2</code></pre>
 <p>Alright, cool.</p>
 <p>Now to save this dataset to a file to read into another script so I can do some analysis.</p>
 <pre class="r"><code>write.csv(newFullData, file = &quot;cleanedMarathonTrainingData.csv&quot;, row.names = TRUE)</code></pre>

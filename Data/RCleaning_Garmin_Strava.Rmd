@@ -221,18 +221,22 @@ table(newGarmin$Date) > 1
 There was probably an easier way to do this, but I see that there's the 2 runs on August 12, and also 2 on October 23.
 
 ```{r check august garmin runs}
-which(newStrava$Date == '8/12/2016') #runs 95 and 96
+which(newStrava$Date == '2016-08-12') 
 ```
 
 Let's check those records.
 
 ```{r check aug dates}
-newStrava[95:96,]
+newStrava[22:23,]
 ```
 
-Looks like I just ran twice that day. I know I was down the shore, maybe I was just bored? Now to check the October 23 runs.
+Looks like I just ran twice that day. I know I was down the shore, maybe I was just bored? I'll remove that run and move on to check the October 23 runs.
 
 ```{r check october garmin runs}
+#check october garmin runs
+newGarmin <- newGarmin[!newGarmin$Distance=="1.42",]
+newStrava <- newStrava[!newStrava$Activity.Id=="677460614",]
+
 newGarmin[newGarmin$Date == "2016-10-23",]
 ```
 
@@ -331,12 +335,12 @@ table(newFullData$RunType)
 Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run to race a marathon! 
 
 
-Now to change my format for my **Avg.HR** field to a number, since it's currently a factor
+Now time to fix my Cadence figures, since it seems like they are half of what they should be.
 
-```{r HR to number}
+```{r fix cadence}
+newFullData$Cad <- newFullData$Cad*2
+
 ```
-
-
 
 Alright, cool.
 
