@@ -60,7 +60,7 @@ ggplot(data = runs, aes(monthNum, Cad)) +
 
 ggplot(data = runs, aes(x = Date, y = Avg.HR)) + 
   geom_line(aes(group=1)) +
-  theme(axis.text.x = element_text(size=0, angle=45))
+  theme(axis.text.x = element_text(size=0, angle=45)) +
   xlab("Time") + 
   ylab("Average Heart Rate") + 
   ggtitle("Average Heart Rate Over Time") + 
