@@ -58,35 +58,31 @@ ggplot(data = runs, aes(monthNum, Cad)) +
   ggtitle("Cadence per Month") + 
   labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
 
+ggplot(data = runs, aes(x = Date, y = Avg.HR)) + 
+  geom_line(aes(group=1)) +
+  theme(axis.text.x = element_text(size=0, angle=45))
+  xlab("Time") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Heart Rate Over Time") + 
+  labs(caption="*Loosk like a very slight general decrease, with an outlier of about 100 in the 1st third of the plan
+      and 70 in the last 3rd of the plan")
+ 
+  
+  
+  
+  
+  
+table(mean(runs$Avg.HR),runs$monthNum)
+
+ggplot(data = runs, aes(x = monthNum, y = mean(Avg.HR), fill = Month)) + 
+    geom_bar(stat="identity") +
+    xlab("Month") + 
+    ylab("Total Miles") + 
+    #geom_text(vjust=0, colour="red") +
+    ggtitle("Sum of Miles by Month") + 
+    labs(caption="*The largest number of miles ran, 308 miles, was in September")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-table(runs$RunType)
-
-table(runs$monthNum) #most runs in Oct
-table(runs$RunType,runs$monthNum) #most workouts in Oct
-
-
-ggplot(data = runs, aes(factor(Month), mean(Avg.HR))) + 
-  geom_boxplot(aes(fill = factor(Month)), outlier.colour = "red") + #geom_jitter()
-  xlab("Month") + 
-  ylab("Cadence") + 
-  ggtitle("Cadence per Month") + 
-  labs(caption="*HR?")
 
 head(runs[sort(runs$Cad),])
 

@@ -334,6 +334,15 @@ table(newFullData$RunType)
 
 Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run to race a marathon! 
 
+Now time to convert my heart rate variables *Avg.HR* and *Max.HR*, as well as my *Calories* and *Elevation.Gain* variables so that they're numerical and I can do math on them.
+
+```{r fix HR and cals}
+newFullData$Avg.HR <- as.numeric(as.character(newFullData$Avg.HR, stringsAsFactors = FALSE))
+newFullData$Max.HR <- as.numeric(as.character(newFullData$Max.HR, stringsAsFactors = FALSE))
+newFullData$Calories <- as.numeric(gsub(",","",newFullData$Calories))
+newFullData$Elevation.Gain <- as.numeric(as.character(newFullData$Elevation.Gain, stringsAsFactors = FALSE))
+```
+
 
 Now time to fix my Cadence figures, since it seems like they are half of what they should be.
 

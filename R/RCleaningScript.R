@@ -207,6 +207,13 @@ table(newFullData$RunType)
 #library(chron)
 #times(fu)
 
+#Convert average Heart rate, max heart rate, calories, and elevation gain to numeric
+newFullData$Avg.HR <- as.numeric(as.character(newFullData$Avg.HR, stringsAsFactors = FALSE))
+newFullData$Max.HR <- as.numeric(as.character(newFullData$Max.HR, stringsAsFactors = FALSE))
+newFullData$Calories <- as.numeric(gsub(",","",newFullData$Calories))
+newFullData$Elevation.Gain <- as.numeric(as.character(newFullData$Elevation.Gain, stringsAsFactors = FALSE))
+
+
 #Fix Cadence figures
 newFullData$Cad <- newFullData$Cad*2
 
