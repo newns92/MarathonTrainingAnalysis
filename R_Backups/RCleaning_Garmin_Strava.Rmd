@@ -16,8 +16,8 @@ First, I install packages
 #install.packages("stringr")  - for manipulating string values
 #install.packages("tidyr")    - data cleansing
 #install.packages("plyr")     - for renaming columns
+#install.packages("lubridate")  - working with dates
 ```
-
 
 Next, I load in the CSV file containing the Strava data file created by and downloaded from **VeloViewer.com** and check out the dataset.
 
@@ -348,10 +348,51 @@ Now time to fix my Cadence figures, since it seems like they are half of what th
 
 ```{r fix cadence}
 newFullData$Cad <- newFullData$Cad*2
-
+str(newFullData)
 ```
 
-Alright, cool.
+Alright, cool. I also see my time fields, **Avg.Speed.Avg.Pace** and **Time** are not in the correct format. I need to convert them to **POSIXct** in order to do some work with them. I need to convert my pace to the correct format via **as.POSIXct**, since it's already pretty much in the correct numerical format.
+
+```{r fix avg pace}
+library(lubridate)
+
+#fix Average Pace
+newFullData$Avg.Speed.Avg.Pace. <- as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')
+plot(newFullData$Date,newFullData$Avg.Speed.Avg.Pace.)
+newFullData$avgPace <- newFullData$Avg.Speed.Avg.Pace.
+newFullData$Avg.Speed.Avg.Pace. <- NULL
+```
+
+Now, for **Time**, some values are missing the hour, some have the minutes in the hour place, etc. so I can fix this with a FOR loop in order to find the "incorrect" values and fix each one respectively.
+
+```{r fix total time}
+newFullData$Time <- as.character(newFullData$Time)
+
+for (i in 1:nrow(newFullData)) {
+  if (nchar(newFullData$Time[i]) == 4) {
+    newFullData$Time[i] <- paste("0:0", newFullData$Time[i], sep="")
+    #print(paste("00:0", newFullData$Time[i], sep=""))
+    #print(newFullData$Time[i])
+  } else if (nchar(newFullData$Time[i]) == 8) {
+    newFullData$Time[i] <- paste("0:",substring(newFullData$Time[i],1,5), sep="")
+    #print(paste("00:",substring(newFullData$Time[i],1,5), sep=""))
+  } else if (nchar(newFullData$Time[i]) == 5) {
+    newFullData$Time[i] <- paste("0:",newFullData$Time[i], sep="")
+    #print(paste("00:",substring(newFullData$Time[i],1,5), sep=""))
+  }  
+}
+newFullData$Time <- as.POSIXct(newFullData$Time, format = '%H:%M:%S')
+
+#test plot
+plot(newFullData$Date,newFullData$Time)
+```
+
+Great. Now the final thing to do is to make sure my **Month** variable is indeed ordered correctly with **factor()**
+
+```{r order month}
+newFullData$Month <- factor(newFullData$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+class(newFullData$Month)
+```
 
 Now to save this dataset to a file to read into another script so I can do some analysis.
 

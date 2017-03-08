@@ -224,7 +224,7 @@ library(lubridate)
 #fix Average Pace
 newFullData$Avg.Speed.Avg.Pace. <- as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')
 plot(newFullData$Date,newFullData$Avg.Speed.Avg.Pace.)
-newFullData$avgPace <- newFullData$Avg.Speed.Avg.Pace.
+newFullData$Avg.Pace <- newFullData$Avg.Speed.Avg.Pace.
 newFullData$Avg.Speed.Avg.Pace. <- NULL
 
 #fix total time
