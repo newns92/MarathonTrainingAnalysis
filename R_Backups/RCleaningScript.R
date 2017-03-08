@@ -1,6 +1,7 @@
-#install.packages("stringr")  - for manipulating string values
-#install.packages("tidyr")    - data cleansing
-#install.packages("plyr")     - for renaming columns
+#install.packages("stringr")    - for manipulating string values
+#install.packages("tidyr")      - data cleansing
+#install.packages("plyr")       - for renaming columns
+#install.packages("lubridate")  - working with dates
 
 setwd("C:/Users/snewns/Dropbox/RunningAnalysis/R_Backups")
 #setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/R_Backups")
@@ -216,27 +217,26 @@ newFullData$Elevation.Gain <- as.numeric(as.character(newFullData$Elevation.Gain
 
 #Fix Cadence figures
 newFullData$Cad <- newFullData$Cad*2
+str(newFullData)
 
+#?strptime(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), format = '%T')
 
-?strptime(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), format = '%T')
-
-install.packages("lubridate")
+#fix Time fields
 library(lubridate)
-as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%M")) + 
-  as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%S"))
-
-
-as.character(minute(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))) &
-               ":" &  
-  as.character(second(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')))
-
-
-plot(newFullData$Date,as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))
+#as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%M")) + 
+#  as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%S"))
+#
+#as.character(minute(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))) &
+#              ":" &  
+#  as.character(second(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')))
+#
+#
+newFullData$Avg.Speed.Avg.Pace. <- as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')
+plot(newFullData$Date,newFullData$Avg.Speed.Avg.Pace.)
 
 library(ggplot2)
 
-ggplot(data = newFullData, aes(x = Date, y = as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))) + 
-  geom_point()
+
 
 #fix ones less than 8 digits
 newFullData$Time
@@ -266,6 +266,9 @@ if (nchar(newFullData$testTime[i]) == 4) {
 
 
 
+#put month name labels to monthNum to display names in numerical in order
+newFullData$Month <- factor(newFullData$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+class(newFullData$Month)
 
 
 

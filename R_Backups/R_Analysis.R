@@ -7,9 +7,9 @@ setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 
 runs <- read.csv("cleanedMarathonTrainingData.csv")
 #str(runs)
-)
-runs$testTime <- format(runs$Time, format= "%H:%M:S")
-length(runs$testTime[78])
+
+#runs$testTime <- format(runs$Time, format= "%H:%M:S")
+#length(runs$testTime[78])
 
 #remove 1st col
 runs$X <- NULL
@@ -17,7 +17,9 @@ runs$X <- NULL
 #summary(runs)
 
 #put month name labels to monthNum to display names in numerical in order
-runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month[order(runs$monthNum)]))
+#runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month[order(runs$monthNum)]))
+runs$Month <- factor(runs$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+class(runs$Month)
 
 #load ggplot2
 library(ggplot2)
@@ -42,19 +44,20 @@ ggplot(data = runs, aes(x = Distance)) +
  # labs(caption="*The largest number of miles ran, 308 miles, was in September")
 #most miles in September, not October, still more in November than in June
 
-ggplot(data = runs, aes(x = monthNum, y = Distance, fill = Month)) + 
+ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Month") + 
   ylab("Total Miles") + 
-  coord_flip() + 
+  #coord_flip() + 
+  #scale_x_discrete(limits = rev(levels(runs$Month))) +
   #geom_text(vjust=0, colour="red") +
   ggtitle("Sum of Miles by Month") + 
   labs(caption="*The largest number of miles ran, 308 miles, was in September")
 
 #boxplot(Cad ~ monthNum, data = runs)
 
-ggplot(data = runs, aes(monthNum, Cad)) + 
-  geom_boxplot(aes(fill = factor(runs$Month, levels = runs$Month[order(runs$monthNum)], ordered = TRUE)), 
+ggplot(data = runs, aes(Month, Cad)) + 
+  geom_boxplot(aes(fill = Month), 
                outlier.colour = "red") + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
@@ -93,14 +96,9 @@ ggplot(data = runs, aes(x = monthNum, y = mean(Avg.HR), fill = Month)) +
     ggtitle("Sum of Miles by Month") + 
     labs(caption="*The largest number of miles ran, 308 miles, was in September")
 
+ggplot(data = newFullData, aes(x = Date, y = Avg.Speed.Avg.Pace.)) + 
+  geom_point()
 
-
-head(runs[sort(runs$Cad),])
-
-as.numeric(runs$Cad)
-
-as.date(runs$Avg.Speed.Avg.Pace.,'m:s')
-as.Date.(runs$Avg.Speed.Avg.Pace.,'m:s')
 
 sum(runs$Distance)
 
