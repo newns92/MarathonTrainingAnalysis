@@ -7,6 +7,9 @@ setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
 
 runs <- read.csv("cleanedMarathonTrainingData.csv")
 #str(runs)
+)
+runs$testTime <- format(runs$Time, format= "%H:%M:S")
+length(runs$testTime[78])
 
 #remove 1st col
 runs$X <- NULL
@@ -64,8 +67,16 @@ ggplot(data = runs, aes(x = Date, y = Avg.HR)) +
   xlab("Time") + 
   ylab("Average Heart Rate") + 
   ggtitle("Average Heart Rate Over Time") + 
-  labs(caption="*Loosk like a very slight general decrease, with an outlier of about 100 in the 1st third of the plan
+  labs(caption="*Looks like a very slight general decrease, with an outlier of about 100 in the 1st third of the plan
       and 70 in the last 3rd of the plan")
+
+ggplot(data = runs, aes(x = Distance, y = testTime)) + geom_point()
+  geom_line() +
+  theme(axis.text.x = element_text(size=0, angle=45)) +
+  xlab("Time") + 
+    
+  labs(caption="*Loosk like a very slight general decrease, with an outlier of about 100 in the 1st third of the plan
+       and 70 in the last 3rd of the plan")
  
   
   

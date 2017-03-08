@@ -2,8 +2,8 @@
 #install.packages("tidyr")    - data cleansing
 #install.packages("plyr")     - for renaming columns
 
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
-#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
+setwd("C:/Users/snewns/Dropbox/RunningAnalysis/R_Backups")
+#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/R_Backups")
 
 #load strava data
 strava <- read.csv("strava.csv")
@@ -216,6 +216,61 @@ newFullData$Elevation.Gain <- as.numeric(as.character(newFullData$Elevation.Gain
 
 #Fix Cadence figures
 newFullData$Cad <- newFullData$Cad*2
+
+
+?strptime(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), format = '%T')
+
+install.packages("lubridate")
+library(lubridate)
+as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%M")) + 
+  as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%S"))
+
+
+as.character(minute(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))) &
+               ":" &  
+  as.character(second(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')))
+
+
+plot(newFullData$Date,as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))
+
+library(ggplot2)
+
+ggplot(data = newFullData, aes(x = Date, y = as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))) + 
+  geom_point()
+
+#fix ones less than 8 digits
+newFullData$Time
+newFullData$testTime <- as.character(newFullData$Time)
+newFullData$testTime[3] <- "0:32:40"
+newFullData$testTime[5] <- "0:48:25"
+newFullData$testTime[9] <- "0:23:41"
+newFullData$testTime[11] <- "0:49:29"
+nchar(newFullData$testTime[82])
+
+#fix total times
+for (i in 1:nrow(newFullData)) {
+  if (nchar(newFullData$testTime[i]) == 4) {
+    print(paste("00:0", newFullData$testTime[i], sep=""))
+    #print(newFullData$testTime[i])
+  } else if (nchar(newFullData$testTime[i]) == 8) {
+    print(paste("00:",substring(newFullData$testTime[i],1,5), sep=""))
+  }
+}
+
+nchar(newFullData$testTime[71])
+nchar(newFullData$testTime[2],1,1))
+
+if (nchar(newFullData$testTime[i]) == 4) {
+  lapply(newFullData$testTime, function(x) paste("00", x, sep=":"))
+}
+
+
+
+
+
+
+
+
 
 #write data to file
 write.csv(newFullData, file = "cleanedMarathonTrainingData.csv", row.names = TRUE)
