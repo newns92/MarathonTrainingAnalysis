@@ -2,22 +2,23 @@
 #install.packages("tidyr")    - data cleansing
 #install.packages("plyr")     - for renaming columns
 
-setwd("C:/Users/snewns/Dropbox/RunningAnalysis/Data")
-#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/Data")
+setwd("C:/Users/snewns/Dropbox/RunningAnalysis/R_Backups")
+#setwd("C:/Users/Nimz/Dropbox/RunningAnalysis/R_Backups")
 
 runs <- read.csv("cleanedMarathonTrainingData.csv")
-#str(runs)
-
-#runs$testTime <- format(runs$Time, format= "%H:%M:S")
-#length(runs$testTime[78])
+str(runs)
 
 #remove 1st col
 runs$X <- NULL
-#str(runs)
+head(runs,2)
 #summary(runs)
 
-#put month name labels to monthNum to display names in numerical in order
-#runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month[order(runs$monthNum)]))
+#can't save POSIXct into CSV, must change here
+runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
+runs$avgPace <- as.POSIXct(runs$avgPace)#, format = '%H:%M:%S')
+str(runs)
+
+#can't save ordered factors in CSV, must change here
 runs$Month <- factor(runs$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
 class(runs$Month)
 
@@ -30,19 +31,12 @@ ggplot(data = runs, aes(x = Distance)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  labs(caption="*Majority of runs were between 9 and 11 miles, with a suprisingly low number of runs between 7 and 9 miles")
+  labs(caption="*Majority of runs were between 9 and 11 miles, 
+       with a suprisingly low number of runs between 7 and 9 miles")
 
 #tapply(runs$Distance,runs$Month,sum)
 #Aug    Jul    Nov    Oct    Sep 
 #251.50 118.08 168.44 304.45 308.14
-
-#ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
- # geom_bar(stat="identity") +
- # xlab("Month") + 
-#  ylab("Total Miles") + 
-#  ggtitle("Sum of Miles by Month") + 
- # labs(caption="*The largest number of miles ran, 308 miles, was in September")
-#most miles in September, not October, still more in November than in June
 
 ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
@@ -57,8 +51,9 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
 #boxplot(Cad ~ monthNum, data = runs)
 
 ggplot(data = runs, aes(Month, Cad)) + 
+  geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), 
-               outlier.colour = "red") + #geom_jitter()
+               outlier.colour = "red", alpha = 0.5) + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
   ggtitle("Cadence per Month") + 

@@ -204,9 +204,9 @@ newFullData$RunType <- ifelse(grepl('LT',newFullData$Name),'Workout',
                                     ifelse(grepl('Marathon',newFullData$Name),'Race','Run')))))))#)
 table(newFullData$RunType)
 
-#install.packages("chron")
-#library(chron)
-#times(fu)
+#fix month ordering
+newFullData$Month <- factor(newFullData$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+class(newFullData$Month)
 
 #Convert average Heart rate, max heart rate, calories, and elevation gain to numeric
 newFullData$Avg.HR <- as.numeric(as.character(newFullData$Avg.HR, stringsAsFactors = FALSE))
@@ -214,66 +214,44 @@ newFullData$Max.HR <- as.numeric(as.character(newFullData$Max.HR, stringsAsFacto
 newFullData$Calories <- as.numeric(gsub(",","",newFullData$Calories))
 newFullData$Elevation.Gain <- as.numeric(as.character(newFullData$Elevation.Gain, stringsAsFactors = FALSE))
 
-
 #Fix Cadence figures
 newFullData$Cad <- newFullData$Cad*2
 str(newFullData)
 
-#?strptime(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), format = '%T')
-
 #fix Time fields
 library(lubridate)
-#as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%M")) + 
-#  as.numeric(format(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'), "%S"))
-#
-#as.character(minute(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S'))) &
-#              ":" &  
-#  as.character(second(as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')))
-#
-#
+
+#fix Average Pace
 newFullData$Avg.Speed.Avg.Pace. <- as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')
 plot(newFullData$Date,newFullData$Avg.Speed.Avg.Pace.)
+newFullData$avgPace <- newFullData$Avg.Speed.Avg.Pace.
+newFullData$Avg.Speed.Avg.Pace. <- NULL
 
-library(ggplot2)
+#fix total time
+newFullData$Time <- as.character(newFullData$Time)
 
-
-
-#fix ones less than 8 digits
-newFullData$Time
-newFullData$testTime <- as.character(newFullData$Time)
-newFullData$testTime[3] <- "0:32:40"
-newFullData$testTime[5] <- "0:48:25"
-newFullData$testTime[9] <- "0:23:41"
-newFullData$testTime[11] <- "0:49:29"
-nchar(newFullData$testTime[82])
-
-#fix total times
 for (i in 1:nrow(newFullData)) {
-  if (nchar(newFullData$testTime[i]) == 4) {
-    print(paste("00:0", newFullData$testTime[i], sep=""))
-    #print(newFullData$testTime[i])
-  } else if (nchar(newFullData$testTime[i]) == 8) {
-    print(paste("00:",substring(newFullData$testTime[i],1,5), sep=""))
-  }
+  if (nchar(newFullData$Time[i]) == 4) {
+    newFullData$Time[i] <- paste("0:0", newFullData$Time[i], sep="")
+    #print(paste("00:0", newFullData$Time[i], sep=""))
+    #print(newFullData$Time[i])
+  } else if (nchar(newFullData$Time[i]) == 8) {
+    newFullData$Time[i] <- paste("0:",substring(newFullData$Time[i],1,5), sep="")
+    #print(paste("00:",substring(newFullData$Time[i],1,5), sep=""))
+  } else if (nchar(newFullData$Time[i]) == 5) {
+    newFullData$Time[i] <- paste("0:",newFullData$Time[i], sep="")
+    #print(paste("00:",substring(newFullData$Time[i],1,5), sep=""))
+  }  
 }
 
-nchar(newFullData$testTime[71])
-nchar(newFullData$testTime[2],1,1))
+newFullData$Time <- as.POSIXct(newFullData$Time, format = '%H:%M:%S')
 
-if (nchar(newFullData$testTime[i]) == 4) {
-  lapply(newFullData$testTime, function(x) paste("00", x, sep=":"))
-}
-
-
+#test plot
+plot(newFullData$Date,newFullData$Time)
 
 #put month name labels to monthNum to display names in numerical in order
 newFullData$Month <- factor(newFullData$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
 class(newFullData$Month)
-
-
-
-
-
 
 #write data to file
 write.csv(newFullData, file = "cleanedMarathonTrainingData.csv", row.names = TRUE)
