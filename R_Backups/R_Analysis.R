@@ -80,8 +80,8 @@ ggplot(data = runs, aes(x = Date, y = Avg.HR)) +
   xlab("Time") + 
   ylab("Average Heart Rate") + 
   ggtitle("Average Heart Rate Over Time") + 
-  labs(caption="*Very slight general decrease, with outliers of about 100 in the 1st third of the plan and 70 in the 
-       last 3rd of the plan")
+  labs(caption="*Very slight general decrease, with outliers of about 100 in the 1st third of the plan and 
+70 in the last 3rd of the plan")
 
 #average pace over plan line
 ggplot(data = runs, aes(x = Date, y = Avg.Pace)) + 
@@ -96,5 +96,5 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace)) +
 #scatter plot of total times by distnace
 ggplot(data = runs, aes(x = Distance, y = Time)) + geom_point()
   geom_line() +
-  theme(axis.text.x = element_text(size=0, angle=45)) +
+  #theme(axis.text.x = element_text(size=0, angle=45)) +
   xlab("Time") 

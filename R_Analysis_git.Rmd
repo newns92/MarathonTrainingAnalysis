@@ -22,16 +22,23 @@ str(runs)
 #remove 1st col
 ```{r remove 1st col }
 runs$X <- NULL
+head(runs,2)
+```
+
+#can't save POSIXct into CSV, must change here
+```{r fix POSIXct}
+runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
+runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')
 str(runs)
 ```
 
-#put month name labels to monthNum to display names in numerical in order
-```{r fix monthNum}
-runs$monthNum <- factor(runs$monthNum,labels = unique(runs$Month[order(runs$monthNum)]))
+#can't save ordered factors in CSV, must change here
+```{r fix month}
+runs$Month <- factor(runs$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+class(runs$Month)
 ```
 
-
-#load ggplot2
+#load ggplot2 + make histogram
 ```{r plotting}
 library(ggplot2)
 
@@ -41,41 +48,71 @@ ggplot(data = runs, aes(x = Distance)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  labs(caption="*Majority of runs were between 9 and 11 miles, with a suprisingly low number of runs between 7 and 9 miles")
+  labs(caption="*Majority of runs were between 9 and 11 miles, 
+       with a suprisingly low number of runs between 7 and 9 miles")
+
+#check data
+tapply(runs$Distance,runs$Month,sum)
 ```
 
-
+#miles by month bars
 ```{r miles by month} 
-ggplot(data = runs, aes(x = monthNum, y = Distance, fill = Month)) + 
+ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Month") + 
   ylab("Total Miles") + 
-  coord_flip() + 
+  #coord_flip() + 
+  #scale_x_discrete(limits = rev(levels(runs$Month))) +
   #geom_text(vjust=0, colour="red") +
   ggtitle("Sum of Miles by Month") + 
   labs(caption="*The largest number of miles ran, 308 miles, was in September")
 ```
 
+#avg. cadence grouped by month
 ```{r cadence by month} 
-ggplot(data = runs, aes(monthNum, Cad)) + 
-  geom_boxplot(aes(fill = factor(runs$Month, levels = runs$Month[order(runs$monthNum)], ordered = TRUE)), 
-               outlier.colour = "red") + #geom_jitter()
+ggplot(data = runs, aes(Month, Cad)) + 
+  geom_jitter(aes(colour = Month)) +
+  geom_boxplot(aes(fill = Month), 
+               outlier.colour = "black", alpha = 0.5) + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
   ggtitle("Cadence per Month") + 
   labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
 ```
 
+#avg. HR grouped by month
+```{r HR by month boxplot}
+ggplot(data = runs, aes(Month, Avg.HR)) + 
+  geom_jitter(aes(colour = Month)) +
+  geom_boxplot(aes(fill = Month), 
+               outlier.colour = "black", alpha = 0.5) + #geom_jitter()
+  xlab("Month") + 
+  ylab("Cadence") + 
+  ggtitle("Cadence per Month") + 
+  labs(caption="*HR generally decreases month over month --> increased fitness or cooler weather?")
+#tbl <- tapply(runs$Avg.HR,runs$Month,median)
+```
+
+#average heart rate per run over plan --> line
 ```{r HR over time} 
 ggplot(data = runs, aes(x = Date, y = Avg.HR)) + 
   geom_line(aes(group=1)) +
-  theme(axis.text.x = element_text(size=0, angle=45)) +
+  theme(axis.text.x = element_blank()) +
   xlab("Time") + 
   ylab("Average Heart Rate") + 
   ggtitle("Average Heart Rate Over Time") + 
-  labs(caption="*Looks like a very slight general decrease, with an outlier of about 100 in the 1st third of the plan
-      and 70 in the last 3rd of the plan")
- 
+  labs(caption="*Very slight general decrease, with outliers of about 100 in the 1st third of the plan and 
+70 in the last 3rd of the plan")
 ```
-  
-  
+
+#average pace over plan line
+```{r avg pace}
+ggplot(data = runs, aes(x = Date, y = Avg.Pace)) + 
+  geom_point() + # by color? 
+  #?stat_smooth() + 
+  theme(axis.text.x = element_blank()) +
+  xlab("Time") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Heart Rate Over Time") + 
+  labs(caption="*Very slight general decrease, but not linear")
+```
