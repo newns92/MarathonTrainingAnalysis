@@ -116,3 +116,18 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace)) +
   ggtitle("Average Heart Rate Over Time") + 
   labs(caption="*Very slight general decrease, but not linear")
 ```
+
+#cadence boxplot by run type
+```{r cadence by run type}
+ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) + 
+  geom_boxplot(alpha = 0.5) + 
+  geom_jitter(aes(colour = RunType)) +
+    #stat_summary(fun.y="median", geom="bar", alpha = 0.1) + 
+  expand_limits(y = 130) + 
+  xlab("Run Type") + 
+  ylab("Cadence") + 
+  coord_flip() + 
+  ggtitle("Cadence by Run Type") + 
+  labs(caption="*The actual marathon had the highest cadence, which makes sense. Workouts had widest variety - 
+       inspect more, recovery runs abit slower, but less variant, long runs second slowest")
+```

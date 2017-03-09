@@ -204,3 +204,22 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace)) +
 ```
 
 ![](R_Analysis_git_files/figure-markdown_github/avg%20pace-1.png)
+
+cadence boxplot by run type
+===========================
+
+``` r
+ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) + 
+  geom_boxplot(alpha = 0.5) + 
+  geom_jitter(aes(colour = RunType)) +
+    #stat_summary(fun.y="median", geom="bar", alpha = 0.1) + 
+  expand_limits(y = 130) + 
+  xlab("Run Type") + 
+  ylab("Cadence") + 
+  coord_flip() + 
+  ggtitle("Cadence by Run Type") + 
+  labs(caption="*The actual marathon had the highest cadence, which makes sense. Workouts had widest variety - 
+       inspect more, recovery runs abit slower, but less variant, long runs second slowest")
+```
+
+![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20run%20type-1.png)

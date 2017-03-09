@@ -107,9 +107,9 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace)) +
   #xlab("Time") 
 #graph table above --> miles by month bars
 
-medianCadence <- aggregate(runs$Cad,list(runs$RunType),median)
-runs <- merge(runs, medianCadence, by.x = "RunType", by.y = "Group.1")
-names(runs)[names(runs)=="x"] <- "medianCadence"
+#medianCadence <- aggregate(runs$Cad,list(runs$RunType),median)
+#runs <- merge(runs, medianCadence, by.x = "RunType", by.y = "Group.1")
+#names(runs)[names(runs)=="x"] <- "medianCadence"
 
 
 ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) + 
