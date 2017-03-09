@@ -31,17 +31,24 @@ ggplot(data = runs, aes(x = Distance)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  labs(caption="*Majority of runs were between 9 and 11 miles, 
-       with a suprisingly low number of runs between 7 and 9 miles")
+  #labs(caption="*Majority of runs were between 9 and 11 miles, 
+    #   with a suprisingly low number of runs between 7 and 9 miles")
 
 #check data
-#tapply(runs$Distance,runs$Month,sum)
-#Aug    Jul    Nov    Oct    Sep 
-#251.50 118.08 168.44 304.45 308.14
+tapply(runs$Distance,runs$Month,sum)
 
-#miles by month bars
+#tapply returns vectors, aggregate return DF
+#hrByMonth <- aggregate(runs$Avg.HR,list(runs$Month),median)
+#names(hrByMonth) <- c("MonthName", "MedianHR")
+
+#runs <- merge(runs, hrByMonth, by.x = "Month", by.y = "MonthName")
+#names(runs)[names(runs)=="MedianHR"] <- "monthlyMedianHr"
+#str(runs)
+
+#graph table above --> miles by month bars
 ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
+  #geom_line(aes(x = Month, y = monthlyMedianHr), group = 1, size = 2) +
   xlab("Month") + 
   ylab("Total Miles") + 
   #coord_flip() + 
@@ -94,7 +101,27 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace)) +
   labs(caption="*Very slight general decrease, but not linear")
 
 #scatter plot of total times by distnace
-ggplot(data = runs, aes(x = Distance, y = Time)) + geom_point()
-  geom_line() +
+#ggplot(data = runs, aes(x = Distance, y = Time)) + geom_point()
+  #geom_line() +
   #theme(axis.text.x = element_text(size=0, angle=45)) +
-  xlab("Time") 
+  #xlab("Time") 
+#graph table above --> miles by month bars
+
+medianCadence <- aggregate(runs$Cad,list(runs$RunType),median)
+runs <- merge(runs, medianCadence, by.x = "RunType", by.y = "Group.1")
+names(runs)[names(runs)=="x"] <- "medianCadence"
+
+
+ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) + 
+  geom_boxplot(alpha = 0.5) + 
+  geom_jitter(aes(colour = RunType)) +
+    #stat_summary(fun.y="median", geom="bar", alpha = 0.1) + 
+  expand_limits(y = 130) + 
+  xlab("Run Type") + 
+  ylab("Cadence") + 
+  coord_flip() + 
+  ggtitle("Cadence by Run Type") + 
+  labs(caption="*The actual marathon had the highest cadence, which makes sense. Workouts had widest variety - 
+       inspect more, recovery runs abit slower, but less variant, long runs second slowest")
+
+
