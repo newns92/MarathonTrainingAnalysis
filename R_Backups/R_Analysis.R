@@ -30,9 +30,19 @@ ggplot(data = runs, aes(x = Distance)) +
   geom_histogram(binwidth = 2, aes(fill = ..count..)) + 
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
-  ggtitle("Distribution of Miles Ran in All Runs") + 
+  ggtitle("Distribution of Miles Ran in All Runs") 
+  + 
   #labs(caption="*Majority of runs were between 9 and 11 miles, 
     #   with a suprisingly low number of runs between 7 and 9 miles")
+  
+#time histogram
+  ggplot(data = runs, aes(x = Time)) + 
+  geom_histogram(binwidth = 900, aes(fill = ..count..)) + 
+  xlab("Distance (mi)") + 
+  ylab("Frequency") + 
+  ggtitle("Distribution of Miles Ran in All Runs")# + 
+  #labs(caption="*Majority of runs were between 9 and 11 miles, 
+  #   with a suprisingly low number of runs between 7 and 9 miles")  
 
 #check data
 tapply(runs$Distance,runs$Month,sum)

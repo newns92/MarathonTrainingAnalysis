@@ -1,13 +1,10 @@
 Marathon Training Plan Data Cleaning
 ================
-Steve Newns
-February 24, 2017
 
 *Initial Data Inspection*
 =========================
 
-Strava Data File
-----------------
+### Strava Data File
 
 First, I install the necessary packages I need to clean up the data.
 
@@ -18,7 +15,7 @@ First, I install the necessary packages I need to clean up the data.
 #install.packages("lubridate")  - working with dates
 ```
 
-Next, I load in the CSV file created by and downloaded from **VeloViewer.com** containing my Strava data and check out the dataset.
+Next, I load in the CSV file created by and downloaded from **VeloViewer.com** (subscription needed) containing my uploaded Strava data and check out the dataset.
 
 ``` r
 strava <- read.csv("strava.csv")
@@ -137,14 +134,14 @@ head(strava)
     ## 5                   NA    NA   777267101
     ## 6 2 mi @ MP (3-4)   NA    NA   776017804
 
-Okay, so there's 201 activities in here, as well as a lot of columns (85 of them), with a majority of these columns probably not being useful for my purposes right now.
+Okay, so there's 201 activities in here, as well as *a lot* of fields (85 of them), with a majority of these fields definitely not being useful for my purposes right now.
 
-Now I want to explore the Garmin data as well before moving on to removing those unneccessary columns.
+But, I want to explore the Garmin data as well, before moving on to removing those unneccessary columns.
 
 Garmin Data Files
 -----------------
 
-First, I load in the first of the CSV files containing the Garmin data created by and downloaded from **Garmin Connect** and check out the dataset.
+First, I loaded in the first of the CSV files containing the Garmin data created by and downloaded from **Garmin Connect** and checked out the dataset.
 
 ``` r
 garmin1 <- read.csv("garmin1.csv")
@@ -186,7 +183,7 @@ head(garmin1)
     ## 5              --
     ## 6              --
 
-So there's 21 runs in here, with 16 variables. Let's look at another Garmin data file.
+So there's 21 runs in here, with 16 fields (most being empty). Let's look at another Garmin data file.
 
 ``` r
 garmin6 <- read.csv("garmin6.csv")
@@ -228,7 +225,7 @@ head(garmin6)
     ## 5              --
     ## 6              --
 
-Okay, good, same amount of runs and variables. Now it's time to load the rest of the Garmin data files in and combine them all into a single data frame to hold all of the Garmin data.
+Okay, good, same amount of runs and fields. Now it's time to load the rest of the Garmin data files in and combine them all into a single data frame to hold all of the Garmin data.
 
 ``` r
 garmin2 <- read.csv("garmin2.csv")
@@ -282,37 +279,25 @@ summary(garminFull)
     ## 
 
 ``` r
-head(garminFull)
+head(garminFull,3)
 ```
 
-    ##       Activity.Name                     Start     Time Distance
-    ## 1                                                            NA
-    ## 2                                                            NA
-    ## 3  Chalfont Running  Fri, Aug 5, 2016 5:30 AM  1:30:35    12.00
-    ## 4  Chalfont Running Fri, Jul 22, 2016 5:29 AM  1:24:31    11.00
-    ## 5  Chalfont Running Fri, Jul 29, 2016 5:14 AM  1:34:55    12.02
-    ## 6  Chalfont Running Sat, Jul 23, 2016 7:29 AM 48:25:00     6.00
+    ##       Activity.Name                    Start    Time Distance
+    ## 1                                                          NA
+    ## 2                                                          NA
+    ## 3  Chalfont Running Fri, Aug 5, 2016 5:30 AM 1:30:35       12
     ##   Elevation.Gain Avg.Speed.Avg.Pace. Max.Speed.Best.Pace. Avg.HR Max.HR
     ## 1                                                                      
     ## 2                                                           <NA>   <NA>
     ## 3            459                7:33                 5:05    148    158
-    ## 4            468                7:41                 5:48    150    161
-    ## 5            477                7:54                 5:35    149    160
-    ## 6            230                8:04                 6:36    131    155
     ##   Calories sumStrokes Avg.Strokes Min.Strokes Avg.SWOLF Best.SWOLF
     ## 1                                                                 
     ## 2                                                                 
     ## 3    1,260         --          --          --        --         --
-    ## 4    1,170         --          --          --        --         --
-    ## 5    1,241         --          --          --        --         --
-    ## 6      721         --          --          --        --         --
     ##   Training.Effect
     ## 1                
     ## 2                
     ## 3              --
-    ## 4              --
-    ## 5              --
-    ## 6              --
 
 It looks like there's 2 random NULL records in the 122 activities, located at the start of the data frame's records. These are throwing things off, and maybe they're due the way Garmin delivers the data when I download the activities from the Garmin Connect site. Or maybe *I* did something wrong. I don't know really.
 
@@ -320,37 +305,25 @@ But we still have to remove these top 2 blank rows.
 
 ``` r
 garminFull <- garminFull[-c(1,2),]
-head(garminFull)
+head(garminFull,3)
 ```
 
-    ##       Activity.Name                     Start     Time Distance
-    ## 3  Chalfont Running  Fri, Aug 5, 2016 5:30 AM  1:30:35    12.00
-    ## 4  Chalfont Running Fri, Jul 22, 2016 5:29 AM  1:24:31    11.00
-    ## 5  Chalfont Running Fri, Jul 29, 2016 5:14 AM  1:34:55    12.02
-    ## 6  Chalfont Running Sat, Jul 23, 2016 7:29 AM 48:25:00     6.00
-    ## 7  Chalfont Running Sat, Jul 30, 2016 7:28 AM 49:29:00     6.01
-    ## 8  Chalfont Running Sun, Jul 24, 2016 8:17 AM  2:03:17    16.02
+    ##       Activity.Name                     Start    Time Distance
+    ## 3  Chalfont Running  Fri, Aug 5, 2016 5:30 AM 1:30:35    12.00
+    ## 4  Chalfont Running Fri, Jul 22, 2016 5:29 AM 1:24:31    11.00
+    ## 5  Chalfont Running Fri, Jul 29, 2016 5:14 AM 1:34:55    12.02
     ##   Elevation.Gain Avg.Speed.Avg.Pace. Max.Speed.Best.Pace. Avg.HR Max.HR
     ## 3            459                7:33                 5:05    148    158
     ## 4            468                7:41                 5:48    150    161
     ## 5            477                7:54                 5:35    149    160
-    ## 6            230                8:04                 6:36    131    155
-    ## 7            244                8:14                 7:01    134    150
-    ## 8            572                7:42                 5:48    154    165
     ##   Calories sumStrokes Avg.Strokes Min.Strokes Avg.SWOLF Best.SWOLF
     ## 3    1,260         --          --          --        --         --
     ## 4    1,170         --          --          --        --         --
     ## 5    1,241         --          --          --        --         --
-    ## 6      721         --          --          --        --         --
-    ## 7      617         --          --          --        --         --
-    ## 8    1,653         --          --          --        --         --
     ##   Training.Effect
     ## 3              --
     ## 4              --
     ## 5              --
-    ## 6              --
-    ## 7              --
-    ## 8              --
 
 Further Cleaning
 ================
@@ -358,10 +331,9 @@ Further Cleaning
 Remove Extra Columns
 --------------------
 
-So now it's time to remove the Strava columns that would be unneccessary for what I'm doing here, based on the variables I pulled from Garmin.
+So now it's time to remove the Strava fields that would be unneccessary for what I'm doing here, based on a comparison of the fields I get from Garmin.
 
 ``` r
-keepCols <- NA
 keepCols <- c("Activity.Id", "When", "Type", "Gear", "Name", "Dist.mi", "Elv.ft", "Elapsed.Time", "Moving.Time",
               "Speed.mph", "Pace..mi", "Max.Pace..mi", "Cad", "Heart", "Max.Heart", "Elev.Dist.ft.mi",
               "Elev.Time.ft.h", "Cal", "Segs", "PRs", "Kudos")
@@ -392,12 +364,12 @@ str(newStrava)
     ##  $ PRs            : int  17 0 0 0 0 0 0 0 0 0 ...
     ##  $ Kudos          : int  3 0 0 0 0 0 0 0 0 0 ...
 
-Now I want to split the DateTime field **When** into a specific **Date** and **StartTime** fields.
+Now I want to split the field **When** into a specific **Date** and **StartTime** fields.
 
 ``` r
 library(stringr)
-newStrava$Date <- str_split_fixed(newStrava$When, " ", 2)[,1] #get 1st part of split When field for Date
-newStrava$StartTime <- str_split_fixed(newStrava$When, " ", 2)[,2] #get 2nd part of split When field for StarTime
+newStrava$Date <- str_split_fixed(newStrava$When, " ", 2)[,1] #get 1st part of the split "When"" field for Date
+newStrava$StartTime <- str_split_fixed(newStrava$When, " ", 2)[,2] #get 2nd part of the split "When"" field for StarTime
 
 str(newStrava)
 ```
@@ -427,7 +399,7 @@ str(newStrava)
     ##  $ Date           : chr  "11/20/2016" "11/19/2016" "11/18/2016" "11/17/2016" ...
     ##  $ StartTime      : chr  "7:00" "16:48" "17:22" "6:01" ...
 
-Okay, good, I've got 2 new character fields at the end there. Now onto the Garmin data cleaning. The date field, **Start** in Garmin is a bit different than in Strava, so some work needs to be done to get it into the same format, by first creating new fields from **Start**.
+Okay, good, I've got 2 new character fields at the end there. Now onto the Garmin data cleaning. The date field in Garmin, **Start**, is a bit different than in Strava, so some work needs to be done to get it into the same format, first by deriving new fields from it.
 
 ``` r
 library(tidyr)
@@ -453,6 +425,7 @@ garminFull$monthNum <- ifelse(grepl("Jan",garminFull$Date),1,
                             ifelse(grepl("Oct",garminFull$Date),10,
                             ifelse(grepl("Nov",garminFull$Date),11,
                             ifelse(grepl("Dec",garminFull$Date),12,NA))))))))))))
+
 head(garminFull,2)
 ```
 
@@ -469,9 +442,10 @@ head(garminFull,2)
     ## 3              --        8
     ## 4              --        7
 
-Now I've got **Date, Start Time, Day of Week,** and **Month Number** columns, and I can seperate the **Date** column in **Day, Month,** and **Year**.
+Now I've got **Date, Start Time, Day of Week,** and **Month Number** fields, and I can seperate the **Date** field into **Day, Month,** and **Year** fields.
 
 ``` r
+library(tidyr)
 vars3 <- c("Month", "Date")
 vars4 <- c("Day", "Year")
 garminFull <- separate(garminFull, Date, into = vars3, sep = " ", extra = "merge", remove = TRUE)
@@ -505,13 +479,13 @@ str(garminFull$Date)
 
     ##  chr [1:120] "08/05/2016" "07/22/2016" "07/29/2016" ...
 
-Okay, so we've got a **Date** field, although it's a character data type. But I'll fix that later. For now, I'll remove my unneccesary Garmin columns.
+Okay, so we've got a **Date** field, although it's a character data type. But I'll fix that later. For now, I'll remove my unneccesary Garmin fields.
 
 ``` r
 keepColsGarmin  <- NA
 keepColsGarmin <- c("DOW", "Month", "StartTime", "Time", "Distance", 
                     "Elevation.Gain", "Avg.Speed.Avg.Pace.", "Avg.HR", 
-                    "Max.HR", "Calories", "Date", "monthNum")
+                    "Max.HR", "Calories", "Date")
 newGarmin <- garminFull[keepColsGarmin]
 head(newGarmin,2)
 ```
@@ -519,11 +493,11 @@ head(newGarmin,2)
     ##   DOW Month StartTime    Time Distance Elevation.Gain Avg.Speed.Avg.Pace.
     ## 3 Fri   Aug   5:30 AM 1:30:35       12            459                7:33
     ## 4 Fri   Jul   5:29 AM 1:24:31       11            468                7:41
-    ##   Avg.HR Max.HR Calories       Date monthNum
-    ## 3    148    158    1,260 08/05/2016        8
-    ## 4    150    161    1,170 07/22/2016        7
+    ##   Avg.HR Max.HR Calories       Date
+    ## 3    148    158    1,260 08/05/2016
+    ## 4    150    161    1,170 07/22/2016
 
-Now to change my format for my **Date** fields in both datasets, just as my personal preference.
+Now to change my format for my Date fields in both datasets.
 
 ``` r
 newGarmin$Date <- as.Date(newGarmin$Date,"%m/%d/%Y")
@@ -560,7 +534,7 @@ head(newStrava$Date)
     ## [1] "2016-01-20" "2016-01-30" "2016-01-31" "2016-02-02" "2016-02-03"
     ## [6] "2016-02-04"
 
-So, my runs from Strava seem to be starting back in January, which was *way* before my marathon training plan kicked in, and was mainly some basic runs in preperation for the Broad Street Run. The marathon training plan started right after the Tour De Shore bike ride I did on July 17, so I need to remove all runs prior to that 1st training plan run on July 19 (two days later since I needed one to recover from that ride!).
+So, my runs from Strava seem to be starting back in January, which was *way* before my marathon training plan kicked in, and was mainly some simple training runs in preperation for the Broad Street Run, no workouts or anything of the sort. The marathon training plan started right after the Tour De Shore bike ride from Philly to Atlantic City NJ that I did on July 17, so I need to remove all runs prior to that 1st training plan run on July 19 (two days later since I needed one to recover from that ride!).
 
 ``` r
 newStrava <- newStrava[!newStrava$Date < "2016-07-18",]
@@ -596,7 +570,7 @@ table(newGarmin$Distance)
     ##    18    20 20.01    21    22    24 26.27 
     ##     1     3     1     1     2     1     1
 
-So there's 2 runs that are less than one-fifth of a mile? That is *definitely* not right. The run with **1.42** miles seems a bit off as well, but maybe I got lazy in my determination to end on a whole number of miles.
+So there's 2 runs that are less than one-fifth of a mile? That is *definitely* not right. The run with **1.42** miles seems a bit off as well, but maybe I got lazy in my determination to end on an "interval of 0.50" number of miles.
 
 ``` r
 newGarmin[newGarmin$Distance=="0.12",]  
@@ -604,8 +578,8 @@ newGarmin[newGarmin$Distance=="0.12",]
 
     ##    DOW Month StartTime     Time Distance Elevation.Gain
     ## 98 Sat   Aug  12:06 PM 59:00:00     0.12             --
-    ##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date monthNum
-    ## 98               --:--    109    123      389 2016-08-27        8
+    ##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date
+    ## 98               --:--    109    123      389 2016-08-27
 
 ``` r
 newGarmin[newGarmin$Distance=="0.16",]  
@@ -613,8 +587,8 @@ newGarmin[newGarmin$Distance=="0.16",]
 
     ##     DOW Month StartTime     Time Distance Elevation.Gain
     ## 101 Thu   Sep   5:50 AM 36:23:00     0.16             --
-    ##     Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date monthNum
-    ## 101               --:--    101    114      227 2016-09-01        9
+    ##     Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date
+    ## 101               --:--    101    114      227 2016-09-01
 
 ``` r
 newGarmin[newGarmin$Distance=="1.42",]  
@@ -622,14 +596,15 @@ newGarmin[newGarmin$Distance=="1.42",]
 
     ##     DOW Month StartTime  Time Distance Elevation.Gain Avg.Speed.Avg.Pace.
     ## 116 Fri   Aug   6:12 PM 11:33     1.42             --                8:07
-    ##     Avg.HR Max.HR Calories       Date monthNum
-    ## 116     --     --      191 2016-08-12        8
+    ##     Avg.HR Max.HR Calories       Date
+    ## 116     --     --      191 2016-08-12
 
-So those 1st two runs look to actually be spin sessions, based on the long times but incredibly short distances (thanks to my wristwatch moving up and down while I was tracking heart rate on the bike), but the 1.42 mile run just seems to be a light run that I didn't run to an even 0.50 interval of mile (*very* unlike me). So let's remove those 1st two runs, but keep the 1.42-miler.
+So those 1st two runs look to actually be spin sessions I did due to my paranoia of a stress fracture forming, guessing by the long times but incredibly short distances (thanks to my wristwatch moving up and down while I was tracking heart rate on the bike), but the 1.42 mile run just seems to be a light run that I didn't run to an even 0.50 interval of mile (*very* unlike me). So let's remove all of these runs.
 
 ``` r
 newGarmin <- newGarmin[!newGarmin$Date == "2016-08-27",]
 newGarmin <- newGarmin[!newGarmin$Date == "2016-09-01",]
+newGarmin <- newGarmin[!newGarmin$Distance=="1.42",]
 ```
 
 But there's still 1 more extra run. Let's check the dates for any duplicates.
@@ -646,7 +621,7 @@ table(newGarmin$Date) > 1
     ## 2016-08-02 2016-08-03 2016-08-04 2016-08-05 2016-08-06 2016-08-07 
     ##      FALSE      FALSE      FALSE      FALSE      FALSE      FALSE 
     ## 2016-08-08 2016-08-10 2016-08-11 2016-08-12 2016-08-15 2016-08-16 
-    ##      FALSE      FALSE      FALSE       TRUE      FALSE      FALSE 
+    ##      FALSE      FALSE      FALSE      FALSE      FALSE      FALSE 
     ## 2016-08-17 2016-08-18 2016-08-19 2016-08-20 2016-08-21 2016-08-22 
     ##      FALSE      FALSE      FALSE      FALSE      FALSE      FALSE 
     ## 2016-08-23 2016-08-24 2016-08-25 2016-08-26 2016-08-28 2016-08-29 
@@ -711,7 +686,6 @@ Looks like I just ran twice that day. I know I was down the shore, maybe I was j
 
 ``` r
 #check october garmin runs
-newGarmin <- newGarmin[!newGarmin$Distance=="1.42",]
 newStrava <- newStrava[!newStrava$Activity.Id=="677460614",]
 
 newGarmin[newGarmin$Date == "2016-10-23",]
@@ -720,9 +694,9 @@ newGarmin[newGarmin$Date == "2016-10-23",]
     ##     DOW Month StartTime    Time Distance Elevation.Gain
     ## 69  Sun   Oct  11:43 AM 1:04:28    15.01            657
     ## 108 Sun   Oct   1:08 PM    7:53     1.00             --
-    ##     Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date monthNum
-    ## 69                 4:18    114    146      510 2016-10-23       10
-    ## 108                7:52    119    128       95 2016-10-23       10
+    ##     Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date
+    ## 69                 4:18    114    146      510 2016-10-23
+    ## 108                7:52    119    128       95 2016-10-23
 
 While I'd love to run a 4:18 min/mile pace and finish 15 miles in just over an hour, that looks like another bike ride, but outdoors , since it has a value for elevation, unlike our spin rides above. So let's remove that one and then check the row counts again.
 
@@ -753,13 +727,13 @@ head(newGarmin)
     ## 4  Fri   Jul   5:29 AM  1:24:31    11.00            468
     ## 6  Sat   Jul   7:29 AM 48:25:00     6.00            230
     ## 8  Sun   Jul   8:17 AM  2:03:17    16.02            572
-    ##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date monthNum
-    ## 12                7:13    149    167      943 2016-07-19        7
-    ## 15                7:35    150    160    1,176 2016-07-20        7
-    ## 94                8:10    139    149      442 2016-07-21        7
-    ## 4                 7:41    150    161    1,170 2016-07-22        7
-    ## 6                 8:04    131    155      721 2016-07-23        7
-    ## 8                 7:42    154    165    1,653 2016-07-24        7
+    ##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories       Date
+    ## 12                7:13    149    167      943 2016-07-19
+    ## 15                7:35    150    160    1,176 2016-07-20
+    ## 94                8:10    139    149      442 2016-07-21
+    ## 4                 7:41    150    161    1,170 2016-07-22
+    ## 6                 8:04    131    155      721 2016-07-23
+    ## 8                 7:42    154    165    1,653 2016-07-24
 
 ``` r
 head(newStrava)
@@ -815,22 +789,22 @@ head(newFullData,3)
     ## 12 Tue   Jul         5:51 AM  1:04:59     9.01            351
     ## 15 Wed   Jul         5:36 AM  1:23:29    11.00            461
     ## 94 Thu   Jul         6:45 AM 32:40:00     4.00             --
-    ##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories date_garmin monthNum
-    ## 12                7:13    149    167      943  2016-07-19        7
-    ## 15                7:35    150    160    1,176  2016-07-20        7
-    ## 94                8:10    139    149      442  2016-07-21        7
-    ##    Activity.Id Type                           Gear            Name Dist.mi
-    ## 12   646029304  Run         Brooks Ghost Red/Black  Classic LT Run 14496.0
-    ## 15   647216014  Run         Brooks Ghost Red/Black MIddle Long Run 17706.6
-    ## 94   648410753  Run ASICS dunno Black, Yellow, Red    Recovery Run  6440.2
-    ##    Elv.ft Elapsed.Time Moving.Time Speed.mph Pace..mi Max.Pace..mi  Cad
-    ## 12   90.2         4415        3899    3.7179 432.9135     303.6510 84.2
-    ## 15  112.9         5180        5009    3.5350 455.2834     357.6284 84.2
-    ## 94    0.0         1959        1959    3.2875 489.5624     459.8057 85.6
-    ##    Heart Max.Heart Elev.Dist.ft.mi Elev.Time.ft.h    Cal Segs PRs Kudos
-    ## 12 148.9       166            6.22           83.3 1424.0    2   0     0
-    ## 15 149.7       160            6.38           81.1 1738.4    4   0     0
-    ## 94 139.0       149            0.00            0.0  628.1    0   0     0
+    ##    Avg.Speed.Avg.Pace. Avg.HR Max.HR Calories date_garmin Activity.Id Type
+    ## 12                7:13    149    167      943  2016-07-19   646029304  Run
+    ## 15                7:35    150    160    1,176  2016-07-20   647216014  Run
+    ## 94                8:10    139    149      442  2016-07-21   648410753  Run
+    ##                              Gear            Name Dist.mi Elv.ft
+    ## 12         Brooks Ghost Red/Black  Classic LT Run 14496.0   90.2
+    ## 15         Brooks Ghost Red/Black MIddle Long Run 17706.6  112.9
+    ## 94 ASICS dunno Black, Yellow, Red    Recovery Run  6440.2    0.0
+    ##    Elapsed.Time Moving.Time Speed.mph Pace..mi Max.Pace..mi  Cad Heart
+    ## 12         4415        3899    3.7179 432.9135     303.6510 84.2 148.9
+    ## 15         5180        5009    3.5350 455.2834     357.6284 84.2 149.7
+    ## 94         1959        1959    3.2875 489.5624     459.8057 85.6 139.0
+    ##    Max.Heart Elev.Dist.ft.mi Elev.Time.ft.h    Cal Segs PRs Kudos
+    ## 12       166            6.22           83.3 1424.0    2   0     0
+    ## 15       160            6.38           81.1 1738.4    4   0     0
+    ## 94       149            0.00            0.0  628.1    0   0     0
     ##          Date StartTime
     ## 12 2016-07-19      5:51
     ## 15 2016-07-20      5:36
@@ -870,12 +844,12 @@ keepColsFull  <- NA
 keepColsFull <- c("ID", "Gear", "Name", "Speed.mph", "Cad", "Date",
                   "StartTime", "DOW", "Month",  "Time", "Distance",
                   "Elevation.Gain", "Avg.Speed.Avg.Pace.", "Avg.HR",
-                  "Max.HR", "Calories", "monthNum")
+                  "Max.HR", "Calories")
 newFullData <- newFullData[keepColsFull]
 
 #rearrange columns
 newFullData <- newFullData[, c("ID", "Name", "Gear", "Date",
-                               "Month", "monthNum", "DOW", "StartTime",
+                               "Month", "DOW", "StartTime",
                                "Distance", "Time", "Avg.Speed.Avg.Pace.", 
                                "Speed.mph", "Cad",  "Elevation.Gain", 
                                "Avg.HR", "Max.HR", "Calories")]
@@ -943,12 +917,12 @@ newFullData[newFullData$Name == 'Morning Run',]
     ##           ID        Name                           Gear       Date Month
     ## 6  650512799 Morning Run ASICS dunno Black, Yellow, Red 2016-07-23   Jul
     ## 16 655096239 Morning Run         Brooks Ghost Red/Black 2016-07-27   Jul
-    ##    monthNum DOW StartTime Distance     Time Avg.Speed.Avg.Pace. Speed.mph
-    ## 6         7 Sat      7:29        6 48:25:00                8:04    3.3253
-    ## 16        7 Wed      5:15       13  1:40:41                7:45    3.4642
-    ##     Cad Elevation.Gain Avg.HR Max.HR Calories
-    ## 6  86.9            230    131    155      721
-    ## 16 87.4            485    146    158    1,318
+    ##    DOW StartTime Distance     Time Avg.Speed.Avg.Pace. Speed.mph  Cad
+    ## 6  Sat      7:29        6 48:25:00                8:04    3.3253 86.9
+    ## 16 Wed      5:15       13  1:40:41                7:45    3.4642 87.4
+    ##    Elevation.Gain Avg.HR Max.HR Calories
+    ## 6             230    131    155      721
+    ## 16            485    146    158    1,318
 
 So, based off of distance, shoe type, and pace, I can safely assume that the run on 7/23 was a Recovery Run, and the run on 7/27 was a ML Run, so I can edit them as so.
 
@@ -957,14 +931,13 @@ newFullData$Name[newFullData$ID == 650512799] <- 'Recovery Run'
 newFullData$Name[newFullData$ID == 655096239] <- 'ML Run'
 ```
 
-Now, based off of the run names, I want to create 4 categories (inspired by the category choices on Strava) for **workouts, Long Runs, Recovery Runs,** and just plain ol' **Runs**, which consist of **General Aerobic (GA)** and **Middle Long (ML) runs**
+Now, based off of the run names, I want to create 4 categories (inspired by the category choices on Strava) for **Workouts, Long Runs, Recovery Runs,** and just plain ol' **Runs**, which consist of **General Aerobic (GA)** and **Middle Long (ML) runs**
 
 ``` r
 newFullData$RunType <- ifelse(grepl('LT',newFullData$Name),'Workout',
                         ifelse(grepl('Tempo',newFullData$Name),'Workout',
                           ifelse(grepl('Tune',newFullData$Name),'Workout',
                             ifelse(grepl('VO2',newFullData$Name),'Workout',
-                              #ifelse(grepl('MP',newFullData$Name),'Workout',
                                 ifelse(grepl('Long',newFullData$Name),'Long Run',
                                   ifelse(grepl('Recovery',newFullData$Name),'Recovery Run',
                                     ifelse(grepl('Marathon',newFullData$Name),'Race','Run')))))))#)
@@ -975,7 +948,7 @@ table(newFullData$RunType)
     ##     Long Run         Race Recovery Run          Run      Workout 
     ##           13            1           40           46           16
 
-Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run to race a marathon!
+Looks like I've got a lot of "plain" runs and a lot of recovery runs. Just goes to show that you don't need to kill yourself out there every time you run in order to train to race a marathon!
 
 Now time to convert my heart rate variables **Avg.HR** and **Max.HR**, as well as my **Calories** and **Elevation.Gain** variables so that they're numerical and I can do math and statistics operations on them.
 
@@ -995,13 +968,12 @@ newFullData$Cad <- newFullData$Cad*2
 str(newFullData)
 ```
 
-    ## 'data.frame':    116 obs. of  18 variables:
+    ## 'data.frame':    116 obs. of  17 variables:
     ##  $ ID                 : int  646029304 647216014 648410753 649445500 650512799 651933678 653912805 655096239 656203325 657259723 ...
     ##  $ Name               : Factor w/ 19 levels "10k Tune Up Run",..: 3 11 16 4 16 5 4 11 16 11 ...
     ##  $ Gear               : Factor w/ 5 levels "ASICS dunno Black, Yellow, Red",..: 2 2 1 2 1 2 2 2 1 2 ...
     ##  $ Date               : Date, format: "2016-07-19" "2016-07-20" ...
     ##  $ Month              : chr  "Jul" "Jul" "Jul" "Jul" ...
-    ##  $ monthNum           : num  7 7 7 7 7 7 7 7 7 7 ...
     ##  $ DOW                : chr  "Tue" "Wed" "Thu" "Fri" ...
     ##  $ StartTime          : chr  "5:51" "5:36" "6:45" "5:29" ...
     ##  $ Distance           : num  9.01 11 4 11 6 ...
@@ -1035,15 +1007,13 @@ library(lubridate)
 ``` r
 #fix Average Pace
 newFullData$Avg.Speed.Avg.Pace. <- as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')
-plot(newFullData$Date,newFullData$Avg.Speed.Avg.Pace.) #test plot
+#rename col
+newFullData <- rename(newFullData, c("Avg.Speed.Avg.Pace."="Avg.Pace"))
+#test plot
+plot(newFullData$Date,newFullData$Avg.Pace) 
 ```
 
 ![](R_Cleaning_Garmin_Strava_git_files/figure-markdown_github/fix%20avg%20pace-1.png)
-
-``` r
-newFullData$Avg.Pace <- newFullData$Avg.Speed.Avg.Pace.
-newFullData$Avg.Speed.Avg.Pace. <- NULL
-```
 
 Now, for **Time**, some values are missing the hour, some have the minutes in the hour place, etc. so I can fix this with a FOR loop in order to find the "incorrect" values and fix each one respectively.
 
