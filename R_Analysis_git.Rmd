@@ -1,7 +1,7 @@
 ---
 title: "Marathon Training Plan Data Analysis"
-author: "Steve Newns"
-date: "February 24, 2017"
+#author: "Steve Newns"
+#date: "February 24, 2017"
 output:
   github_document: default
   html_document: default
@@ -10,63 +10,68 @@ output:
 
 # *Initial Data Inspection*
 
-## Strava Data File
+Fist, I load in the CSV file created in the **R_Cleaning_Garmin_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
 
-load in the CSV file containing the Strava data file created by and downloaded from **VeloViewer.com** and check out the dataset.
-
-```{r load dataset}
+```{r load dataset, echo = FALSE}
 runs <- read.csv("cleanedMarathonTrainingData.csv")
 str(runs)
 ```
 
-#remove 1st col
+Well, to start off, I have a column which seems to contain the row numbers from the CSv, so let's remove that before going back to the inspection.
+
 ```{r remove 1st col }
 runs$X <- NULL
 head(runs,2)
 ```
 
-#can't save POSIXct into CSV, must change here
+Alright, cool. But it looks like my run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
+
 ```{r fix POSIXct}
 runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
 runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')
 str(runs)
 ```
 
-#can't save ordered factors in CSV, must change here
+Looks like **Month** was also not loaded as on *ordered* factor like I need it. As it is now, if I used it in my graphs, it would be ordereded alphabetically, not chronologically like I need it. So let's convert it back to an ordered factor with the correctly-specified ordering via the **levels** argument.
+
 ```{r fix month}
 runs$Month <- factor(runs$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
-class(runs$Month)
 ```
 
-#load ggplot2 + make histogram
-```{r plotting}
+Now its time to acually make some plots. I'll start off with a simple histogram of how many miles I ran in each of my runs.
+
+```{r plotting, echo = FALSE}
 library(ggplot2)
+library(RColorBrewer)
+
 
 #distance histogram
 ggplot(data = runs, aes(x = Distance)) + 
-  geom_histogram(binwidth = 2, aes(fill = ..count..)) + 
+  geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) + 
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  labs(caption="*Majority of runs were between 9 and 11 miles, 
-       with a suprisingly low number of runs between 7 and 9 miles")
-
-#check data
-tapply(runs$Distance,runs$Month,sum)
+  guides(fill=FALSE)
+  
 ```
 
+It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan.
+
+Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
+
+```{r miles by month, echo = FALSE} 
 #miles by month bars
-```{r miles by month} 
 ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Month") + 
   ylab("Total Miles") + 
-  #coord_flip() + 
-  #scale_x_discrete(limits = rev(levels(runs$Month))) +
-  #geom_text(vjust=0, colour="red") +
-  ggtitle("Sum of Miles by Month") + 
-  labs(caption="*The largest number of miles ran, 308 miles, was in September")
+  guides(fill=FALSE) +
+  ggtitle("Total Miles by Month")
+tapply(runs$Distance,runs$Month,sum)
 ```
+
+The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. (peak week in September?). Then we see the large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
+
 
 #avg. cadence grouped by month
 ```{r cadence by month} 
