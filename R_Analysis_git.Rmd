@@ -10,7 +10,7 @@ output:
 
 # *Initial Data Inspection*
 
-Fist, I load in the CSV file created in the **R_Cleaning_Garmin_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
+First, I load in the CSV file created in the **R_Cleaning_Garmin_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
 
 ```{r load dataset, echo = FALSE}
 runs <- read.csv("cleanedMarathonTrainingData.csv")
@@ -24,11 +24,16 @@ runs$X <- NULL
 head(runs,2)
 ```
 
-Alright, cool. But it looks like my run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
+Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
 
 ```{r fix POSIXct}
+library(lubridate)
+
 runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
 runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')
+runs$Date <- as.POSIXct(runs$Date)
+runs$StartTime <- hour(strptime(runs$StartTime, format = '%H:%M'))
+
 str(runs)
 ```
 
@@ -43,7 +48,6 @@ Now its time to acually make some plots. I'll start off with a simple histogram 
 ```{r plotting, echo = FALSE}
 library(ggplot2)
 library(RColorBrewer)
-
 
 #distance histogram
 ggplot(data = runs, aes(x = Distance)) + 
@@ -67,36 +71,51 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
   ylab("Total Miles") + 
   guides(fill=FALSE) +
   ggtitle("Total Miles by Month")
+
 tapply(runs$Distance,runs$Month,sum)
 ```
 
-The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. (peak week in September?). Then we see the large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
+The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. This could be possibly be so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
+
+```{r check max run} 
+runs[which.max(runs$Distance[runs$Date < "2016-11-20"]),]
+```
+
+Welp, I was half wrong about that I guess. It seems peak week was actually both in September *and* October, with the final run of the week coinciding with the start of October, so that was where my total mileage started to decreased *just* a bit.
+
+Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
 
 
+```{r cadence by month, echo = FALSE} 
 #avg. cadence grouped by month
-```{r cadence by month} 
 ggplot(data = runs, aes(Month, Cad)) + 
   geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), 
                outlier.colour = "black", alpha = 0.5) + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
-  ggtitle("Cadence per Month") + 
-  labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
+  guides(fill=FALSE) +
+  ggtitle("Cadence per Month") 
+
 ```
 
-#avg. HR grouped by month
+So, barring some outliers, I can see that my cadence tended to generally increases month over month, and ended up averagin between 170 and 180, barring those outliers. I would assume they were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume????
+
+Another metric would be my average heart rate during runs over the course of the training. Compared to the rise of my cadence, we would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
+
 ```{r HR by month boxplot}
+#avg. HR grouped by month
+
 ggplot(data = runs, aes(Month, Avg.HR)) + 
   geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), 
                outlier.colour = "black", alpha = 0.5) + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
-  ggtitle("Cadence per Month") + 
-  labs(caption="*HR generally decreases month over month --> increased fitness or cooler weather?")
-#tbl <- tapply(runs$Avg.HR,runs$Month,median)
+  ggtitle("Cadence per Month") 
 ```
+
+So we can see that my hear rate had generally decreased month over month. Now while I would hope it was due to increased fitness (and I still believe that to be the case, just by how I felt during my runs), the drops in temperature as we moved from summer to fall also may have played a part. Since it would have been cooler out, the body would not have been working as hard to cool itself down during my runs, so my heart rate would not have been as high. Maybe finding the historical temperature data and bringing it in could bring some insights into this question.
 
 #average heart rate per run over plan --> line
 ```{r HR over time} 

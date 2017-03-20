@@ -43,11 +43,12 @@ head(runs,2)
     ## 1 168.4            351    149    167      943 Workout
     ## 2 168.4            461    150    160     1176     Run
 
-Alright, cool. But it looks like my run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
+Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
 
 ``` r
 runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
 runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')
+runs$Date <- as.POSIXct(runs$Date)
 str(runs)
 ```
 
@@ -55,7 +56,7 @@ str(runs)
     ##  $ ID            : int  646029304 647216014 648410753 649445500 650512799 651933678 653912805 655096239 656203325 657259723 ...
     ##  $ Name          : Factor w/ 13 levels "10k Tune Up Run",..: 2 7 10 3 10 4 3 7 10 7 ...
     ##  $ Gear          : Factor w/ 4 levels "ASICS dunno Black, Yellow, Red",..: 2 2 1 2 1 2 2 2 1 2 ...
-    ##  $ Date          : Factor w/ 116 levels "2016-07-19","2016-07-20",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ Date          : POSIXct, format: "2016-07-19" "2016-07-20" ...
     ##  $ Month         : Factor w/ 5 levels "Aug","Jul","Nov",..: 2 2 2 2 2 2 2 2 2 2 ...
     ##  $ DOW           : Factor w/ 7 levels "Fri","Mon","Sat",..: 6 7 5 1 3 4 6 7 5 1 ...
     ##  $ StartTime     : Factor w/ 89 levels "10:01","10:09",..: 57 50 66 45 70 75 45 36 63 35 ...
@@ -76,11 +77,11 @@ Looks like **Month** was also not loaded as on *ordered* factor like I need it. 
 runs$Month <- factor(runs$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
 ```
 
-Now its time to acually make some plots. I'll start off with a simple histogram of how many miles I ran per in each of my runs.
+Now its time to acually make some plots. I'll start off with a simple histogram of how many miles I ran in each of my runs.
 
 ![](R_Analysis_git_files/figure-markdown_github/plotting-1.png)
 
-It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot scheduled time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan.
+It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan.
 
 Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
 
@@ -89,23 +90,26 @@ Now let's look at the total number of miles ran each month, with a pretty obviou
     ##    Jul    Aug    Sep    Oct    Nov 
     ## 118.08 250.08 308.14 304.45 168.44
 
-The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. (peak week in September?). Then we see the large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
-
-avg. cadence grouped by month
-=============================
+The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. This could be possibly be so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
 
 ``` r
-ggplot(data = runs, aes(Month, Cad)) + 
-  geom_jitter(aes(colour = Month)) +
-  geom_boxplot(aes(fill = Month), 
-               outlier.colour = "black", alpha = 0.5) + #geom_jitter()
-  xlab("Month") + 
-  ylab("Cadence") + 
-  ggtitle("Cadence per Month") + 
-  labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
+runs[which.max(runs$Distance[runs$Date < "2016-11-20"]),]
 ```
 
+    ##           ID     Name                   Gear       Date Month DOW
+    ## 67 732206487 Long Run Brooks Ghost Red/Black 2016-10-02   Oct Sun
+    ##    StartTime Distance                Time            Avg.Pace Speed.mph
+    ## 67      8:38       24 2017-03-18 02:55:35 2017-03-18 00:07:19    3.6667
+    ##    Cad Elevation.Gain Avg.HR Max.HR Calories  RunType
+    ## 67 175            789    143    158     2129 Long Run
+
+Welp, I was half wrong about that I guess. It seems peak week was actually both in September *and* October, with the final run of the week coinciding with the start of October, so that was where my total mileage started to decreased *just* a bit.
+
+Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
+
 ![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20month-1.png)
+
+So, barring some outliers, I can see that my cadence tended to generally increases month over month, and ended up averagin between 170 and 180, barring those outliers. I would assume they were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume?
 
 avg. HR grouped by month
 ========================
