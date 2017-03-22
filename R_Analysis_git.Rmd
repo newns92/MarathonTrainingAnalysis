@@ -123,7 +123,9 @@ Now let's look at cadence and heart rate by Run Type as well for comparisons.
 ggplot(data = runs, aes(RunType, Cad)) + 
   geom_jitter(aes(colour = RunType)) +
   geom_boxplot(aes(fill = RunType), 
-               outlier.colour = "black", alpha = 0.5) + #geom_jitter()
+               outlier.colour = "black", alpha = 0.5) +
+  scale_colour_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set1") +
   xlab("Run Type") + 
   ylab("Cadence") + 
   guides(fill=FALSE) +
@@ -131,7 +133,7 @@ ggplot(data = runs, aes(RunType, Cad)) +
   ggtitle("Cadence per Run Type") 
 ```
 
-We can ignore the variability in the **Race** run type, since it's only on race. But we can still see that it was either my maximum cadence, or the second or third highest after those 2 quickest workout cadences. We can also see that my recovery runs had the least variability, and recovery runs as well as normal runs. I also expected my workouts to have the highest cadence, but it has the lowest median. I can only assume that this was due to recovery sections of interval runs, or warm-ups and cooldowns during tempo runs which were *much* slower and relaxed than even recovery runs. Now let's look at heart rate.
+We can ignore the variability in the **Race** run type, since it's only one race. But we can still see that it was either my maximum cadence, or the second or third highest after those 2 quickest workout cadences. We can also see that my recovery runs had the least variability, and recovery runs as well as normal runs were in the lower 170's. I also expected my workouts to have the highest cadence, but it has the lowest median. I can only assume that this was due to recovery sections of interval runs, or warm-ups and cooldowns during tempo runs which were *much* slower and relaxed than even recovery runs. Now let's look at heart rate.
 
 ```{r heart rate by run type, echo = FALSE}
 #avg. cadence grouped by month
@@ -145,7 +147,7 @@ ggplot(data = runs, aes(RunType, Avg.HR)) +
   ggtitle("Average Heart Rate per Run Type") 
 ```
 
-As expected, my heart rate was lowest during recovery runs. We can also see that there were 2 runs were my heart rate monitor was off, since my average heart rate was around 70. Also, my average heart rate was not very variable for the other 3 types of runs, excluding the race. My Long runs also tended to have a lower average heart rate than my "normal" runs, which I personally did not expect. But this does a make a little sense, since I was supposed to run at a bit of a slower pace so that I could run longer. Also, I did expect my heart rate to be higher during workouts, since they were designed to to push my heart rate to the max during **V02 intervals**, and was supposed to be elevated during those "comfortably hard" **tempo runs**. I can also see that there was one single workout wherein it was higher than my average heart rate during the marathon.
+As expected, my heart rate was lowest during recovery runs, but it was also quite varied. We can also see that there were 2 runs wherein my heart rate monitor was off, since my average heart rate was around 70. Also, my average heart rate was not very variable for the other 3 types of runs, excluding the race. This is good, since it means I was able to be consistent in my efforts depending on the type of scheduled run. My Long Runs also tended to have a lower average heart rate than my "normal" runs, which I personally did not expect. But this does a make a little sense, since I was supposed to run at a bit of a slower pace so that I could run longer without bonking. Also, I did expect my heart rate to be higher during workouts, since they were designed to to push my heart rate to the max during **V02 intervals**, and was supposed to be elevated during those "comfortably hard" **tempo runs**. I can also see that there was one single workout wherein it was higher than my average heart rate during the marathon.
 
 ```{r max heart rate}
 runs[which.max(runs$Avg.HR),]
@@ -153,7 +155,7 @@ runs[which.max(runs$Avg.HR),]
 
 So we can see that my max heart rate was during my 10k Tune-up Race, which does not surprise me since it SUCKED.
 
-```{ r heart rate over time} 
+```{r heart rate over time} 
 ggplot(data = runs, aes(x = Date, y = Avg.HR)) + 
   geom_line(aes(group=1)) +
   theme(axis.text.x = element_blank()) +
