@@ -51,12 +51,12 @@ library(RColorBrewer)
 
 #distance histogram
 ggplot(data = runs, aes(x = Distance)) + 
-  geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) + 
+  geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
   guides(fill=FALSE)
-  
+
 ```
 
 It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan.
@@ -133,6 +133,8 @@ ggplot(data = runs, aes(RunType, Cad)) +
   ggtitle("Cadence per Run Type") 
 ```
 
+
+
 We can ignore the variability in the **Race** run type, since it's only one race. But we can still see that it was either my maximum cadence, or the second or third highest after those 2 quickest workout cadences. We can also see that my recovery runs had the least variability, and recovery runs as well as normal runs were in the lower 170's. I also expected my workouts to have the highest cadence, but it has the lowest median. I can only assume that this was due to recovery sections of interval runs, or warm-ups and cooldowns during tempo runs which were *much* slower and relaxed than even recovery runs. Now let's look at heart rate.
 
 ```{r heart rate by run type, echo = FALSE}
@@ -170,10 +172,25 @@ ggplot(data = runs, aes(x = Date, y = Avg.HR)) +
 ```{r avg pace}
 ggplot(data = runs, aes(x = Date, y = Avg.Pace)) + 
   geom_point() + # by color? 
-  #?stat_smooth() + 
+  stat_smooth() +
   theme(axis.text.x = element_blank()) +
   xlab("Time") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Heart Rate Over Time") + 
-  labs(caption="*Very slight general decrease, but not linear")
+  ylab("Date") + 
+  ggtitle("Average Pace (mile/minute)") + 
+  labs(caption="")
 ```
+
+So we see a very slight general decrease overall, but it's not very linear at all, so it does not seem to be that significant. Let's see it by coloring the run type.
+
+```{r avg pace by runs}
+ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) + 
+  geom_point() +
+  geom_smooth(fill = NA) +  
+  theme(axis.text.x = element_blank()) +
+  #xlab("Date") + 
+  ylab("Average Pace (mile/minute") + 
+  ggtitle("Average Pace Over Time") + 
+  labs(caption="")
+```
+
+So, we see that workouts had the lowest average pace, which seemed to actually go up a tad until about halfway through the plan, but there was a variety of different workouts with different focuses, so this really isn't something we can glean anything out of. Long Runs start to increase in average pace, possibly due to an increase in outside temperature frmo July to August causing me to slow down, but then we see a rapid decrease, which start sto taper off at the end there. Normal runs seemed to have a more gradual decrease over time, but it sped up a bit compared to at the start. THen we see that recovery runs slowed down even more so compared to Long Runs, but also had a drop as temperatures cooled (or fitness increased, either or. Maybe both). There was then a quick uptick at the end there, which I would assume would be due to slowing down even more as I tapered for the race, with the 2 slowest recovery  runs happening just before the race. We then see the race there, at about 7:10 min/mile, which, while I am happy with my results, I would *love* to get this down under 7:00 min/mile in my next marathon, with the goal of running about 6:50 min/mile so as to break 3 hours!
