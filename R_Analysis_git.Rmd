@@ -195,3 +195,13 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) +
 ```
 
 So, we see that workouts had the lowest average pace, which seemed to actually go up a tad until about halfway through the plan, but there was a variety of different workouts with different focuses, so this really isn't something we can glean anything out of. Long Runs start to increase in average pace, possibly due to an increase in outside temperature frmo July to August causing me to slow down, but then we see a rapid decrease, which start sto taper off at the end there. Normal runs seemed to have a more gradual decrease over time, but it sped up a bit compared to at the start. THen we see that recovery runs slowed down even more so compared to Long Runs, but also had a drop as temperatures cooled (or fitness increased, either or. Maybe both). There was then a quick uptick at the end there, which I would assume would be due to slowing down even more as I tapered for the race, with the 2 slowest recovery  runs happening just before the race. We then see the race there, at about 7:10 min/mile, which, while I am happy with my results, I would *love* to get this down under 7:00 min/mile in my next marathon, with the goal of running about 6:50 min/mile so as to break 3 hours!
+
+```{r bar of steps}
+ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60)))) + 
+  #geom_jitter(aes(colour = RunType)) +
+  geom_bar(aes(fill = RunType), stat = "identity") + #, 
+               #outlier.colour = "black", alpha = 0.5) +
+  #xlab("Run Type") + 
+  #ylab("Avg Heart Rate") + 
+  #guides(fill=FALSE) +
+  #ggtitle("Average Heart Rate per Run Type") 
