@@ -52,10 +52,11 @@ library(RColorBrewer)
 #distance histogram
 ggplot(data = runs, aes(x = Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) +
+  scale_x_continuous(limits=c(0, 30)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  guides(fill=FALSE)
+  guides(fill=FALSE) 
 
 ```
 
