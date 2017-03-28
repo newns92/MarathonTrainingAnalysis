@@ -40,7 +40,7 @@ tapply(runs$Distance,runs$Month,sum)
 
 
 #graph table above --> miles by month bars
-ggplot(as.data.frame(table(table(runs$Month,runs$RunType)), aes(x = RunType, y = run, fill = Month)) + 
+ggplot(as.data.frame(table(table(runs$Month,runs$RunType)), aes(x = RunType, y = run, fill = Month))) + 
   geom_bar(stat="identity") +
   #geom_line(aes(x = Month, y = monthlyMedianHr), group = 1, size = 2) +
   xlab("Month") + 
@@ -94,18 +94,6 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace)) +
   ggtitle("Average Heart Rate Over Time") + 
   labs(caption="*Very slight general decrease, but not linear")
 
-#scatter plot of total times by distnace
-#ggplot(data = runs, aes(x = Distance, y = Time)) + geom_point()
-  #geom_line() +
-  #theme(axis.text.x = element_text(size=0, angle=45)) +
-  #xlab("Time") 
-#graph table above --> miles by month bars
-
-#medianCadence <- aggregate(runs$Cad,list(runs$RunType),median)
-#runs <- merge(runs, medianCadence, by.x = "RunType", by.y = "Group.1")
-#names(runs)[names(runs)=="x"] <- "medianCadence"
-
-
 ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) + 
   geom_boxplot(alpha = 0.5) + 
   geom_jitter(aes(colour = RunType)) +
@@ -119,3 +107,17 @@ ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) +
        inspect more, recovery runs abit slower, but less variant, long runs second slowest")
 
 
+
+ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+
+
+ggplot(data = runs, aes(x=Gear, y = Distance)) + 
+  geom_bar(stat="identity", aes(fill = Gear)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ") +
+  theme(axis.text.x=element_text(angle = 45, vjust = 0.5))
