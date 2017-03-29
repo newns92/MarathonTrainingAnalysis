@@ -218,8 +218,28 @@ newFullData$Elevation.Gain <- as.numeric(as.character(newFullData$Elevation.Gain
 newFullData$Cad <- newFullData$Cad*2
 str(newFullData)
 
-#fix Time fields
+#fix Time fields and add week number
 library(lubridate)
+newFullData$weekNumber <- 0
+newFullData$weekNumber[1:6]     <- 1
+newFullData$weekNumber[7:12]    <- 2         
+newFullData$weekNumber[13:18]   <- 3
+newFullData$weekNumber[19:22]   <- 4
+newFullData$weekNumber[23:29]   <- 5
+newFullData$weekNumber[30:35]   <- 6
+newFullData$weekNumber[36:41]   <- 7
+newFullData$weekNumber[42:47]   <- 8
+newFullData$weekNumber[48:54]   <- 9
+newFullData$weekNumber[55:60]   <- 10
+newFullData$weekNumber[61:67]   <- 11
+newFullData$weekNumber[68:74]   <- 12
+newFullData$weekNumber[75:81]   <- 13
+newFullData$weekNumber[82:88]   <- 14
+newFullData$weekNumber[89:95]   <- 15
+newFullData$weekNumber[96:102]  <- 16
+newFullData$weekNumber[103:109] <- 17
+newFullData$weekNumber[110:115] <- 18
+newFullData$weekNumber[116]     <- 19
 
 #fix Average Pace
 newFullData$Avg.Speed.Avg.Pace. <- as.POSIXct(newFullData$Avg.Speed.Avg.Pace., format = '%M:%S')
@@ -252,6 +272,8 @@ plot(newFullData$Date,newFullData$Time)
 #put month name labels to monthNum to display names in numerical in order
 newFullData$Month <- factor(newFullData$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
 class(newFullData$Month)
+newFullData$Month <- factor(newFullData, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+
 
 #write data to file
 write.csv(newFullData, file = "cleanedMarathonTrainingData.csv", row.names = TRUE)

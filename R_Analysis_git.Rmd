@@ -86,6 +86,14 @@ The largest number of miles ran, 308 miles, was in September, and then we see a 
 runs[which.max(runs$Distance[runs$Date < "2016-11-20"]),]
 ```
 
+```{r peak week}
+ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = weekNumber)) + 
+  geom_bar(stat="identity") +
+  xlab("Week of Plan") + 
+  ylab("Total Miles") + 
+  guides(fill=FALSE) +
+  ggtitle("Total Miles by Week of Plan")
+```
 Welp, I was half wrong about that I guess. It seems peak week was actually both in September *and* October, with the final run of the week coinciding with the start of October, so that was where my total mileage started to decreased *just* a bit.
 
 Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.

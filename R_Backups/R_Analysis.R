@@ -46,6 +46,13 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
   guides(fill=FALSE) +
   ggtitle("Total Miles by Month")
 
+ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = weekNumber)) + 
+  geom_bar(stat="identity") +
+  xlab("Week of Plan") + 
+  ylab("Total Miles") + 
+  guides(fill=FALSE) +
+  ggtitle("Total Miles by Week of Plan")
+
 #avg. cadence grouped by month
 ggplot(data = runs, aes(Month, Cad)) + 
   geom_jitter(aes(colour = Month)) +
