@@ -31,7 +31,6 @@ ggplot(data = runs, aes(x = Distance)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") 
-  + 
   #labs(caption="*Majority of runs were between 9 and 11 miles, 
     #   with a suprisingly low number of runs between 7 and 9 miles")
 
@@ -40,18 +39,12 @@ tapply(runs$Distance,runs$Month,sum)
 
 
 #graph table above --> miles by month bars
-ggplot(as.data.frame(table(table(runs$Month,runs$RunType)), aes(x = RunType, y = run, fill = Month))) + 
+ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
-  #geom_line(aes(x = Month, y = monthlyMedianHr), group = 1, size = 2) +
   xlab("Month") + 
   ylab("Total Miles") + 
-  #coord_flip() + 
-  #scale_x_discrete(limits = rev(levels(runs$Month))) +
-  #geom_text(vjust=0, colour="red") +
-  ggtitle("Sum of Miles by Month") + 
-  labs(caption="*The largest number of miles ran, 308 miles, was in September")
-
-#boxplot(Cad ~ monthNum, data = runs)
+  guides(fill=FALSE) +
+  ggtitle("Total Miles by Month")
 
 #avg. cadence grouped by month
 ggplot(data = runs, aes(Month, Cad)) + 
@@ -60,8 +53,8 @@ ggplot(data = runs, aes(Month, Cad)) +
                outlier.colour = "black", alpha = 0.5) + #geom_jitter()
   xlab("Month") + 
   ylab("Cadence") + 
-  ggtitle("Cadence per Month") + 
-  labs(caption="*Cadence generally increases month over month, due to more workouts, or improved form?")
+  ggtitle("Cadence per Month") 
+
 
 #avg. HR grouped by month
 ggplot(data = runs, aes(Month, Avg.HR)) + 

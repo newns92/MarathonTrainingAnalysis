@@ -60,15 +60,19 @@ ggplot(data = runs, aes(x = Distance)) +
 
 ```
 
-It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan.
+It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan. So this distribution is right/positively-skewed. Let's look at the summary of this data.
 
-Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
+```{r distance summary}
+summary(runs$Distance)
+```
+
+So, since we have a skewed distribution, we want to look at median as out measure of center. We can see the median number of miles I ran in a run is 10, which is less than half of an actual marathon (mean is also basically 10, as well, just to note). We can also see the max distance here is the actual marathon. Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
 
 ```{r miles by month, echo = FALSE} 
 #miles by month bars
 ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
-  xlab("Month") + 
+  xlab("") + 
   ylab("Total Miles") + 
   guides(fill=FALSE) +
   ggtitle("Total Miles by Month")
@@ -93,8 +97,8 @@ ggplot(data = runs, aes(Month, Cad)) +
   geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), 
                outlier.colour = "black", alpha = 0.5) + #geom_jitter()
-  xlab("Month") + 
-  ylab("Cadence") + 
+  xlab("") + 
+  ylab("Cadence (Steps/Min") + 
   guides(fill=FALSE) +
   ggtitle("Cadence per Month") 
 ```
