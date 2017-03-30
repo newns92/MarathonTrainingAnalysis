@@ -219,7 +219,7 @@ ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(
   ggtitle("Total Steps Taken by Run Type") 
 ```
 
-more normal runs than all others, somehow recovery runs even less than the race
+more steps normal runs than all others, somehow recovery runs even less than the race
 
 ```{r cadence by hr}
 ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
@@ -229,4 +229,20 @@ ggplot(data = runs, aes(x=Cad, y=Avg.HR)) +
   ggtitle("Average Hear Rate by Run Type ")
 ```
 
-no relationship
+no relationship between 
+
+```{r elevation and avg hr}
+ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+```
+
+```{r elevation and max hr}
+ggplot(data = runs, aes(x=Elevation.Gain, y=Max.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+```

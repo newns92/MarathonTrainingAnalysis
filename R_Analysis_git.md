@@ -6,18 +6,18 @@ Marathon Training Plan Data Analysis
 
 First, I load in the CSV file created in the **R\_Cleaning\_Garmin\_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
 
-    ## 'data.frame':    116 obs. of  18 variables:
+    ## 'data.frame':    116 obs. of  20 variables:
     ##  $ X             : int  12 15 94 4 6 8 13 16 95 5 ...
     ##  $ ID            : int  646029304 647216014 648410753 649445500 650512799 651933678 653912805 655096239 656203325 657259723 ...
     ##  $ Name          : Factor w/ 13 levels "10k Tune Up Run",..: 2 7 10 3 10 4 3 7 10 7 ...
     ##  $ Gear          : Factor w/ 4 levels "ASICS dunno Black, Yellow, Red",..: 2 2 1 2 1 2 2 2 1 2 ...
     ##  $ Date          : Factor w/ 116 levels "2016-07-19","2016-07-20",..: 1 2 3 4 5 6 7 8 9 10 ...
     ##  $ Month         : Factor w/ 5 levels "Aug","Jul","Nov",..: 2 2 2 2 2 2 2 2 2 2 ...
+    ##  $ monthNum      : int  7 7 7 7 7 7 7 7 7 7 ...
     ##  $ DOW           : Factor w/ 7 levels "Fri","Mon","Sat",..: 6 7 5 1 3 4 6 7 5 1 ...
     ##  $ StartTime     : Factor w/ 89 levels "10:01","10:09",..: 57 50 66 45 70 75 45 36 63 35 ...
     ##  $ Distance      : num  9.01 11 4 11 6 ...
-    ##  $ Time          : Factor w/ 114 levels "2017-03-18 00:07:43",..: 50 69 14 74 31 103 59 87 6 83 ...
-    ##  $ Avg.Pace      : Factor w/ 67 levels "2017-03-18 00:06:32",..: 13 32 57 38 55 39 33 41 48 49 ...
+    ##  $ Time          : Factor w/ 114 levels "2017-03-29 00:07:43",..: 50 69 14 74 31 103 59 87 6 83 ...
     ##  $ Speed.mph     : num  3.72 3.54 3.29 3.49 3.33 ...
     ##  $ Cad           : num  168 168 171 176 174 ...
     ##  $ Elevation.Gain: int  351 461 NA 468 230 572 400 485 NA 477 ...
@@ -25,6 +25,8 @@ First, I load in the CSV file created in the **R\_Cleaning\_Garmin\_Strava** scr
     ##  $ Max.HR        : int  167 160 149 161 155 165 159 158 142 160 ...
     ##  $ Calories      : int  943 1176 442 1170 721 1653 1090 1318 314 1241 ...
     ##  $ RunType       : Factor w/ 5 levels "Long Run","Race",..: 5 4 3 4 3 1 4 4 3 4 ...
+    ##  $ weekNumber    : int  1 1 1 1 1 1 2 2 2 2 ...
+    ##  $ Avg.Pace      : Factor w/ 67 levels "2017-03-29 00:06:32",..: 13 32 57 38 55 39 33 41 48 49 ...
 
 Well, to start off, I have a column which seems to contain the row numbers from the CSv, so let's remove that before going back to the inspection.
 
@@ -33,15 +35,18 @@ runs$X <- NULL
 head(runs,2)
 ```
 
-    ##          ID           Name                   Gear       Date Month DOW
-    ## 1 646029304 Classic LT Run Brooks Ghost Red/Black 2016-07-19   Jul Tue
-    ## 2 647216014         ML Run Brooks Ghost Red/Black 2016-07-20   Jul Wed
-    ##   StartTime Distance                Time            Avg.Pace Speed.mph
-    ## 1      5:51     9.01 2017-03-18 01:04:59 2017-03-18 00:07:13    3.7179
-    ## 2      5:36    11.00 2017-03-18 01:23:29 2017-03-18 00:07:35    3.5350
-    ##     Cad Elevation.Gain Avg.HR Max.HR Calories RunType
-    ## 1 168.4            351    149    167      943 Workout
-    ## 2 168.4            461    150    160     1176     Run
+    ##          ID           Name                   Gear       Date Month
+    ## 1 646029304 Classic LT Run Brooks Ghost Red/Black 2016-07-19   Jul
+    ## 2 647216014         ML Run Brooks Ghost Red/Black 2016-07-20   Jul
+    ##   monthNum DOW StartTime Distance                Time Speed.mph   Cad
+    ## 1        7 Tue      5:51     9.01 2017-03-29 01:04:59    3.7179 168.4
+    ## 2        7 Wed      5:36    11.00 2017-03-29 01:23:29    3.5350 168.4
+    ##   Elevation.Gain Avg.HR Max.HR Calories RunType weekNumber
+    ## 1            351    149    167      943 Workout          1
+    ## 2            461    150    160     1176     Run          1
+    ##              Avg.Pace
+    ## 1 2017-03-29 00:07:13
+    ## 2 2017-03-29 00:07:35
 
 Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
 
@@ -65,17 +70,17 @@ runs$StartTime <- hour(strptime(runs$StartTime, format = '%H:%M'))
 str(runs)
 ```
 
-    ## 'data.frame':    116 obs. of  17 variables:
+    ## 'data.frame':    116 obs. of  19 variables:
     ##  $ ID            : int  646029304 647216014 648410753 649445500 650512799 651933678 653912805 655096239 656203325 657259723 ...
     ##  $ Name          : Factor w/ 13 levels "10k Tune Up Run",..: 2 7 10 3 10 4 3 7 10 7 ...
     ##  $ Gear          : Factor w/ 4 levels "ASICS dunno Black, Yellow, Red",..: 2 2 1 2 1 2 2 2 1 2 ...
     ##  $ Date          : POSIXct, format: "2016-07-19" "2016-07-20" ...
     ##  $ Month         : Factor w/ 5 levels "Aug","Jul","Nov",..: 2 2 2 2 2 2 2 2 2 2 ...
+    ##  $ monthNum      : int  7 7 7 7 7 7 7 7 7 7 ...
     ##  $ DOW           : Factor w/ 7 levels "Fri","Mon","Sat",..: 6 7 5 1 3 4 6 7 5 1 ...
     ##  $ StartTime     : int  5 5 6 5 7 8 5 5 6 5 ...
     ##  $ Distance      : num  9.01 11 4 11 6 ...
-    ##  $ Time          : POSIXct, format: "2017-03-18 01:04:59" "2017-03-18 01:23:29" ...
-    ##  $ Avg.Pace      : POSIXct, format: "2017-03-18 00:07:13" "2017-03-18 00:07:35" ...
+    ##  $ Time          : POSIXct, format: "2017-03-29 01:04:59" "2017-03-29 01:23:29" ...
     ##  $ Speed.mph     : num  3.72 3.54 3.29 3.49 3.33 ...
     ##  $ Cad           : num  168 168 171 176 174 ...
     ##  $ Elevation.Gain: int  351 461 NA 468 230 572 400 485 NA 477 ...
@@ -83,6 +88,8 @@ str(runs)
     ##  $ Max.HR        : int  167 160 149 161 155 165 159 158 142 160 ...
     ##  $ Calories      : int  943 1176 442 1170 721 1653 1090 1318 314 1241 ...
     ##  $ RunType       : Factor w/ 5 levels "Long Run","Race",..: 5 4 3 4 3 1 4 4 3 4 ...
+    ##  $ weekNumber    : int  1 1 1 1 1 1 2 2 2 2 ...
+    ##  $ Avg.Pace      : POSIXct, format: "2017-03-29 00:07:13" "2017-03-29 00:07:35" ...
 
 Looks like **Month** was also not loaded as on *ordered* factor like I need it. As it is now, if I used it in my graphs, it would be ordereded alphabetically, not chronologically like I need it. So let's convert it back to an ordered factor with the correctly-specified ordering via the **levels** argument.
 
@@ -94,79 +101,128 @@ Now its time to acually make some plots. I'll start off with a simple histogram 
 
 ![](R_Analysis_git_files/figure-markdown_github/plotting-1.png)
 
-It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan.
+It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan. So this distribution is right/positively-skewed, with the majority of the runs being, looking at this plot, less than 12 miles. Let's look at the summary of this data.
 
-Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
+``` r
+summary(runs$Distance)
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   1.000   6.000  10.000   9.907  13.000  26.270
+
+So, since we have a skewed distribution, we want to look at median as our measure of center. We can see the median number of miles I ran in a run is 10 miles, which is less than half of an actual marathon (mean is also basically 10, as well, just to note). So the majority of my runs seem pretty short, compared to the goal distance. This is because the point of a training plan is to get the body to adapt to a high volume of miles, but then to spread it over a period of time so that we can recover properly. We can also see the max distance here is the actual marathon. Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
 
 ![](R_Analysis_git_files/figure-markdown_github/miles%20by%20month-1.png)
 
-    ##    Jul    Aug    Sep    Oct    Nov 
-    ## 118.08 250.08 308.14 304.45 168.44
-
 The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. This could be possibly be so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
 
-``` r
-runs[which.max(runs$Distance[runs$Date < "2016-11-20"]),]
-```
+![](R_Analysis_git_files/figure-markdown_github/peak%20week-1.png)
 
-    ##           ID     Name                   Gear       Date Month DOW
-    ## 67 732206487 Long Run Brooks Ghost Red/Black 2016-10-02   Oct Sun
-    ##    StartTime Distance                Time            Avg.Pace Speed.mph
-    ## 67         8       24 2017-03-18 02:55:35 2017-03-18 00:07:19    3.6667
-    ##    Cad Elevation.Gain Avg.HR Max.HR Calories  RunType
-    ## 67 175            789    143    158     2129 Long Run
+Welp, I was half wrong about that I guess. It seems peak week, week 11, was actually both in September *and* October.
 
-Welp, I was half wrong about that I guess. It seems peak week was actually both in September *and* October, with the final run of the week coinciding with the start of October, so that was where my total mileage started to decreased *just* a bit.
+    ##                Name weekNumber       Date DOW Distance
+    ## 61     Recovery Run         11 2016-09-26 Mon     4.00
+    ## 62           GA Run         11 2016-09-27 Tue    11.01
+    ## 63 LT Intervals Run         11 2016-09-28 Wed    12.01
+    ## 64     Recovery Run         11 2016-09-29 Thu     5.00
+    ## 65           ML Run         11 2016-09-30 Fri    15.01
+    ## 66           GA Run         11 2016-10-01 Sat    10.00
+    ## 67         Long Run         11 2016-10-02 Sun    24.00
+
+So the final 2 runs of the week coincided with the start of October, with the longest run of the plan, 24 miles, taking place in this week.
 
 Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
 
 ![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20month-1.png)
 
-So, barring some outliers, I can see that my cadence tended to generally increases month over month, and ended up averagin between 170 and 180, barring those outliers. I would assume they were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume????
+So, barring some outliers, I can see that my cadence tended to generally increases month over month, albeit *barely*, and ended up averagin between 170 and 180, barring those outliers. I would assume they were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume????
 
 Another metric would be my average heart rate during runs over the course of the training. Compared to the rise of my cadence, we would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
 
 ![](R_Analysis_git_files/figure-markdown_github/HR%20by%20month%20boxplot-1.png)
 
-So we can see that my hear rate had generally decreased month over month. Now while I would hope it was due to increased fitness (and I still believe that to be the case, just by how I felt during my runs), the drops in temperature as we moved from summer to fall also may have played a part. Since it would have been cooler out, the body would not have been working as hard to cool itself down during my runs, so my heart rate would not have been as high. Maybe finding the historical temperature data and bringing it in could bring some insights into this question.
+So we can see that my hear rate had generally decreased month over month, albeit *barely*. *Again*. Now while I would hope it was due to increased fitness (and I still believe that to be the case, just by how I felt during my runs), the drops in temperature as we moved from summer to fall also may have played a part. Since it would have been cooler out, the body would not have been working as hard to cool itself down during my runs, so my heart rate would not have been as high. Maybe finding the historical temperature data and bringing it in could bring some insights into this question.
 
 Now let's look at cadence and heart rate by Run Type as well for comparisons.
 
 ![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20run%20type-1.png)
 
-We can ignore the variability in the **Race** run type, since it's only on race. But we can still see that it was either my maximum cadence, or the second or third highest after those 2 quickest workout cadences. We can also see that my recovery runs had the least variability, and recovery runs as well as normal runs. I also expected my workouts to have the highest cadence, but it has the lowest median. I can only assume that this was due to recovery sections of interval runs, or warm-ups and cooldowns during tempo runs which were *much* slower and relaxed than even recovery runs. Now let's look at heart rate.
+We can ignore the **Race** run type, since it's only one race. But we can still see that it was either my maximum cadence, or the second or third highest after those 2 quickest workout cadences. We can also see that my recovery runs had the least variability, and recovery runs, as well as normal runs, were in the lower 170's. I also expected my workouts to have the highest cadence, but it has the lowest median and the widest variety. I can only assume that this was due to recovery sections of interval runs, or warm-ups and cooldowns during tempo runs which were *much* slower and relaxed than even recovery runs. Now let's look at heart rate by these runs.
 
 ![](R_Analysis_git_files/figure-markdown_github/heart%20rate%20by%20run%20type-1.png)
 
-As expected, my heart rate was lowest during recovery runs. We can also see that there were 2 runs were my heart rate monitor was off, since my average heart rate was around 70. Also, my average heart rate was not very variable for the other 3 types of runs, excluding the race. My Long runs also tended to have a lower average heart rate than my "normal" runs, which I personally did not expect. But this does a make a little sense, since I was supposed to run at a bit of a slower pace so that I could run longer. Also, I did expect my heart rate to be higher during workouts, since they were designed to to push my heart rate to the max during **V02 intervals**, and was supposed to be elevated during those "comfortably hard" **tempo runs**. I can also see that there was one single workout wherein it was higher than my average heart rate during the marathon.
+As expected, my heart rate was lowest during recovery runs, but it was also quite varied. We can also see that there were 2 runs wherein my heart rate monitor was off, since my average heart rate was around 70. Also, my average heart rate was not very variable for the other 3 types of runs, excluding the race. This is good, since it means I was able to be consistent in my efforts, depending on the type of scheduled run. My Long Runs also tended to have a lower average heart rate than my "normal" runs, which I personally did not expect. But this does a make a little sense, since I was supposed to run at a bit of a slower pace so that I could run longer without bonking. Also, I did expect my heart rate to be higher during workouts, since they were designed to to push my heart rate to the max during **V02 intervals**, and was supposed to be elevated during those "comfortably hard" **tempo runs**. I can also see that there was one single workout wherein it was higher than my average heart rate during the marathon.
 
-``` r
-runs[which.max(runs$Avg.HR),]
-```
-
-    ##           ID        Name                      Gear       Date Month DOW
-    ## 73 738343078 Tune-Up Run Hoka One One Clifton Reds 2016-10-08   Oct Sat
-    ##    StartTime Distance                Time            Avg.Pace Speed.mph
-    ## 73        10     9.33 2017-03-18 01:00:53 2017-03-18 00:06:32    4.1107
-    ##    Cad Elevation.Gain Avg.HR Max.HR Calories RunType
-    ## 73 139            257    157    169      939 Workout
+    ##           ID        Name                      Gear       Date Month
+    ## 73 738343078 Tune-Up Run Hoka One One Clifton Reds 2016-10-08   Oct
+    ##    monthNum DOW StartTime Distance                Time Speed.mph Cad
+    ## 73       10 Sat        10     9.33 2017-03-29 01:00:53    4.1107 139
+    ##    Elevation.Gain Avg.HR Max.HR Calories RunType weekNumber
+    ## 73            257    157    169      939 Workout         12
+    ##               Avg.Pace
+    ## 73 2017-03-29 00:06:32
 
 So we can see that my max heart rate was during my 10k Tune-up Race, which does not surprise me since it SUCKED.
 
-`{ r heart rate over time}  ggplot(data = runs, aes(x = Date, y = Avg.HR)) +    geom_line(aes(group=1)) +   theme(axis.text.x = element_blank()) +   xlab("Time") +    ylab("Average Heart Rate") +    ggtitle("Average Heart Rate Over Time") +    labs(caption="*Very slight general decrease, with outliers of about 100 in the 1st third of the plan and  70 in the last 3rd of the plan")`
+![](R_Analysis_git_files/figure-markdown_github/heart%20rate%20over%20time-1.png)
 
-average pace over plan line
-===========================
+    ## `geom_smooth()` using method = 'loess'
+
+![](R_Analysis_git_files/figure-markdown_github/avg%20pace%20by%20runs-1.png)
+
+So we see a very slight general decrease overall, but it's not very linear at all, so it does not seem to be that significant. Let's split these into seperate scatter plots by run type.
+
+    ## `geom_smooth()` using method = 'loess'
+
+![](R_Analysis_git_files/figure-markdown_github/avg%20pace%20by%20runs%20-%20seperate-1.png)
+
+And, we see that workouts had the lowest average pace, which seemed to actually decrease a tad until about halfway through the plan, but there was a variety of different workouts with different focuses, so this really isn't something we can glean anything out of. Long Runs start to decrease in average pace, possibly due to an increase in outside temperature from July to August causing me to slow down, but then we see a rapid increase, which start sto taper off at the end there. Normal runs seemed to have a more gradual increase over time, but it sped up a bit compared to at the start. Then we see that recovery runs increased down even more so compared to Long Runs, but also had a drop as temperatures cooled (or fitness increased, either or. Maybe both). There was then a quick uptick at the end there, which I would assume would be due to slowing down even more as I tapered for the race, with the 2 slowest recovery runs happening just before the race. We then see the race there, at about 7:10 min/mile, which, while I am happy with my results, I would *love* to get this down under 7:00 min/mile in my next marathon, with the goal of running about 6:50 min/mile so as to break 3 hours!
 
 ``` r
-ggplot(data = runs, aes(x = Date, y = Avg.Pace)) + 
-  geom_point() + # by color? 
-  #?stat_smooth() + 
-  theme(axis.text.x = element_blank()) +
-  xlab("Time") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Heart Rate Over Time") + 
-  labs(caption="*Very slight general decrease, but not linear")
+ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60)))) + 
+  geom_bar(aes(fill = RunType), stat = "identity") +
+  xlab("Run Type") + 
+  ylab("Steps") + 
+  guides(fill=FALSE) +
+  ggtitle("Total Steps Taken by Run Type") 
 ```
 
-![](R_Analysis_git_files/figure-markdown_github/avg%20pace-1.png)
+![](R_Analysis_git_files/figure-markdown_github/bar%20of%20steps-1.png)
+
+more steps normal runs than all others, somehow recovery runs even less than the race
+
+``` r
+ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+```
+
+![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20hr-1.png)
+
+no relationship between
+
+``` r
+ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+```
+
+    ## Warning: Removed 13 rows containing missing values (geom_point).
+
+![](R_Analysis_git_files/figure-markdown_github/elevation%20and%20avg%20hr-1.png)
+
+``` r
+ggplot(data = runs, aes(x=Elevation.Gain, y=Max.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+```
+
+    ## Warning: Removed 13 rows containing missing values (geom_point).
+
+![](R_Analysis_git_files/figure-markdown_github/elevation%20and%20max%20hr-1.png)
