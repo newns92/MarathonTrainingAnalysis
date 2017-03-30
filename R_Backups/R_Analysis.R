@@ -115,9 +115,30 @@ ggplot(data = runs, aes(x=Cad, y=Avg.HR)) +
   ggtitle("Average Hear Rate by Run Type ")
 
 
-ggplot(data = runs, aes(x=Gear, y = Distance)) + 
-  geom_bar(stat="identity", aes(fill = Gear)) +
+#heart rate by cadence
+ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
+  geom_point(aes(colour = RunType)) +
   xlab("Cadence") + 
   ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ") +
-  theme(axis.text.x=element_text(angle = 45, vjust = 0.5))
+  ggtitle("Average Hear Rate by Run Type ")
+
+ggplot(data = runs, aes(x=Elevation.Gain, y=Max.HR)) + 
+  geom_point(aes(colour = RunType)) +
+  xlab("Cadence") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Hear Rate by Run Type ")
+
+((minute(runs$Avg.Pace))+(second(runs$Avg.Pace)/60))
+hour = format(as.POSIXct(runs$Avg.Pace,format="%H:%M:%S"),"%M")
+minute = format(as.POSIXct(runs$Avg.Pace,format="%H:%M:%S"),"%S")
+
+as.factor(paste(hour,minute,sep=":"))
+
+ggplot(data = runs, aes(x = Date, y = as.factor(paste(hour,minute,sep=":")))) + 
+  geom_point() + # by color? 
+  #?stat_smooth() + 
+  theme(axis.text.x = element_blank()) +
+  xlab("Time") + 
+  ylab("Average Heart Rate") + 
+  ggtitle("Average Heart Rate Over Time") + 
+  labs(caption="*Very slight general decrease, but not linear")
