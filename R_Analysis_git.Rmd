@@ -60,13 +60,13 @@ ggplot(data = runs, aes(x = Distance)) +
 
 ```
 
-It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan. So this distribution is right/positively-skewed. Let's look at the summary of this data.
+It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a lot decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest Long Run of the plan. So this distribution is right/positively-skewed, with the majority of the runs being, looking at this plot, less than 12 miles. Let's look at the summary of this data.
 
 ```{r distance summary}
 summary(runs$Distance)
 ```
 
-So, since we have a skewed distribution, we want to look at median as out measure of center. We can see the median number of miles I ran in a run is 10, which is less than half of an actual marathon (mean is also basically 10, as well, just to note). We can also see the max distance here is the actual marathon. Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
+So, since we have a skewed distribution, we want to look at median as our measure of center. We can see the median number of miles I ran in a run is 10 miles, which is less than half of an actual marathon (mean is also basically 10, as well, just to note). So the majority of my runs seem pretty short, compared to the goal distance. This is because the point of a training plan is to get the body to adapt to a high volume of miles, but then to spread it over a period of time so that we can recover properly. We can also see the max distance here is the actual marathon. Now let's look at the total number of miles ran each month, with a pretty obvious expectation to see the total rise month-by-month.
 
 ```{r miles by month, echo = FALSE} 
 #miles by month bars
@@ -76,25 +76,26 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
   ylab("Total Miles") + 
   guides(fill=FALSE) +
   ggtitle("Total Miles by Month")
-
-tapply(runs$Distance,runs$Month,sum)
 ```
 
 The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. This could be possibly be so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
 
-```{r check max run} 
-runs[which.max(runs$Distance[runs$Date < "2016-11-20"]),]
-```
-
 ```{r peak week}
-ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = weekNumber)) + 
+ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Week of Plan") + 
   ylab("Total Miles") + 
-  guides(fill=FALSE) +
+  #guides(fill=FALSE) +
   ggtitle("Total Miles by Week of Plan")
 ```
-Welp, I was half wrong about that I guess. It seems peak week was actually both in September *and* October, with the final run of the week coinciding with the start of October, so that was where my total mileage started to decreased *just* a bit.
+
+Welp, I was half wrong about that I guess. It seems peak week, week 11, was actually both in September *and* October.
+
+```{r peak wk}
+runs[runs$weekNumber == 11,c('Name','weekNumber','Date','DOW','Distance')]
+```
+
+So the final 2 runs of the week coincided with the start of October, with the longest run of the plan, 24 miles, taking place in this week.
 
 Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
 

@@ -35,7 +35,7 @@ ggplot(data = runs, aes(x = Distance)) +
     #   with a suprisingly low number of runs between 7 and 9 miles")
 
 #check data
-tapply(runs$Distance,runs$Month,sum)
+#tapply(runs$Distance,runs$Month,sum)
 
 
 #graph table above --> miles by month bars
@@ -46,6 +46,7 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
   guides(fill=FALSE) +
   ggtitle("Total Miles by Month")
 
+#graph table above --> miles by week bars
 ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = weekNumber)) + 
   geom_bar(stat="identity") +
   xlab("Week of Plan") + 
