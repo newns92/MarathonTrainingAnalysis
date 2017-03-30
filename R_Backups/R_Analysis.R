@@ -107,8 +107,7 @@ ggplot(data = runs, aes(x=RunType, y=Cad, fill = RunType)) +
   labs(caption="*The actual marathon had the highest cadence, which makes sense. Workouts had widest variety - 
        inspect more, recovery runs abit slower, but less variant, long runs second slowest")
 
-
-
+#heart rate by cadence
 ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
   geom_point(aes(colour = RunType)) +
   xlab("Cadence") + 
