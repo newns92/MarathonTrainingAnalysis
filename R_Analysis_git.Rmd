@@ -210,7 +210,9 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) +
 
 And, we see that workouts had the lowest average pace, which seemed to actually decrease a tad until about halfway through the plan, but there was a variety of different workouts with different focuses, so this really isn't something we can glean anything out of. Long Runs start to decrease in average pace, possibly due to an increase in outside temperature from July to August causing me to slow down, but then we see a rapid increase, which start sto taper off at the end there. Normal runs seemed to have a more gradual increase over time, but it sped up a bit compared to at the start. Then we see that recovery runs increased down even more so compared to Long Runs, but also had a drop as temperatures cooled (or fitness increased, either or. Maybe both). There was then a quick uptick at the end there, which I would assume would be due to slowing down even more as I tapered for the race, with the 2 slowest recovery runs happening just before the race. We then see the race there, at about 7:10 min/mile, which, while I am happy with my results, I would *love* to get this down under 7:00 min/mile in my next marathon, with the goal of running about 6:50 min/mile so as to break 3 hours!
 
-```{r bar of steps}
+```{r bar of steps, echo = FALSE}
+table(runs$RunType)
+
 ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60)))) + 
   geom_bar(aes(fill = RunType), stat = "identity") +
   xlab("Run Type") + 
@@ -219,30 +221,36 @@ ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(
   ggtitle("Total Steps Taken by Run Type") 
 ```
 
-more steps normal runs than all others, somehow recovery runs even less than the race
+So we see the majority of runs I had were "normal" runs, and then recovery runs. But then in the bar chart, we can see that even though I only had *one* race, it had more steps than *all* of my recovery runs. Also, even with me having three times as many normal runs than long runs, the steps in long runs was over half of the steps from the normal runs. But the fact that the I had more steps in the marathon than in all of my recovery runs was pretty surprising. 
 
-```{r cadence by hr}
+```{r cadence by hr, echo = FALSE}
 ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
   geom_point(aes(colour = RunType)) +
   xlab("Cadence") + 
   ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ")
+  ggtitle("Average Hear Rate by Cadence")
 ```
 
-no relationship between 
+By looking at average heart rate by average cadence, we can see that there is no relationship at all here. I honestly expected heart rate to increase a bit as cadence increased, but maybe I was more efficient in my running form than I thought. Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
 
-```{r elevation and avg hr}
+```{r elevation and avg hr, echo = FALSE}}
 ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
   geom_point(aes(colour = RunType)) +
-  xlab("Cadence") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ")
+  geom_smooth(fill = NA) +
+  xlab("Elevation Gain (ft.)") + 
+  ylab("Average Heart Rate (BPM)") + 
+  ggtitle("Average Heart Rate by Elevation Gain")
 ```
 
-```{r elevation and max hr}
-ggplot(data = runs, aes(x=Elevation.Gain, y=Max.HR)) + 
-  geom_point(aes(colour = RunType)) +
-  xlab("Cadence") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ")
+So it looks like there was a very slight increase in average heart rate as elevation gain increased. And while the increase was not that large in magnitude, it seemed to be quite consistent for the majority of the x-axis. So this went in line with my expectation a bit. Let's see the max heart rate by elevation gain.
+
+```{r elevation and max hr, echo = FALSE}}
+ggplot(data = runs, aes(x=RunType, y=Max.HR)) + 
+  geom_jitter(aes(colour = RunType)) +
+  geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
+  xlab("Run Type") + 
+  ylab("Max Heart Rate (BPM)") + 
+  ggtitle("Max Heart Rate by Run Type")
 ```
+
+It's interesting to note that each run type has a very loe variability in maximum heart rate with the exception of recovery runs. We see a good number of outliers for normal runs. There are also numerous maximum heart rates  that are up to about 200, which was due to an inaccurate heart rate monitor, since the only chance I had of reaching that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But sine this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.
