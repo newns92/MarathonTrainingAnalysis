@@ -129,7 +129,7 @@ Welp, I was half wrong about that I guess. It seems peak week, week 11, was actu
     ## 66           GA Run         11 2016-10-01 Sat    10.00
     ## 67         Long Run         11 2016-10-02 Sun    24.00
 
-So the final 2 runs of the week coincided with the start of October, with the longest run of the plan, 24 miles, taking place in this week.
+So the final 2 runs of peak week coincided with the start of October, with the longest run of the plan, 24 miles, taking place in this week.
 
 Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
 
@@ -178,51 +178,28 @@ So we see a very slight general decrease overall, but it's not very linear at al
 
 And, we see that workouts had the lowest average pace, which seemed to actually decrease a tad until about halfway through the plan, but there was a variety of different workouts with different focuses, so this really isn't something we can glean anything out of. Long Runs start to decrease in average pace, possibly due to an increase in outside temperature from July to August causing me to slow down, but then we see a rapid increase, which start sto taper off at the end there. Normal runs seemed to have a more gradual increase over time, but it sped up a bit compared to at the start. Then we see that recovery runs increased down even more so compared to Long Runs, but also had a drop as temperatures cooled (or fitness increased, either or. Maybe both). There was then a quick uptick at the end there, which I would assume would be due to slowing down even more as I tapered for the race, with the 2 slowest recovery runs happening just before the race. We then see the race there, at about 7:10 min/mile, which, while I am happy with my results, I would *love* to get this down under 7:00 min/mile in my next marathon, with the goal of running about 6:50 min/mile so as to break 3 hours!
 
-``` r
-ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60)))) + 
-  geom_bar(aes(fill = RunType), stat = "identity") +
-  xlab("Run Type") + 
-  ylab("Steps") + 
-  guides(fill=FALSE) +
-  ggtitle("Total Steps Taken by Run Type") 
-```
+    ## 
+    ##     Long Run         Race Recovery Run          Run      Workout 
+    ##           13            1           40           46           16
 
 ![](R_Analysis_git_files/figure-markdown_github/bar%20of%20steps-1.png)
 
-more steps normal runs than all others, somehow recovery runs even less than the race
-
-``` r
-ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
-  geom_point(aes(colour = RunType)) +
-  xlab("Cadence") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ")
-```
+So we see the majority of runs I had were normal runs, with just a bit less recovery runs. But then in the bar chart, we can see that even though I only just over one quarter of the amount of long runs compared to the amount of recovery runs, the sum of steps taken during my long runs was greater than the sum of steps taken in all of my recovery runs. This makes sense, due to how much longer my long runs were, both in distance and in duration. We also see that steps taken during workouts was quite high compared to steps taken during recovery runs, despite having being just under a third of the amount of recovery runs.
 
 ![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20hr-1.png)
 
-no relationship between
+By looking at average heart rate by average cadence, we can see that there is no relationship at all here. I honestly expected heart rate to increase a bit as cadence increased, but maybe I was more efficient in my running form than I thought. Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
 
-``` r
-ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
-  geom_point(aes(colour = RunType)) +
-  xlab("Cadence") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ")
-```
+    ## `geom_smooth()` using method = 'loess'
+
+    ## Warning: Removed 13 rows containing non-finite values (stat_smooth).
 
     ## Warning: Removed 13 rows containing missing values (geom_point).
 
 ![](R_Analysis_git_files/figure-markdown_github/elevation%20and%20avg%20hr-1.png)
 
-``` r
-ggplot(data = runs, aes(x=Elevation.Gain, y=Max.HR)) + 
-  geom_point(aes(colour = RunType)) +
-  xlab("Cadence") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Hear Rate by Run Type ")
-```
-
-    ## Warning: Removed 13 rows containing missing values (geom_point).
+So it looks like there was a very slight increase in average heart rate as elevation gain increased. And while the increase was not that large in magnitude, it seemed to be quite consistent for the majority of the x-axis. So this went in line with my expectation a bit. Let's see the max heart rate by elevation gain.
 
 ![](R_Analysis_git_files/figure-markdown_github/elevation%20and%20max%20hr-1.png)
+
+It's interesting to note that each run type has a very low variability in maximum heart rate with the exception of recovery runs. We see a good number of outliers for normal runs. There are also numerous maximum heart rates that are up to about 200, which was due to an inaccurate heart rate monitor, since the only chance I had of reaching that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But sine this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.

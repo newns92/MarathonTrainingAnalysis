@@ -234,7 +234,7 @@ ggplot(data = runs, aes(x=Cad, y=Avg.HR)) +
 
 By looking at average heart rate by average cadence, we can see that there is no relationship at all here. I honestly expected heart rate to increase a bit as cadence increased, but maybe I was more efficient in my running form than I thought. Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
 
-```{r elevation and avg hr, echo = FALSE}}
+```{r elevation and avg hr, echo = FALSE}
 ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
   geom_point(aes(colour = RunType)) +
   geom_smooth(fill = NA) +
@@ -245,7 +245,7 @@ ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) +
 
 So it looks like there was a very slight increase in average heart rate as elevation gain increased. And while the increase was not that large in magnitude, it seemed to be quite consistent for the majority of the x-axis. So this went in line with my expectation a bit. Let's see the max heart rate by elevation gain.
 
-```{r elevation and max hr, echo = FALSE}}
+```{r elevation and max hr, echo = FALSE}
 ggplot(data = runs, aes(x=RunType, y=Max.HR)) + 
   geom_jitter(aes(colour = RunType)) +
   geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
@@ -254,4 +254,4 @@ ggplot(data = runs, aes(x=RunType, y=Max.HR)) +
   ggtitle("Max Heart Rate by Run Type")
 ```
 
-It's interesting to note that each run type has a very loe variability in maximum heart rate with the exception of recovery runs. We see a good number of outliers for normal runs. There are also numerous maximum heart rates  that are up to about 200, which was due to an inaccurate heart rate monitor, since the only chance I had of reaching that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But sine this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.
+It's interesting to note that each run type has a very low variability in maximum heart rate with the exception of recovery runs. We see a good number of outliers for normal runs. There are also numerous maximum heart rates  that are up to about 200, which was due to an inaccurate heart rate monitor, since the only chance I had of reaching that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But sine this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.
