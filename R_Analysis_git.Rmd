@@ -95,10 +95,9 @@ Welp, I was half wrong about that I guess. It seems peak week, week 11, was actu
 runs[runs$weekNumber == 11,c('Name','weekNumber','Date','DOW','Distance')]
 ```
 
-So the final 2 runs of the week coincided with the start of October, with the longest run of the plan, 24 miles, taking place in this week.
+So the final 2 runs of peak week coincided with the start of October, with the longest run of the plan, 24 miles, taking place in this week.
 
 Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a good cadence to run efficiently seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
-
 
 ```{r cadence by month, echo = FALSE} 
 #avg. cadence grouped by month
@@ -213,7 +212,9 @@ And, we see that workouts had the lowest average pace, which seemed to actually 
 ```{r bar of steps, echo = FALSE}
 table(runs$RunType)
 
-ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60)))) + 
+#apply(runs$Cadence, runs$RunType, function(x) (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60)))
+
+ggplot(data = runs, aes(RunType, (Cad*((hour(runs$Time)*60)+(minute(runs$Time))+(second(runs$Time)/60))))) + 
   geom_bar(aes(fill = RunType), stat = "identity") +
   xlab("Run Type") + 
   ylab("Steps") + 
@@ -221,7 +222,7 @@ ggplot(data = runs, aes(RunType, (Cad*(hour(runs$Time)*60)+(minute(runs$Time))+(
   ggtitle("Total Steps Taken by Run Type") 
 ```
 
-So we see the majority of runs I had were "normal" runs, and then recovery runs. But then in the bar chart, we can see that even though I only had *one* race, it had more steps than *all* of my recovery runs. Also, even with me having three times as many normal runs than long runs, the steps in long runs was over half of the steps from the normal runs. But the fact that the I had more steps in the marathon than in all of my recovery runs was pretty surprising. 
+So we see the majority of runs I had were normal runs, with just a bit less recovery runs. But then in the bar chart, we can see that even though I only just over one quarter of the amount of long runs compared to the amount of recovery runs, the sum of steps taken during my long runs was greater than the sum of steps taken in all of my recovery runs. This makes sense, due to how much longer my long runs were, both in distance and in duration. We also see that steps taken during workouts was quite high compared to steps taken during recovery runs, despite having being just under a third of the amount of recovery runs.
 
 ```{r cadence by hr, echo = FALSE}
 ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
