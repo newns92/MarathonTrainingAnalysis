@@ -274,6 +274,22 @@ newFullData$Month <- factor(newFullData$Month, ordered = TRUE, levels = c("Jul",
 class(newFullData$Month)
 newFullData$Month <- factor(newFullData, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
 
+#fix Start Time
+newFullData$StartTime <- as.POSIXct(newFullData$StartTime, format = '%H:%M')
+
+#add time bucket
+#newFullData$morningNightBucket <- if (newFullData$StartTime < 1491562800) {
+for (i in 1:nrow(newFullData)) {
+    if (newFullData$StartTime[i] < 1491562800) {
+      newFullData$morningNightBucket[i] <- 'Sunrise'
+    } else if (newFullData$StartTime[i] < 1491580800) {
+      newFullData$morningNightBucket[i] <- 'Morning'
+    } else if (newFullData$StartTime[i] < 1491595200) {
+      newFullData$morningNightBucket[i] <- 'Afternoon'
+    } else {
+      newFullData$morningNightBucket[i] <- 'Evening'
+    }
+}
 
 #write data to file
 write.csv(newFullData, file = "cleanedMarathonTrainingData.csv", row.names = TRUE)

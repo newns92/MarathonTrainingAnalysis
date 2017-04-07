@@ -17,10 +17,14 @@ runs <- read.csv("cleanedMarathonTrainingData.csv")
 str(runs)
 ```
 
-Well, to start off, I have a column which seems to contain the row numbers from the CSv, so let's remove that before going back to the inspection.
+Well, to start off, I have a column which seems to contain the row numbers from the CSV, so let's remove that before going back to the inspection.
 
-```{r remove 1st col }
+```{r remove 1st col, echo = FALSE}
 runs$X <- NULL
+
+```
+
+```{r inspect data}
 head(runs,2)
 ```
 
