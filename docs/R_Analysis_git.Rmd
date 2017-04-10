@@ -14,20 +14,25 @@ First, I load in the CSV file created in the **R_Cleaning_Garmin_Strava** script
 
 ```{r load dataset, echo = FALSE}
 runs <- read.csv("cleanedMarathonTrainingData.csv")
+```
+
+```{r inspect}
 str(runs)
 ```
 
 Well, to start off, I have a column which seems to contain the row numbers from the CSv, so let's remove that before going back to the inspection.
 
-```{r remove 1st col }
+```{r remove 1st col, echo = FALSE}
 runs$X <- NULL
 head(runs,2)
 ```
 
-Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
+Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format the lubridate package.
 
-```{r fix POSIXct}
+```{r lubridate, echo = FALSE}
 library(lubridate)
+```
+```{r fix POSIXct}
 
 runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
 runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')
@@ -78,7 +83,7 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
   ggtitle("Total Miles by Month")
 ```
 
-The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. This could be possibly be so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
+The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slight* drop to 304 miles in October. This could be possibly so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
 
 ```{r peak week, echo = FALSE}
 ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = Month)) + 
@@ -106,14 +111,14 @@ ggplot(data = runs, aes(Month, Cad)) +
   geom_boxplot(aes(fill = Month), 
                outlier.colour = "black", alpha = 0.5) + #geom_jitter()
   xlab("") + 
-  ylab("Cadence (Steps/Min") + 
+  ylab("Cadence (Steps/Min)") + 
   guides(fill=FALSE) +
-  ggtitle("Cadence per Month") 
+  ggtitle("Cadence by Month") 
 ```
 
-So, barring some outliers, I can see that my cadence tended to generally increases month over month, albeit *barely*, and ended up averagin between 170 and 180, barring those outliers. I would assume they were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume????
+So, I can see that my cadence tended to generally increases month over month, albeit *barely*, and ended up averagin between 170 and 180, barring those outliers. I would assume the outliers were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume.
 
-Another metric would be my average heart rate during runs over the course of the training. Compared to the rise of my cadence, we would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
+Another metric would be my **average heart rate** during runs over the course of the training. Compared to the rise of my cadence, I would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
 
 ```{r HR by month boxplot, echo = FALSE}
 #avg. HR grouped by month
@@ -144,6 +149,7 @@ ggplot(data = runs, aes(RunType, Cad)) +
   guides(fill=FALSE) +
   coord_flip() + 
   ggtitle("Cadence per Run Type") 
+
 ```
 
 We can ignore the **Race** run type, since it's only one race. But we can still see that it was either my maximum cadence, or the second or third highest after those 2 quickest workout cadences. We can also see that my recovery runs had the least variability, and recovery runs, as well as normal runs, were in the lower 170's. I also expected my workouts to have the highest cadence, but it has the lowest median and the widest variety. I can only assume that this was due to recovery sections of interval runs, or warm-ups and cooldowns during tempo runs which were *much* slower and relaxed than even recovery runs. Now let's look at heart rate by these runs.
@@ -180,8 +186,8 @@ ggplot(data = runs, aes(x = Date, y = Avg.HR)) +
 
 
 
-```{r avg pace by runs, echo = FALSE}
-ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) + 
+```{r avg pace by runs, echo = FALSE, message=FALSE}
+pl <- ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) + 
   geom_point() +
   geom_smooth(fill = NA) +  
   theme(axis.text.x = element_blank()) +
@@ -190,11 +196,12 @@ ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) +
   ylab("Average Pace (mile/minute)") + 
   ggtitle("Average Pace Over Time") + 
   labs(caption="")
+print(pl)
 ```
 
 So we see a very slight general decrease overall, but it's not very linear at all, so it does not seem to be that significant. Let's split these into seperate scatter plots by run type.
 
-```{r avg pace by runs - seperate, echo = FALSE}
+```{r avg pace by runs - seperate, echo = FALSE, message=FALSE}
 ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) + 
   geom_point() +
   geom_smooth(fill = NA) +  
@@ -234,10 +241,10 @@ ggplot(data = runs, aes(x=Cad, y=Avg.HR)) +
 
 By looking at average heart rate by average cadence, we can see that there is no relationship at all here. I honestly expected heart rate to increase a bit as cadence increased, but maybe I was more efficient in my running form than I thought. Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
 
-```{r elevation and avg hr, echo = FALSE}
+```{r elevation and avg hr, echo = FALSE, message=FALSE}
 ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
-  geom_point(aes(colour = RunType)) +
-  geom_smooth(fill = NA) +
+  geom_point(aes(colour = RunType), na.rm = TRUE) +
+  geom_smooth(fill = NA, na.rm = TRUE) +
   xlab("Elevation Gain (ft.)") + 
   ylab("Average Heart Rate (BPM)") + 
   ggtitle("Average Heart Rate by Elevation Gain")
