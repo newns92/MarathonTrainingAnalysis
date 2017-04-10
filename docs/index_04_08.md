@@ -6,10 +6,6 @@ Marathon Training Plan Data Analysis
 
 First, I load in the CSV file created in the **R\_Cleaning\_Garmin\_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
 
-``` r
-str(runs)
-```
-
     ## 'data.frame':    116 obs. of  20 variables:
     ##  $ X             : int  12 15 94 4 6 8 13 16 95 5 ...
     ##  $ ID            : int  646029304 647216014 648410753 649445500 650512799 651933678 653912805 655096239 656203325 657259723 ...
@@ -34,6 +30,11 @@ str(runs)
 
 Well, to start off, I have a column which seems to contain the row numbers from the CSv, so let's remove that before going back to the inspection.
 
+``` r
+runs$X <- NULL
+head(runs,2)
+```
+
     ##          ID           Name                   Gear       Date Month
     ## 1 646029304 Classic LT Run Brooks Ghost Red/Black 2016-07-19   Jul
     ## 2 647216014         ML Run Brooks Ghost Red/Black 2016-07-20   Jul
@@ -47,7 +48,11 @@ Well, to start off, I have a column which seems to contain the row numbers from 
     ## 1 2017-03-29 00:07:13
     ## 2 2017-03-29 00:07:35
 
-Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format the lubridate package.
+Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format.
+
+``` r
+library(lubridate)
+```
 
     ## 
     ## Attaching package: 'lubridate'
@@ -109,7 +114,7 @@ So, since we have a skewed distribution, we want to look at median as our measur
 
 ![](R_Analysis_git_files/figure-markdown_github/miles%20by%20month-1.png)
 
-The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slight* drop to 304 miles in October. This could be possibly so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
+The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slightly* drop to 304 miles in October. This could be possibly be so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up the race and the fact that the race was on November 20th, so there's no more run data after that date.
 
 ![](R_Analysis_git_files/figure-markdown_github/peak%20week-1.png)
 
@@ -130,9 +135,9 @@ Another important metric for runners is their **cadence**, which is the number o
 
 ![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20month-1.png)
 
-So, I can see that my cadence tended to generally increases month over month, albeit *barely*, and ended up averagin between 170 and 180, barring those outliers. I would assume the outliers were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume.
+So, barring some outliers, I can see that my cadence tended to generally increases month over month, albeit *barely*, and ended up averagin between 170 and 180, barring those outliers. I would assume they were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume????
 
-Another metric would be my **average heart rate** during runs over the course of the training. Compared to the rise of my cadence, I would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
+Another metric would be my average heart rate during runs over the course of the training. Compared to the rise of my cadence, we would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
 
 ![](R_Analysis_git_files/figure-markdown_github/HR%20by%20month%20boxplot-1.png)
 
@@ -161,9 +166,13 @@ So we can see that my max heart rate was during my 10k Tune-up Race, which does 
 
 ![](R_Analysis_git_files/figure-markdown_github/heart%20rate%20over%20time-1.png)
 
+    ## `geom_smooth()` using method = 'loess'
+
 ![](R_Analysis_git_files/figure-markdown_github/avg%20pace%20by%20runs-1.png)
 
 So we see a very slight general decrease overall, but it's not very linear at all, so it does not seem to be that significant. Let's split these into seperate scatter plots by run type.
+
+    ## `geom_smooth()` using method = 'loess'
 
 ![](R_Analysis_git_files/figure-markdown_github/avg%20pace%20by%20runs%20-%20seperate-1.png)
 
@@ -180,6 +189,12 @@ So we see the majority of runs I had were normal runs, with just a bit less reco
 ![](R_Analysis_git_files/figure-markdown_github/cadence%20by%20hr-1.png)
 
 By looking at average heart rate by average cadence, we can see that there is no relationship at all here. I honestly expected heart rate to increase a bit as cadence increased, but maybe I was more efficient in my running form than I thought. Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
+
+    ## `geom_smooth()` using method = 'loess'
+
+    ## Warning: Removed 13 rows containing non-finite values (stat_smooth).
+
+    ## Warning: Removed 13 rows containing missing values (geom_point).
 
 ![](R_Analysis_git_files/figure-markdown_github/elevation%20and%20avg%20hr-1.png)
 
