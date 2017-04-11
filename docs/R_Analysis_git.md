@@ -6,10 +6,6 @@ Marathon Training Plan Data Analysis
 
 First, I load in the CSV file created in the **R\_Cleaning\_Garmin\_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
 
-``` r
-str(runs)
-```
-
     ## 'data.frame':    116 obs. of  20 variables:
     ##  $ X             : int  12 15 94 4 6 8 13 16 95 5 ...
     ##  $ ID            : int  646029304 647216014 648410753 649445500 650512799 651933678 653912805 655096239 656203325 657259723 ...
@@ -207,4 +203,4 @@ Conclusion
 
 That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know in [LinkedIn!](https://www.linkedin.com/in/stephen-newns). I can't wait to add to this dataset with my training runs for Philly 2017, with the hopes of breaking 3 hours!
 
-The code for this can be found \[here\], as well as the code for the \[cleaning and initial creation of the dataset\]
+The code for this can be found [here](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/R_Analysis_git.Rmd), as well as the code for the [cleaning and initial creation of the dataset](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/Files/R_CleaningScript.R)
