@@ -46,13 +46,6 @@ Well, to start off, I have a column which seems to contain the row numbers from 
 
 Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format the lubridate package.
 
-    ## 
-    ## Attaching package: 'lubridate'
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     date
-
 ``` r
 runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
 runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')

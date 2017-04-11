@@ -29,7 +29,7 @@ head(runs,2)
 
 Alright, cool. But it looks like my Date field, **Date**, total run time field, **Time**, and average pace (min/mile) field, **Avg.Pace**, are not in the POSIXct format needed. So let's put them back into the correct format the lubridate package.
 
-```{r lubridate, echo = FALSE}
+```{r lubridate, echo = FALSE, message = FALSE}
 library(lubridate)
 ```
 ```{r fix POSIXct}
