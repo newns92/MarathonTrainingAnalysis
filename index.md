@@ -196,6 +196,6 @@ It's interesting to note that each run type has a very low variability in maximu
 Conclusion
 ==========
 
-That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know in [LinkedIn!](https://www.linkedin.com/in/stephen-newns). I can't wait to add to this dataset with my training runs for Philly 2017, with the hopes of breaking 3 hours!
+That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know in [LinkedIn!](https://www.linkedin.com/in/stephen-newns) I can't wait to add to this dataset with my training runs for Philly 2017, with the hopes of breaking 3 hours! But for now, I'm going to move onto the analysis of artists I listen to on Spotify via their API!
 
 The code for this can be found [here](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/R_Analysis_git.Rmd), as well as the code for the [cleaning and initial creation of the dataset](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/Files/R_CleaningScript.R)
