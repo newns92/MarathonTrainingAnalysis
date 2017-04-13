@@ -1,8 +1,8 @@
 ---
 title: "Marathon Training Plan Data Analysis"
 output:
-  github_document: default
   html_document: default
+  github_document: default
   word_document: default
 ---
 
