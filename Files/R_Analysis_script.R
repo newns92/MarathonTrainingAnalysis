@@ -1,31 +1,33 @@
 #install.packages("stringr")  - for manipulating string values
 #install.packages("tidyr")    - data cleansing
 #install.packages("plyr")     - for renaming columns
-
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(RColorBrewer)
 
 runs <- read.csv("cleanedMarathonTrainingData.csv")
 str(runs)
 
-#remove 1st col
-runs$X <- NULL
-head(runs,2)
-
-library(lubridate)
+#remove 1st cols
+runs <- runs %>%
+  mutate(X = NULL, ID = NULL)
+head(runs[,1:3],3)
 
 #make POSIXct
-runs$Time <- as.POSIXct(runs$Time)#, format = '%H:%M:%S')
-runs$Avg.Pace <- as.POSIXct(runs$Avg.Pace)#, format = '%H:%M:%S')
-runs$Date <- as.POSIXct(runs$Date)
-runs$StartTime <- hour(strptime(runs$StartTime, format = '%H:%M'))
+rruns <- runs %>%
+  mutate(Time = as.POSIXct(Time),
+         Avg.Pace = as.POSIXct(Avg.Pace),
+         Date = as.POSIXct(Date),
+         StartTime = as.POSIXct(StartTime, format = '%H:%M'))
 
-#make Month an ordered 
-runs$Month <- factor(runs$Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov"))
+str(runs[,c("Time","Avg.Pace","Date","StartTime")])
+
+#make Month an ordered factor
+runs <- runs %>%
+  mutate(Month = factor(Month, ordered = TRUE, levels = c("Jul","Aug","Sep","Oct","Nov")))
 
 #simple histogram of how many miles I ran in each of my runs.
-
-library(ggplot2)
-library(RColorBrewer)
-
 #distance histogram
 ggplot(data = runs, aes(x = Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) +
@@ -46,11 +48,10 @@ ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) +
   ggtitle("Total Miles by Month")
 
 #peak week bars
-ggplot(data = runs, aes(x = weekNumber, y = Distance, fill = Month)) + 
+ggplot(data = runs, aes(weekNumber, Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Week of Plan") + 
   ylab("Total Miles") + 
-  #guides(fill=FALSE) +
   ggtitle("Total Miles by Week of Plan")
                                        
 #find peak week
@@ -59,20 +60,19 @@ runs[runs$weekNumber == 11,c('Name','weekNumber','Date','DOW','Distance')]
 #avg. cadence grouped by month
 ggplot(data = runs, aes(Month, Cad)) + 
   geom_jitter(aes(colour = Month)) +
-  geom_boxplot(aes(fill = Month), 
-    outlier.colour = "black", alpha = 0.5) + #geom_jitter()
+  geom_boxplot(aes(fill = Month), outlier.colour = "black", alpha = 0.5) +
   xlab("") + 
   ylab("Cadence (Steps/Min)") + 
   guides(fill=FALSE) +
   ggtitle("Cadence by Month") 
 
 #heart rate over time
-ggplot(data = runs, aes(x = Date, y = Avg.HR)) + 
-  geom_line(aes(group=1)) +
-  theme(axis.text.x = element_blank()) +
-  xlab("Time") + 
-  ylab("Average Heart Rate") + 
-  ggtitle("Average Heart Rate Over Time")
+ggplot(data = runs, aes(Month, Avg.HR)) + 
+  geom_jitter(aes(colour = Month)) +
+  geom_boxplot(aes(fill = Month), outlier.colour = "black", alpha = 0.5) + 
+  xlab("Month") + 
+  ylab("Avg. Heart Rate") + 
+  ggtitle("Average Heart Rate per Month") 
 
 #avg. HR grouped by month
 ggplot(data = runs, aes(Month, Avg.HR)) + 
@@ -97,8 +97,9 @@ ggplot(data = runs, aes(RunType, Cad)) +
   ggtitle("Cadence per Run Type") 
 
 #cadence by hr
-ggplot(data = runs, aes(x=Cad, y=Avg.HR)) + 
+ggplot(data = runs, aes(Cad, Avg.HR)) + 
   geom_point(aes(colour = RunType), na.rm = TRUE) +
+  #geom_smooth() +
   xlab("Cadence") + 
   ylab("Average Heart Rate") + 
   scale_y_continuous(limits = c(110, 160)) +
@@ -107,18 +108,18 @@ ggplot(data = runs, aes(x=Cad, y=Avg.HR)) +
 #avg. hr grouped by run type
 ggplot(data = runs, aes(RunType, Avg.HR)) + 
   geom_jitter(aes(colour = RunType)) +
-  geom_boxplot(aes(fill = RunType), 
-  outlier.colour = "black", alpha = 0.5) +
+  geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
   xlab("Run Type") + 
   ylab("Avg Heart Rate") + 
   guides(fill=FALSE) +
+  coord_flip() + 
   ggtitle("Average Heart Rate per Run Type") 
 
 #max heart rate
-runs[which.max(runs$Avg.HR),]
+runs[which.max(runs$Avg.HR),c("Name","Date","Distance","Avg.HR","Max.HR")]
 
 #avg pace by runs
-gplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) + 
+ggplot(data = runs, aes(Date, Avg.Pace, colour = RunType)) + 
   geom_point() +
   geom_smooth(fill = NA) +  
   theme(axis.text.x = element_blank()) +
@@ -129,7 +130,7 @@ gplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) +
   labs(caption="")
 
 #avg pace by runs - seperate
-ggplot(data = runs, aes(x = Date, y = Avg.Pace, colour = RunType)) + 
+ggplot(data = runs, aes(Date, Avg.Pace, colour = RunType)) + 
   geom_point() +
   geom_smooth(fill = NA) +  
   theme(axis.text.x = element_blank()) +
@@ -151,7 +152,7 @@ ggplot(data = runs, aes(RunType, (Cad*((hour(runs$Time)*60)+(minute(runs$Time))+
   ggtitle("Total Steps Taken by Run Type") 
 
 #elevation and avg hr
-ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) + 
+ggplot(data = runs, aes(Elevation.Gain, Avg.HR)) + 
   geom_point(aes(colour = RunType), na.rm = TRUE) +
   geom_smooth(fill = NA, na.rm = TRUE) +
   xlab("Elevation Gain (ft.)") + 
@@ -160,7 +161,7 @@ ggplot(data = runs, aes(x=Elevation.Gain, y=Avg.HR)) +
   ggtitle("Average Heart Rate by Elevation Gain")
 
 #elevation and max hr, echo = FALSE}
-ggplot(data = runs, aes(x=RunType, y=Max.HR)) + 
+ggplot(data = runs, aes(RunType, Max.HR)) + 
   geom_jitter(aes(colour = RunType)) +
   geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
   xlab("Run Type") + 
