@@ -2,12 +2,9 @@ library(tidyverse)
 library(magrittr)
 
 #load strava data
-strava1 <- read.csv("../Data/2017/activities.csv")
-strava2 <- read.csv("../Data/2017/activities(1).csv")
+strava <- read.csv("../Data/2017/activities.csv", stringsAsFactors = F)
 
-glimpse(strava1)
-glimpse(strava2)
-strava <- rbind(strava1,strava2)
+glimpse(strava)
 summary(strava)
 
 #remove unneccessary cols
@@ -15,7 +12,7 @@ keepCols_strava <- c("Activity.Id", "When", "Type", "Gear", "Name", "Dist.mi", "
               "Moving.Time", "Speed.mph", "Pace..mi", "Max.Pace..mi", "Cad", "Heart", "Max.Heart",
               "Elev.Dist.ft.mi","Elev.Time.ft.h")
 strava <- strava[keepCols_strava]
-str(strava)
+glimpse(strava)
 
 #split When into Date and Time fields in Strava data
 library(lubridate)
@@ -27,7 +24,7 @@ strava  %<>% separate(col = When, into = c("Date", "StartTime"), sep = " ") %>%
 str(strava)
 
 # load garmin data
-garmin <- read.csv("../Data/2017/garmin2017.csv")
+garmin <- read.csv("../Data/2017/garmin2017.csv", stringsAsFactors = F)
 
 glimpse(garmin)
 tail(garmin)
@@ -52,22 +49,36 @@ garmin <- garmin[order(garmin$Date, decreasing = F),]
 strava <- strava[order(strava$Date, decreasing = F),]
 head(garmin$Date)
 head(strava$Date)
-# 
-# #remove excess strava runs
-# newStrava <- newStrava[!newStrava$Date < "2016-07-18",]
-# 
+ 
+# remove excess strava runs
+strava %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
+garmin %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
+
 # #check row counts
-# nrow(newGarmin)
-# nrow(newStrava)
-# 
-# #check garmin runs 
-# table(newGarmin$Distance)  
+nrow(garmin)
+nrow(strava)
+
+# MISSING SOME GARMIN RUNS DUE TO LOST WATCH
+ 
+# check garmin runs 
+table(garmin$Distance)  
 # 
 # #check garmin wierd distances
-# newGarmin[newGarmin$Distance=="0.12",]  
+garmin[70:73,]  
+strava[70:73,]  
 # newGarmin[newGarmin$Distance=="0.16",]  
-# newGarmin[newGarmin$Distance=="1.42",]  
-# 
+garmin <- garmin[!garmin$Distance==".5",] # remove injury
+strava[(which(strava$Date == '2017-10-20')-1):(which(strava$Date == '2017-10-20')+3),] 
+garmin[which(garmin$Date == '2017-10-20'),] # combine into 1 run
+
+garmin[120,c("Activity.Type","Date","Distance", "Calories")] <-  c("running", as.POSIXct("2017-10-20"), 
+                                                                   (1.5+9.05+1), NA,)
+garmin[120,"StartTime"] <- "05:48:40",  
+garmin[120,"Title"] <- "Running"
+garmin[120,"Title"] <- "Running", Distance = (1.5+9.05+1), Calories = NA, "Time" = "1:23:10", Avg.HR = NA,
+                           Max.HR = NA, Avg.Cadence = (183+177)/2, Max.Cadence = 192, Avg.Pace = "7:07", 
+                           Best.Pace = NA, Elev.Gain = NA, Elev.Loss = NA, Avg.Stride.Length = NA, Month = 10,
+                           Day = 20, Weekday = "Friday")
 # #remove spin sessionts
 # newGarmin <- newGarmin[!newGarmin$Date == "2016-08-27",]
 # newGarmin <- newGarmin[!newGarmin$Date == "2016-09-01",]
