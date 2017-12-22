@@ -50,7 +50,7 @@ strava <- strava[order(strava$Date, decreasing = F),]
 head(garmin$Date)
 head(strava$Date)
  
-# remove excess strava runs
+# remove excess runs
 strava %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
 garmin %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
 
@@ -58,8 +58,13 @@ garmin %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
 nrow(garmin)
 nrow(strava)
 
-# MISSING SOME GARMIN RUNS DUE TO LOST WATCH
- 
+# MISSING SOME GARMIN RUNS DUE TO LOST WATCH?
+
+## WORK UP TO 10/17 IN MISSING
+
+
+
+
 # check garmin runs 
 table(garmin$Distance)  
 # 
