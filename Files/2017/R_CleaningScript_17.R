@@ -2,7 +2,7 @@ library(tidyverse)
 library(magrittr)
 
 #load strava data
-strava <- read.csv("../Data/2017/activities.csv", stringsAsFactors = F)
+strava <- read.csv("../Data/2017/strava.csv", stringsAsFactors = F)
 
 glimpse(strava)
 summary(strava)
