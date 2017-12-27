@@ -2,7 +2,7 @@ library(tidyverse)
 library(magrittr)
 
 #load strava data
-strava <- read.csv("../Data/2017/strava.csv", stringsAsFactors = F)
+strava <- read.csv("../Data/2017/strava2017.csv", stringsAsFactors = F)
 
 glimpse(strava)
 summary(strava)
@@ -18,6 +18,7 @@ glimpse(strava)
 library(lubridate)
 strava  %<>% separate(col = When, into = c("Date", "StartTime"), sep = " ") %>%
   mutate(Date = as.POSIXct(Date),
+         StartTime = paste(substr(StartTime,1,6),"00",sep=""),
          Month = month(Date), # number,
          Day = day(Date),
          Weekday = weekdays(Date))
@@ -39,9 +40,10 @@ str(garmin)
 #Specify the new column names:
 garmin  %<>% separate(col = Date, into = c("Date", "StartTime"), sep = " ") %>%
   mutate(Date = as.POSIXct(Date),
-         Month = month(Date), # number,
-         Day = day(Date),
-         Weekday = weekdays(Date))
+         StartTime = paste(substr(StartTime,1,6),"00",sep=""))#,
+         #Month = month(Date), # number,
+         #Day = day(Date),
+        # Weekday = weekdays(Date))
 str(garmin)
 
 #Sort data frames from earliest to last date
@@ -58,86 +60,64 @@ garmin %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
 nrow(garmin)
 nrow(strava)
 
-# MISSING SOME GARMIN RUNS DUE TO LOST WATCH?
 
-## WORK UP TO 10/17 IN MISSING
+# mistmach with missing watch and manual entry
+garmin$StartTime[c(43:45,47:51,110:113,127:130)] <- strava$StartTime[c(43:45,47:51,110:113,127:130)]
 
-
-
+# get full dataset
+fullData2 <- garmin %>% left_join(strava, by = c("Date","StartTime")) %>% 
+  select(Name, Date, StartTime, Distance, Time, Heart, Avg.HR, Max.HR, Cad, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace, 
+         Elev.Gain, Elev.Loss, Avg.Stride.Length)
+head(fullData2)
 
 # check garmin runs 
-table(garmin$Distance)  
-# 
-# #check garmin wierd distances
-garmin[70:73,]  
-strava[70:73,]  
-# newGarmin[newGarmin$Distance=="0.16",]  
-garmin <- garmin[!garmin$Distance==".5",] # remove injury
-strava[(which(strava$Date == '2017-10-20')-1):(which(strava$Date == '2017-10-20')+3),] 
-garmin[which(garmin$Date == '2017-10-20'),] # combine into 1 run
+table(fullData2$Distance)  
+table(strava$Distance)  
 
-garmin[120,c("Activity.Type","Date","Distance", "Calories")] <-  c("running", as.POSIXct("2017-10-20"), 
-                                                                   (1.5+9.05+1), NA,)
-garmin[120,"StartTime"] <- "05:48:40",  
-garmin[120,"Title"] <- "Running"
-garmin[120,"Title"] <- "Running", Distance = (1.5+9.05+1), Calories = NA, "Time" = "1:23:10", Avg.HR = NA,
-                           Max.HR = NA, Avg.Cadence = (183+177)/2, Max.Cadence = 192, Avg.Pace = "7:07", 
-                           Best.Pace = NA, Elev.Gain = NA, Elev.Loss = NA, Avg.Stride.Length = NA, Month = 10,
-                           Day = 20, Weekday = "Friday")
-# #remove spin sessionts
-# newGarmin <- newGarmin[!newGarmin$Date == "2016-08-27",]
-# newGarmin <- newGarmin[!newGarmin$Date == "2016-09-01",]
-# 
-# #check garmin run dates
-# table(newGarmin$Date) > 1
-# 
-# #check august garmin runs
-# which(newStrava$Date == '2016-08-12') #runs 95 and 96
-# newStrava[22:23,]
-# 
-# #remove random run
-# newGarmin <- newGarmin[!newGarmin$Distance=="1.42",]
-# newStrava <- newStrava[!newStrava$Activity.Id=="677460614",]
-# 
-# #check october garmin runs
-# newGarmin[newGarmin$Date == "2016-10-23",]
-# 
-# #remove last bike ride
-# newGarmin <- newGarmin[!(newGarmin$Date == "2016-10-23" & newGarmin$Elevation.Gain == 657),]
-# #check row counts
-# nrow(newGarmin)
-# nrow(newStrava)
-# 
-# #check date match up
-# head(newGarmin)
-# head(newStrava)
-# 
-# #rename garmin cols
-# library(plyr)
-# newGarmin <- rename(newGarmin, c("Date"="date_garmin"))
-# newGarmin <- rename(newGarmin, c("StartTime"="StartTime_AM_PM"))
-# newStrava$When <- NULL #removes column
-# 
-# #combine data sets}
-# newFullData <- cbind(newGarmin,newStrava)
-# #inspect
-# head(newFullData,3)
-# #check dates
-# head(newFullData[,c("Date","date_garmin")])
-# tail(newFullData[,c("Date","date_garmin")])
-# 
-# #keep full dataset cols
-# newFullData <- rename(newFullData, c("Activity.Id"="ID"))
-# keepColsFull  <- NA
-# keepColsFull <- c("ID", "Gear", "Name", "Speed.mph", "Cad", "Date", "StartTime", "DOW", "Month",  "Time", "Distance", 
-#                     "Elevation.Gain", "Avg.Speed.Avg.Pace.", "Avg.HR", "Max.HR", "Calories", "monthNum")
-# newFullData <- newFullData[keepColsFull]
-# 
-# #rearrange columns
-# newFullData <- newFullData[, c("ID", "Name", "Gear", "Date", "Month", "monthNum", "DOW", "StartTime",  "Distance", 
-#                             "Time", "Avg.Speed.Avg.Pace.", "Speed.mph", "Cad",  "Elevation.Gain", "Avg.HR", "Max.HR", 
-#                             "Calories")]
-# #check run names
+# new run categories
+fullData2$Name[150] <- "dress rehearsal GA" 
+
+workouts <- c("tune","tempo","vo2","0","mp","race","lt")
+extra <- c("warm","cool","jog","hurt")
+ml <- c("medium","middle")
+ga <- c("gen","aer","ga","ge","short")
+
+fullData3 <- fullData2 %>% 
+  mutate(RunCat = ifelse(grepl(paste(workouts, collapse="|"),  tolower(Name)),'Workout',
+                    ifelse(grepl("marathon", tolower(Name)),"Race",
+                    ifelse(round(Distance) > 15, "Long", 
+                    ifelse(grepl(paste(ga, collapse="|"),  tolower(Name)), "GA",                           
+                    ifelse(round(Distance) %in% c(3,4,5,6),
+                          ifelse(grepl(paste(extra, collapse="|"),  tolower(Name)), "Misc", "Recovery"),
+                    ifelse(grepl("recovery",  tolower(Name)),"Recovery",                          
+                    ifelse(round(Distance) %in% c(12:15), "ML",
+                    ifelse(grepl(paste(ml, collapse="|"),  tolower(Name)), "ML", 
+                    ifelse(grepl(paste(extra, collapse="|"),  tolower(Name)),'Misc',"GA"))))))))), "GA",
+         RunType = ifelse(Distance > 25, "Race",
+                      ifelse(Distance > 15, "Long", 
+                          ifelse(grepl(paste(c("ML","GA"), collapse = "|"), RunCat), "Run", RunCat))))
+                                 #ifelse(grepl(paste(c("Recovery", "Long", "Workout", "Misc"), collapse = "|") , RunCat), RunCat))
+
+fullData3 %>%
+  select(Name,Distance,RunCat,RunType)
+
+
+table(fullData3$Name)
+
+fullData3 %>%
+  select(Name,Distance,RunType)
+# #check garmin wierd distances
+#garmin[70:73,]  
+#strava[70:73,]  
+# newGarmin[newGarmin$Distance=="0.16",]  
+fullData2[fullData2$Date=="2017-09-13",] # remove injury
+
+garmin[garmin$Distance==1.5,]
+fullData2[fullData2$Date=="2017-10-20",]
+
+garmin <- garmin[!garmin$Date=="2017-09-13",] 
+strava <- strava[!strava$Date=="2017-09-13",]
+
 # table(newFullData$Name) 
 # 
 # #fix ml runs
