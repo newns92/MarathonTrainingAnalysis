@@ -131,7 +131,8 @@ for (i in 1:nrow(fullData3)) {
 # final cleaning
 fullData4 <- fullData3 %>%
   # fix month + weekday ordering
-  mutate(Month = factor(Month, ordered = T, levels = c("Jul","Aug","Sep","Oct","Nov")),
+  mutate(Month = factor(Month, ordered = T, levels = c(7:11),
+                        labels = c("Jul","Aug","Sep","Oct","Nov")),
          Weekday = factor(Weekday, ordered = T, levels = c("Monday","Tuesday","Wednesday","Thursday",
                                                            "Friday","Saturday","Sunday")),
          # factor run type

@@ -4,13 +4,13 @@ library(ggplot2)
 library(lubridate)
 library(RColorBrewer)
 
-runs <- read.csv("cleanedMarathonTrainingData.csv")
-str(runs)
+phil17 <- read.csv("../Data/cleanedMarathonTrainingData2017.csv")
+str(phil17)
 
 #remove 1st cols
 runs <- runs %>%
-  mutate(X = NULL, ID = NULL)
-head(runs[,1:3],3)
+  mutate(X = NULL
+head(runs[,1:3]
 
 #make POSIXct
 rruns <- runs %>%
