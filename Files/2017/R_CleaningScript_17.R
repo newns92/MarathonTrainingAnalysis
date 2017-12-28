@@ -155,13 +155,15 @@ fullData4 <- fullData3 %>%
          Week = week(Date) - 28,
          # fix Average Pace
          Avg.Pace = as.POSIXct(Avg.Pace, format = '%M:%S'),
-         Best.Pace = as.POSIXct(Best.Pace, format = '%M:%S')) %>%
-  select(Name, Date, Month, Week, Day, Weekday, RunCat, RunType, WorkoutType, StartTime, 
+         Best.Pace = as.POSIXct(Best.Pace, format = '%M:%S'),
+         # new column to specify marathon
+         Marathon = "ph17") %>%
+  select(Name, Marathon, Date, Month, Week, Day, Weekday, RunCat, RunType, WorkoutType, StartTime, 
          Time, Distance, Avg.HR, Max.HR, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace,
          Elev.Gain, Elev.Loss, Avg.Stride.Length)
  
 glimpse(fullData4)
 
 # write data to file
-write.csv(fullData4, file = "../data//cleanedMarathonTrainingData2017.csv",
+write.csv(fullData4, file = "../data/cleanedMarathonTrainingData2017.csv",
           row.names = T)
