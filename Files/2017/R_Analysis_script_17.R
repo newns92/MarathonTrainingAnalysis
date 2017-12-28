@@ -6,6 +6,19 @@ library(RColorBrewer)
 
 phil17 <- read.csv("../Data/cleanedMarathonTrainingData2017.csv", stringsAsFactors = F)
 str(phil17)
+phil16 <- read.csv("../Data/cleanedMarathonTrainingData.csv", stringsAsFactors = F)
+str(phil16)
+
+phil16 %<>%
+  mutate(#Time = as.POSIXct(Time),
+         #Avg.Pace = as.POSIXct(Avg.Speed.Avg.Pace.),
+         # Best.Pace = as.POSIXct(Best.Pace),
+         #Date = as.POSIXct(Date),
+         #StartTime = as.POSIXct(StartTime, format = '%H:%M'),
+         #Weekday = DOW,
+         Marathon = "ph16")
+
+str(phil17[,c("Time","Avg.Pace","Date","StartTime")])
 
 # remove 1st cols
 phil17 <- phil17 %>%
