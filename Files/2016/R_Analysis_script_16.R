@@ -4,7 +4,7 @@ library(ggplot2)
 library(lubridate)
 library(RColorBrewer)
 
-runs <- read.csv("cleanedMarathonTrainingData.csv")
+runs <- read.csv("../Data/cleanedMarathonTrainingData.csv")
 str(runs)
 
 #remove 1st cols
@@ -13,7 +13,7 @@ runs <- runs %>%
 head(runs[,1:3],3)
 
 #make POSIXct
-rruns <- runs %>%
+runs <- runs %>%
   mutate(Time = as.POSIXct(Time),
          Avg.Pace = as.POSIXct(Avg.Pace),
          Date = as.POSIXct(Date),
