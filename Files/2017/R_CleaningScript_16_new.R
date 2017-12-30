@@ -4,7 +4,7 @@ library(magrittr)
 library(lubridate)
 
 # load strava data
-strava <- read.csv("../Data/strava.csv", stringsAsFactors = F)
+strava <- read.csv("../Data/2016/strava.csv", stringsAsFactors = F)
 
 # inspect
 #glimpse(strava)
@@ -27,7 +27,7 @@ strava  %<>% separate(col = When, into = c("Date", "StartTime"), sep = " ") %>%
 #str(strava)
 
 # load garmin data
-garmin <- read.csv("./2016/garmin16.csv", stringsAsFactors = F)
+garmin <- read.csv("../Data/2016/garmin16.csv", stringsAsFactors = F)
 
 #glimpse(garmin)
 #tail(garmin)
@@ -56,17 +56,26 @@ strava <- strava[order(strava$Date, decreasing = F),]
  
 # remove excess runs
 strava %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-21")
-garmin %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-12")
+garmin %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-21")
 
 # #check row counts
 nrow(garmin)
 nrow(strava)
 
-# mismach with missing watch vs manual entry
-garmin$StartTime[c(43:45,47:51,110:113,127:130)] <- strava$StartTime[c(43:45,47:51,110:113,127:130)]
+garmin %<>% filter(Date != "2016-08-27" & Date != "2016-09-01" # remove spin sessions
+                    & Date != "2016-08-12" # remove random run
+                   & Date != "2016-10-23") # remove bike ride
+
+
+strava %<>% filter(Date != "2016-08-12") # remove random run
+
+
+nrow(garmin)
+nrow(strava)
+# 115 runs
 
 # get full dataset
-fullData2 <- garmin %>% left_join(strava, by = c("Date","StartTime")) %>% 
+fullData <- garmin %>% left_join(strava, by = c("Date","StartTime")) %>% 
   select(Name, Date, Month, Day, Weekday, StartTime, Distance, Time, Heart, Avg.HR, Max.HR, Cad, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace, 
          Elev.Gain, Elev.Loss, Avg.Stride.Length)
 #head(fullData2)
