@@ -11,10 +11,10 @@ strava <- read.csv("../Data/2017/strava2017.csv", stringsAsFactors = F)
 #summary(strava)
 
 # remove unneccessary cols
-keepCols_strava <- c("Activity.Id", "When", "Type", "Gear", "Name", "Dist.mi", "Elv.ft", "Elapsed.Time", 
-              "Moving.Time", "Speed.mph", "Pace..mi", "Max.Pace..mi", "Cad", "Heart", "Max.Heart",
-              "Elev.Dist.ft.mi","Elev.Time.ft.h")
-strava <- strava[keepCols_strava]
+strava %<>% select(Activity.Id, When, Type, Gear, Name, Dist.mi, Elv.ft,
+                     Elapsed.Time, Moving.Time, Speed.mph, Pace..mi, 
+                     Max.Pace..mi, Cad, Heart, Max.Heart, Elev.Dist.ft.mi,
+                     Elev.Time.ft.h)
 #glimpse(strava)
 
 #split `When` into Date and Time fields in Strava data

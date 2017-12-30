@@ -11,9 +11,10 @@ strava <- read.csv("../Data/strava.csv", stringsAsFactors = F)
 #summary(strava)
 
 # remove unneccessary cols
-keepCols_strava <- c("Activity.Id", "When", "Type", "Gear", "Name", "Dist.mi", "Elv.ft", "Elapsed.Time", 
-              "Moving.Time", "Speed.mph", "Pace..mi", "Max.Pace..mi", "Cad", "Heart", "Max.Heart",
-              "Elev.Dist.ft.mi","Elev.Time.ft.h")
+strava %<>% select(Activity.Id, When, Type, Gear, Name, Dist.mi, Elv.ft,
+                   Elapsed.Time, Moving.Time, Speed.mph, Pace..mi,
+                   Max.Pace..mi, Cad, Heart, Max.Heart,
+                   Elev.Dist.ft.mi,Elev.Time.ft.h)
 strava <- strava[keepCols_strava]
 #glimpse(strava)
 
