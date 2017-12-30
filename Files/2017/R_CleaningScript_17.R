@@ -68,8 +68,9 @@ garmin$StartTime[c(43:45,47:51,110:113,127:130)] <- strava$StartTime[c(43:45,47:
 
 # get full dataset
 fullData2 <- garmin %>% left_join(strava, by = c("Date","StartTime")) %>% 
-  select(Name, Date, Month, Day, Weekday, StartTime, Distance, Time, Heart, Avg.HR, Max.HR, Cad, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace, 
-         Elev.Gain, Elev.Loss, Avg.Stride.Length)
+  select(Name, Date, Month, Day, Weekday, StartTime, Distance, Time, Heart,
+         Avg.HR, Max.HR, Cad, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace, Elev.Gain, 
+         Elev.Loss, Avg.Stride.Length)
 #head(fullData2)
 
 # check garmin runs 
@@ -92,22 +93,24 @@ fullData3 <- fullData2 %>%
                     ifelse(round(Distance) > 15, "Long", 
                     ifelse(grepl(paste(ga, collapse="|"),  tolower(Name)), "GA",                           
                     ifelse(round(Distance) %in% c(1:6),
-                          ifelse(grepl(paste(extra, collapse="|"), tolower(Name)), "Misc", "Recovery"),
+                          ifelse(grepl(paste(extra, collapse="|"),
+                                       tolower(Name)), "Misc", "Recovery"),
                     ifelse(grepl("recovery",  tolower(Name)),"Recovery",                          
                     ifelse(round(Distance) %in% c(12:15), "ML",
                     ifelse(grepl(paste(ml, collapse="|"),  tolower(Name)), "ML", "GA"))))))))),
+         
            RunType = ifelse(Distance > 25, "Race",
                      ifelse(Distance > 15, "Long", 
                      ifelse(grepl(paste(c("ML","GA"), collapse = "|"), RunCat), "Run", RunCat))),
-             WorkoutType = ifelse(RunCat == "Workout",
-                           ifelse(grepl(paste(c("tempo","lt"), collapse = "|"), tolower(Name)), "Tempo",
-                           ifelse(grepl("mp", tolower(Name)), "Marathon Pace",
-                           ifelse(grepl("tune", tolower(Name)), "Tune Up Race",
-                           ifelse(grepl(paste(c("vo","v0"), collapse = "|"), tolower(Name)), "vO2 Max", "NA")))),
+            
+           WorkoutType = ifelse(RunCat == "Workout",
+                                ifelse(grepl(paste(c("tempo","lt"), collapse = "|"),
+                                             tolower(Name)), "Tempo",
+                                       ifelse(grepl("mp", tolower(Name)), "Marathon Pace",
+                                       ifelse(grepl("tune", tolower(Name)), "Tune Up Race",
+                                       ifelse(grepl(paste(c("vo","v0"), collapse = "|"),
+                                                    tolower(Name)), "vO2 Max", "NA")))),
                       "NA"))
-
-#fullData3 %>%
-  #select(Name,Distance,RunCat,RunType,WorkoutType) %>%
 
 #glimpse(fullData3)
 
@@ -133,8 +136,9 @@ fullData4 <- fullData3 %>%
   # fix month + weekday ordering
   mutate(Month = factor(Month, ordered = T, levels = c(7:11),
                         labels = c("Jul","Aug","Sep","Oct","Nov")),
-         Weekday = factor(Weekday, ordered = T, levels = c("Monday","Tuesday","Wednesday","Thursday",
-                                                           "Friday","Saturday","Sunday")),
+         Weekday = factor(Weekday, ordered = T, 
+                          levels = c("Monday","Tuesday","Wednesday","Thursday",
+                                     "Friday","Saturday","Sunday")),
          # factor run type
          RunCat = factor(RunCat),
          RunType = factor(RunType),
@@ -164,6 +168,31 @@ fullData4 <- fullData3 %>%
  
 glimpse(fullData4)
 
+library(mice)
+simple <- fullData4[c("Week","Distance","Avg.HR","Max.HR","Avg.Cadence","Max.Cadence"
+                      ,"Elev.Gain","Elev.Loss","Avg.Stride.Length")]
+
+set.seed(144)
+imputedDataFrame <- (complete(mice(simple)))
+
+fullData4 %<>%
+  mutate(Avg.HR = imputedDataFrame$Avg.HR,
+         Max.HR = imputedDataFrame$Max.HR,
+         Avg.Cadence = imputedDataFrame$Avg.Cadence,
+         Max.Cadence = imputedDataFrame$Max.Cadence,
+         Elev.Gain = imputedDataFrame$Elev.Gain,
+         Elev.Loss = imputedDataFrame$Elev.Loss)
+summary(fullData4)
+#which(is.na(fullData4$Time))
+#fullData4[c(which(is.na(fullData4$Time))),]
+# fix missing Time values
+fullData4$Time[c(which(is.na(fullData4$Time)))] <- c("2017-12-30 00:08:14 EST",
+                                                     "2017-12-30 00:04:36 EST",
+                                                     "2017-12-30 00:08:32 EST",
+                                                     "2017-12-30 00:08:57 EST",
+                                                     "2017-12-30 00:08:01 EST")
+summary(fullData4)
+
 # write data to file
-write.csv(fullData4, file = "../data/cleanedMarathonTrainingData2017.csv",
+write.csv(fullData4, file = "../Data/2017/cleanedMarathonTrainingData_philly17.csv",
           row.names = T)

@@ -55,8 +55,8 @@ strava <- strava[order(strava$Date, decreasing = F),]
 #head(strava$Date)
  
 # remove excess runs
-strava %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-21")
-garmin %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-21")
+strava %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-20")
+garmin %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-20")
 
 # #check row counts
 nrow(garmin)
@@ -67,25 +67,18 @@ garmin %<>% filter(Date != "2016-08-27" & Date != "2016-09-01" # remove spin ses
                    & Date != "2016-10-23") # remove bike ride
 
 
-strava %<>% filter(Date != "2016-08-12") # remove random run
-
+strava %<>% filter(Date != "2016-08-12" # remove random run
+                   & Date != "2016-10-23") # remove bike ride
 
 nrow(garmin)
 nrow(strava)
-# 115 runs
+# 114 runs
 
 # get full dataset
 fullData <- garmin %>% left_join(strava, by = c("Date","StartTime")) %>% 
   select(Name, Date, Month, Day, Weekday, StartTime, Distance, Time, Heart, Avg.HR, Max.HR, Cad, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace, 
          Elev.Gain, Elev.Loss, Avg.Stride.Length)
-#head(fullData2)
-
-# check garmin runs 
-#table(fullData2$Distance)  
-#table(strava$Distance)  
-
-# new run categories
-fullData2$Name[150] <- "dress rehearsal GA" 
+head(fullData)
 
 workouts <- c("tune","tempo","vo2","0","mp","race","lt")
 extra <- c("warm","cool","mental","jog","hurt")
@@ -93,7 +86,7 @@ ml <- c("medium","middle")
 ga <- c("gen","aer","ga","ge","short")
 
 # create new variables to categorize runs
-fullData3 <- fullData2 %>% 
+fullData2 <- fullData %>% 
   mutate(RunCat =   ifelse(grepl(paste(extra, collapse="|"),  tolower(Name)),'Misc',                
                     ifelse(grepl(paste(workouts, collapse="|"),  tolower(Name)),'Workout',
                     ifelse(grepl("marathon", tolower(Name)),"Race",
@@ -114,30 +107,29 @@ fullData3 <- fullData2 %>%
                            ifelse(grepl(paste(c("vo","v0"), collapse = "|"), tolower(Name)), "vO2 Max", "NA")))),
                       "NA"))
 
-#fullData3 %>%
-  #select(Name,Distance,RunCat,RunType,WorkoutType) %>%
+fullData2 %>% filter(RunType == "Misc")
 
-#glimpse(fullData3)
+#glimpse(fullData2)
 
 # fix total time
-fullData3$Time <- as.character(fullData3$Time)
+fullData2$Time <- as.character(fullData2$Time)
 
-for (i in 1:nrow(fullData3)) {
-  if (nchar(fullData3$Time[i]) == 4) {
-    fullData3$Time[i] <- paste("0:0", fullData3$Time[i], sep="")
-    #print(paste("00:0", fullData3$Time[i], sep=""))
-    #print(fullData3$Time[i])
-  } else if (nchar(fullData3$Time[i]) == 8) {
-    fullData3$Time[i] <- paste("0:",substring(fullData3$Time[i],1,5), sep="")
-    #print(paste("00:",substring(fullData3$Time[i],1,5), sep=""))
-  } else if (nchar(fullData3$Time[i]) == 5) {
-    fullData3$Time[i] <- paste("0:",fullData3$Time[i], sep="")
-    #print(paste("00:",substring(fullData3$Time[i],1,5), sep=""))
+for (i in 1:nrow(fullData2)) {
+  if (nchar(fullData2$Time[i]) == 4) {
+    fullData2$Time[i] <- paste("0:0", fullData2$Time[i], sep="")
+    #print(paste("00:0", fullData2$Time[i], sep=""))
+    #print(fullData2$Time[i])
+  } else if (nchar(fullData2$Time[i]) == 8) {
+    fullData2$Time[i] <- paste("0:",substring(fullData2$Time[i],1,5), sep="")
+    #print(paste("00:",substring(fullData2$Time[i],1,5), sep=""))
+  } else if (nchar(fullData2$Time[i]) == 5) {
+    fullData2$Time[i] <- paste("0:",fullData2$Time[i], sep="")
+    #print(paste("00:",substring(fullData2$Time[i],1,5), sep=""))
   }  
 }
 
 # final cleaning
-fullData4 <- fullData3 %>%
+fullData3 <- fullData2 %>%
   # fix month + weekday ordering
   mutate(Month = factor(Month, ordered = T, levels = c(7:11),
                         labels = c("Jul","Aug","Sep","Oct","Nov")),
@@ -165,13 +157,20 @@ fullData4 <- fullData3 %>%
          Avg.Pace = as.POSIXct(Avg.Pace, format = '%M:%S'),
          Best.Pace = as.POSIXct(Best.Pace, format = '%M:%S'),
          # new column to specify marathon
-         Marathon = "ph17") %>%
+         Marathon = "ph16") %>%
   select(Name, Marathon, Date, Month, Week, Day, Weekday, RunCat, RunType, WorkoutType, StartTime, 
          Time, Distance, Avg.HR, Max.HR, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace,
          Elev.Gain, Elev.Loss, Avg.Stride.Length)
  
-glimpse(fullData4)
+#glimpse(fullData3)
+#summary(fullData3)
+#fullData3[which(is.na(fullData3$Weekday)),] # 81 = 07:42.9
+fullData3$Time[c(which(is.na(fullData3$Time)))] <- "2017-12-30 00:07:42 EST"
+fullData3$Weekday[c(which(is.na(fullData3$Weekday)))] <- "Saturday"
+fullData3$Month[c(which(is.na(fullData3$Weekday)))] <- "Aug"
+fullData3$Day[c(which(is.na(fullData3$Day)))] <- 6
 
+#table(fullData3$Month)
 # write data to file
-write.csv(fullData4, file = "../data/cleanedMarathonTrainingData2017.csv",
+write.csv(fullData3, file = "../Data/2016/cleanedMarathonTrainingData_philly16.csv",
           row.names = T)
