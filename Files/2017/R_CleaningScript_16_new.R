@@ -15,36 +15,34 @@ strava %<>% select(Activity.Id, When, Type, Gear, Name, Dist.mi, Elv.ft,
                    Elapsed.Time, Moving.Time, Speed.mph, Pace..mi,
                    Max.Pace..mi, Cad, Heart, Max.Heart,
                    Elev.Dist.ft.mi,Elev.Time.ft.h)
-strava <- strava[keepCols_strava]
 #glimpse(strava)
 
 #split `When` into Date and Time fields in Strava data
 strava  %<>% separate(col = When, into = c("Date", "StartTime"), sep = " ") %>%
-  mutate(Date = as.POSIXct(Date),
-         StartTime = paste(substr(StartTime,1,6),"00",sep=""),
+  mutate(Date = as.POSIXct(Date, format = "%m/%d/%Y"),
+         StartTime = paste(StartTime,"00",sep=":"),
          Month = month(Date), # number,
          Day = day(Date),
          Weekday = weekdays(Date))
 #str(strava)
 
 # load garmin data
-garmin <- read.csv("../Data/2017/garmin2017.csv", stringsAsFactors = F)
+garmin <- read.csv("./2016/garmin16.csv", stringsAsFactors = F)
 
 #glimpse(garmin)
 #tail(garmin)
 #summary(garmin)
 
 # remove cols
-keepCols_garmin <- c("Activity.Type","Date","Title","Distance","Calories","Time","Avg.HR","Max.HR",
-                     "Avg.Cadence", "Max.Cadence","Avg.Pace", "Best.Pace", "Elev.Gain", "Elev.Loss",
-                     "Avg.Stride.Length")
-garmin <- garmin[keepCols_garmin]
+garmin %<>% select(Activity.Type,Date,Title,Distance,Calories,Time,Avg.HR,Max.HR,
+                     Avg.Cadence, Max.Cadence,Avg.Pace, Best.Pace, Elev.Gain, Elev.Loss,
+                     Avg.Stride.Length)
 #str(garmin)
 
 # Specify new column names:
 garmin  %<>% separate(col = Date, into = c("Date", "StartTime"), sep = " ") %>%
-  mutate(Date = as.POSIXct(Date),
-         StartTime = paste(substr(StartTime,1,6),"00",sep=""))#,
+  mutate(Date = as.POSIXct(Date, format = "%m/%d/%Y"),
+         StartTime = paste(StartTime,"00",sep=":"))#,
          #Month = month(Date), # number,
          #Day = day(Date),
          #Weekday = weekdays(Date))
@@ -57,8 +55,8 @@ strava <- strava[order(strava$Date, decreasing = F),]
 #head(strava$Date)
  
 # remove excess runs
-strava %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
-garmin %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
+strava %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-21")
+garmin %<>% filter(Date >= "2016-07-18" & Date <= "2016-11-12")
 
 # #check row counts
 nrow(garmin)
