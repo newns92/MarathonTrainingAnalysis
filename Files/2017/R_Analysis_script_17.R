@@ -4,81 +4,85 @@ library(ggplot2)
 library(lubridate)
 library(RColorBrewer)
 
-philly17 <- read.csv("../Data/cleanedMarathonTrainingData2017.csv", stringsAsFactors = F)
+philly17 <- read.csv("../Data/2017/cleanedMarathonTrainingData_philly17.csv", stringsAsFactors = F)
+philly16 <- read.csv("../Data/2016/cleanedMarathonTrainingData_philly16.csv", stringsAsFactors = F)
 str(philly17)
+str(philly16)
 
-str(philly17[,c("Time","Avg.Pace","Date","StartTime")])
 
-# remove 1st cols
 philly17 <- philly17 %>%
-  mutate(X = NULL,
+  mutate(# remove 1st col
+         X = NULL,
          # make POSIXct again
          Time = as.POSIXct(Time),
          Avg.Pace = as.POSIXct(Avg.Pace),
          Best.Pace = as.POSIXct(Best.Pace),
          Date = as.POSIXct(Date),
-         StartTime = as.POSIXct(StartTime, format = '%H:%M'),
+         StartTime = as.POSIXct(StartTime),
          # make Month an ordered factor
          Month = factor(Month, ordered = TRUE, 
                         levels = c("Jul","Aug","Sep","Oct","Nov")))
 
-#str(philly17[,c("Time","Avg.Pace","Date","StartTime")])
-glimpse(philly17)
+#glimpse(philly17)
 
-philly16 <- read.csv("../Data/cleanedMarathonTrainingData.csv", stringsAsFactors = F)
-str(philly16)
-str(philly16_clean)
-philly16_clean <- philly16 %>%
-  mutate(Marathon = "ph16",
-         Time = as.POSIXct(Time, format = '%H:%M:%s')),
-         Avg.Pace = as.POSIXct(Avg.Pace),
-         Date = as.POSIXct(Date),
-         StartTime = as.POSIXct(StartTime, format = '%H:%M'))
-
-         Time = as.POSIXct(as.character(Time)))
-    #Avg.Pace = as.POSIXct(Avg.Speed.Avg.Pace.),
-    # Best.Pace = as.POSIXct(Best.Pace),
+philly16 <- philly16 %>%
+  mutate(# remove 1st col
+    X = NULL,
+    # make POSIXct again
+    Time = as.POSIXct(Time),
+    Avg.Pace = as.POSIXct(Avg.Pace),
+    Best.Pace = as.POSIXct(Best.Pace),
     Date = as.POSIXct(Date),
-    Month = factor(month(Date), ordered = TRUE, 
+    StartTime = as.POSIXct(StartTime),
+    # make Month an ordered factor
+    Month = factor(Month, ordered = TRUE, 
                    levels = c("Jul","Aug","Sep","Oct","Nov")))
-    #StartTime = as.POSIXct(StartTime, format = '%H:%M'),
-    #Weekday = DOW,
+philly16$Month[17] <- "Aug"
 
+philly <- rbind(philly16,philly17)
 
-
-
-#simple histogram of how many miles I ran in each of my philly17.
+# simple histogram of how many miles I ran in each of my philly17.
 #distance histogram
-ggplot(philly17, aes(Distance)) + 
+ggplot(philly, aes(Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) +
   scale_x_continuous(limits=c(0, 30)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  guides(fill=FALSE) 
+  guides(fill=FALSE) +
+  facet_grid(~Marathon)
 
 summary(philly17$Distance)
+summary(philly16$Distance)
 
 #miles by month bars
-ggplot(philly17, aes(Month, Distance, fill = Month)) + 
+ggplot(philly, aes(Month, Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("") + 
   ylab("Total Miles") + 
   guides(fill=FALSE) +
-  ggtitle("Total Miles by Month")
+  ggtitle("Total Miles by Month") + 
+  facet_grid(~ Marathon)
 
 # peak week bars
-ggplot(philly17, aes(Week, Distance, fill = Month)) + 
+ggplot(philly, aes(Week, Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("Week of Plan") + 
   ylab("Total Miles") + 
-  ggtitle("Total Miles by Week of Plan")
+  ggtitle("Total Miles by Week of Plan") + 
+  facet_grid(~ Marathon)
                                        
 # find peak week
-philly17 %>%
+philly %>%
+  filter(Marathon == "ph17") %>%
   group_by(Week) %>%
   summarize(Miles = sum(Distance)) %>%
-  filter(Week %in% c(11,13))
+  filter(Week %in% c(9:16))
+philly %>%
+  filter(Marathon == "ph16") %>%
+  group_by(Week) %>%
+  summarize(Miles = sum(Distance)) %>%
+  filter(Week %in% c(9:16))
 
 #avg. cadence grouped by month
 ggplot(philly17, aes(Month, Avg.Cadence)) + 
