@@ -46,9 +46,10 @@ philly %<>%
          # make Month an ordered factor
          Month = factor(Month, ordered = TRUE, 
                         levels = c("Jul","Aug","Sep","Oct","Nov")))
+names(philly)
 ```
 
-Now its time to acually make some plots. 
+Now its time to actually make some plots. 
 
 # Analysis
 
@@ -56,33 +57,65 @@ I'll start off with a simple histogram of how many miles I ran in each of my run
 
 ```{r plotting, echo = FALSE, fig.align='center'}
 #distance histogram
-ggplot(data = runs, aes(x = Distance)) + 
+ggplot(data = philly, aes(x = Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) +
   scale_x_continuous(limits=c(0, 30)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  guides(fill=FALSE) 
+  guides(fill=FALSE) +
+  facet_grid(~Marathon)
 ```
 
-It looks like the majority of my runs (20 of 'em) were between 10 and 12 miles, with the next highest frequency being from 4 to 6 miles, which were mostly recovery runs, showing that there was indeed a decent amount of time for recovery in this plan. We can also see my one 24 mile run all the way to the right, my longest **Long Run** of the plan. So this distribution is right/positively-skewed, with the majority of the runs being less than 12 miles. Let's look at the summary of this data.
+Like last year, we again see my mararthon and my one 24 mile run all the way to the right of the plot, my longest **Long Run** of the plan. So this distribution is right/positively-skewed, with the majority of the runs being less than 12 miles. So, as expcted duye to the ihgher milear plan, the histogram has higher bars, indicating more runs, weith bars for the same distance beting noticebaly higher for 2017 comapred to 2016. 
+
+The majority of my runs this training block were around 4-6 miles, with the next highest frequency being from just over 10 miles.
+
+```{r}
+cat("2017 Runs: ")
+table(philly$RunCat[philly$Marathon=="ph17"])
+cat("2016 Runs: ")
+table(philly$RunCat[philly$Marathon=="ph16"])
+```
+less owrkour, long run, middle lone, more recovery + GA (injury)
+
+The fact that most of my runs were from 4-6 miles id obvvoisu when onting that the majory of my runs were recovery runs, which went from a miinimum of 3 miles to a max of 7 miles (for them ,ost part, my mistkae)
+
+```{r heart rate over time, echo = FALSE, fig.align='center'}
+philly %>%
+  filter(Marathon == "ph17") %>%
+  ggplot(aes(Date, Distance)) + 
+    geom_bar(stat="identity") +
+    theme(axis.text.x = element_blank()) +
+    xlab("Time") + 
+    ylab("Average Heart Rate") + 
+    ggtitle("Average Heart Rate Over Time")
+```
+
+
+
+
+ Let's look at the summary of this data.
 
 ```{r distance summary}
-summary(runs$Distance)
+philly %>% filter(Marathon == "ph17") %>%
+  select(Distance) %>%
+  summary()
 ```
 
-So, since I have a skewed distribution, I'd want to look at median as my measure of center. I can see the median number of miles ran in a run is 10 miles, which is less than half of an actual marathon (the mean is also basically 10, as well, just to note). So the majority of my runs seem pretty short, compared to my goal distance. This is because the point of a marathon training plan is to get the body to adapt to a high volume of miles, but to spread it over a period of time so that one can recover properly between hard efforts, such as in workouts and tune-up races. We can also see the max distance here is the actual marathon (of course). 
+So, since I have a skewed distribution, I'd want to look at median as my measure of center. I can see the median number of miles ran in a run is 7 miles, which is lower than last year, which I can infer was due to more recovery runs this time around from the double days.And agian, see the max distance here is, of course, the actual marathon (but something must've been up with my GPS watch or the course, as it says I ran about .15 miles moreso) 
 
 Now let's look at the total number of miles ran each month, with an expectation to see the total rise month by month.
 
 ```{r miles by month, echo = FALSE, fig.align='center'} 
 #miles by month bars
-ggplot(data = runs, aes(x = Month, y = Distance, fill = Month)) + 
+ggplot(philly, aes(Month, Distance, fill = Month)) + 
   geom_bar(stat="identity") +
   xlab("") + 
   ylab("Total Miles") + 
   guides(fill=FALSE) +
   ggtitle("Total Miles by Month")
+  facet_grid(~Marathon)
 ```
 
 The largest number of miles ran, 308 miles, was in September, and then we see a *ever-so-slight* drop to 304 miles in October. This could be possibly so if my peak mileage week was in September. We then see a large drop from October to November, which was expected due tapering up to the race and the fact that the race was on November 20th, so there's no more run data after that date.
