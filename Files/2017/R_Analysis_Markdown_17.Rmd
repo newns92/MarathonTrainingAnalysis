@@ -15,31 +15,29 @@ library(tidyverse)
 library(ggplot2)
 library(lubridate)
 library(RColorBrewer)
+library(magrittr)
 
 philly17 <- read.csv("../../Data/2017/cleanedMarathonTrainingData_philly17.csv", stringsAsFactors = F)
 philly16 <- read.csv("../../Data/2016/cleanedMarathonTrainingData_philly16.csv", stringsAsFactors = F)
-```
 
-Well, to start off, I have a column which seems to contain the row numbers from the CSV, so I removed that before going back to the inspection, as well as removing ID since I won't really need that.
+philly <- rbind(philly16,philly17)
 
-```{r remove 1st col, echo = FALSE}
-dim(philly17)
-dim(philly16)
+philly %<>% select(-X)
 
-glimpse(philly17)
+#dim(philly)
+
+glimpse(philly)
+
+table(philly$Marathon)
 ```
 
 A lot more runs in this plan, as I was attempting higher mileage, so there were a lot of double days, even though some days no running due to injruy (bad bulid up base bauilding) - speed not staming into stamina not speed
 
-Alright, cool (ignore my lazy naming of my shoes in Strava). But it looks like my Date field, `Date`, total run time field, `Time`, and average pace (min/mile) field, `Avg.Pace`, are not in the POSIXct format needed. So I needed to put them back into the correct format via `lubridate`.
-
-Looks like `Month` was also not loaded as an ordered factor like I need it. As it is now, if I used it in plots, it would be ordereded alphabetically, not chronologically like I need it. So let's convert it back to an ordered factor with the correctly-specified ordering via the `levels` argument.
+`Month` was also not loaded as an ordered factor like I need it. As it is now, if I used it in plots, it would be ordereded alphabetically, not chronologically like I need it. So let's convert it back to an ordered factor with the correctly-specified ordering via the `levels` argument.
 
 ```{r}
-philly17 <- philly17 %>%
-  mutate(# remove 1st col
-         X = NULL,
-         # make POSIXct again
+philly %<>%
+  mutate(# make POSIXct again
          Time = as.POSIXct(Time),
          Avg.Pace = as.POSIXct(Avg.Pace),
          Best.Pace = as.POSIXct(Best.Pace),
@@ -48,21 +46,6 @@ philly17 <- philly17 %>%
          # make Month an ordered factor
          Month = factor(Month, ordered = TRUE, 
                         levels = c("Jul","Aug","Sep","Oct","Nov")))
-
-#glimpse(philly17)
-
-philly16 <- philly16 %>%
-  mutate(# remove 1st col
-    X = NULL,
-    # make POSIXct again
-    Time = as.POSIXct(Time),
-    Avg.Pace = as.POSIXct(Avg.Pace),
-    Best.Pace = as.POSIXct(Best.Pace),
-    Date = as.POSIXct(Date),
-    StartTime = as.POSIXct(StartTime),
-    # make Month an ordered factor
-    Month = factor(Month, ordered = TRUE, 
-                   levels = c("Jul","Aug","Sep","Oct","Nov")))
 ```
 
 Now its time to acually make some plots. 
