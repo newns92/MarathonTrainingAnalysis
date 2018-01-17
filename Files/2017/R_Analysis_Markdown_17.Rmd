@@ -60,6 +60,7 @@ I'll start off with a simple histogram of how many miles I ran throughout each m
 #distance histogram
 ggplot(data = philly, aes(x = Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = ..count..), colour = "black", boundary = 2) +
+  theme_bw() + 
   scale_x_continuous(limits = c(0, 30)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
@@ -68,10 +69,9 @@ ggplot(data = philly, aes(x = Distance)) +
   facet_grid(~ Marathon)
 ```
 
-Just like [last year](https://stevenewns.netlify.com/2017/04/18/marathon-training-plan-data-analysis/), I again can see the actual marathon itself and my one 24 mile run, my longest **Long Run** of the plan, all the way to the right of the plot. So, this distribution is right/positively-skewed, with the majority of the runs being less than 12 miles. So, as expected due to the higher mileage plan, the histogram has some higher bars, indicating a larger number of runs overall, with bars for the same distance being noticebaly higher for 2017 compared to 2016. 
+Just like [last year](https://stevenewns.netlify.com/2017/04/18/marathon-training-plan-data-analysis/), I again can see the actual marathon itself and my one 24 mile run, the longest **Long Run** of the plan, all the way to the right of the plot. So, this distribution is right/positively-skewed, with the majority of the runs being less than 12 miles. Also, as expected from to the higher mileage plan, the 2017 histogram has some higher bars, indicating a larger number of runs overall, with bars for the same distance being noticebaly higher for 2017 compared to 2016.
 
-The majority of my runs this training block were around 4-6 miles, as noted by the histogram for 2017, with the next highest frequency being from 10-12 miles. The fact that most of my runs were from 4-6 miles is obvvoisu when noting that the majority of my runs were recovery runs, which went from a minimum of 3 miles up to a maxximum of 7 miles (for them ,ost part, my mistkae)
-
+The majority of my runs this 2017 training block were around 4-6 miles, with the next highest frequency being from 10-12 miles. The fact that most of my runs were from 4-6 miles is not suprising when noting that the majority of my runs were recovery runs, which went from a minimum of 3 miles up to a maximum of 7 miles (for them most part, as sometimes I combined two recovery runs into one run, something I realized later may have been a mistake).
 ```{r run type counts, echo = F}
 cat("2017 Runs: ")
 table(philly$RunCat[philly$Marathon=="ph17"])
@@ -79,25 +79,29 @@ cat("2016 Runs: ")
 table(philly$RunCat[philly$Marathon=="ph16"])
 ```
 
-The above shows that I had less workouts, long runs, middle long runs (longer than a general aerobic run, shorter than a long run), but more recovery runs and general aerobic runs. This should indicate that I should've been taking it a bit easier in this build-up, although some of the lower numbers for the workouts were due to missing these runs thanks to injury. For example, let's look at those runs that fall under `Misc`:
+
+The above shows that for 2017, I actually had less workouts, long runs, and middle long runs (runs longer than a general aerobic run but shorter than a long run), but more recovery runs and general aerobic runs. This makes me think that I would've been taking it a bit easier overall in this build-up, with a higher number of "easier" runs, even though some of the lower numbers for the workouts were due to me missing these runs thanks to injury. For example, let's look at those runs that fall under `Misc`:
 ```{r Misc runs, echo = F}
 philly %>%
   filter(RunCat == "Misc")
 ```
 
-4 of these runs were the warm up and cool downs to tune-up races, but the other 2 were runs I kept short due to injury, one physical, one mental. I started to realize you don't have to hit *every* run on the schedule during the span of this plan, as noted by the empty space in the middle of September and October where I took some days off due to the recurring quad injury noted above on that run I cut short on September 13.
+4 of these runs were the warm up and cool downs to tune-up races, but the other 2 were runs I kept short due to injury, one physical, one mental. I strained by quad twice in this build-up, and I took a couple of days off in each instance as I started to realize that I didn't have to hit *every* run on the schedule during the span of this plan, as noted by the empty spaces in the middle of September and October.
 ```{r show rest days, echo = FALSE, fig.align='center'}
 philly %>%
   filter(Marathon == "ph17") %>%
   ggplot(aes(Date, Distance)) + 
-    geom_bar(stat="identity") +
-    #theme(axis.text.x = element_blank()) +
-    xlab("Time") + 
-    ylab("Average Heart Rate") + 
-    ggtitle("Average Heart Rate Over Time")
+    geom_bar(stat="identity", fill = "green", colour = "black") +
+    theme_bw() + 
+    xlab("Date") + 
+    ylab("Miles") + 
+    ggtitle("Runs Over Time") +
+    guides(fill = FALSE) +
+    coord_cartesian(xlim = c(as.POSIXct("2017-09-05", format = "%Y-%m-%d"),
+                             as.POSIXct("2017-10-25", format = "%Y-%m-%d")))
 ```
 
-Let's look at the summary of both marathons distance data:
+Let's look at the summary of both marathons' distance data:
 ```{r distance summary, echo = F}
 cat("2017 Runs: ")
 philly %>% filter(Marathon == "ph17") %>%
@@ -111,7 +115,7 @@ philly %>% filter(Marathon == "ph16") %>%
             Min = min(Distance), Max = max(Distance), Count = n())
 ```
 
-So, since I have a skewed distribution, I'd want to look at median as my measure of center. I can see the median number of miles ran in a run is 7 miles, which is lower than last year, which I can infer was due to more recovery runs this time around during the double-run days. And agian, see the max distance here is, of course, the actual marathon (but something must've been up with my GPS watch or the course, as it says I ran about .15 miles moreso than the actual race distance). 
+So, since I have a skewed distribution, I'd want to look at median to compare measures of center. I can see the median number of miles ran in a run for 2017 is 7 miles, which is lower than 10 miles for last year, which I can infer was due to more of the shorter recovery runs this time around, especially during the double-run days. And again, we see that the max distance here is, of course, the actual marathon (but something must've been up with my GPS watch or the course, as it says I ran about .15 miles moreso than the actual race distance). 
 
 Now let's look at the total number of miles ran each month, with an expectation to see the total rise month by month.
 
@@ -119,6 +123,7 @@ Now let's look at the total number of miles ran each month, with an expectation 
 #miles by month bars
 ggplot(philly, aes(Month, Distance, fill = Month)) + 
   geom_bar(stat="identity") +
+  theme_bw() + 
   xlab("") + 
   ylab("Total Miles") + 
   guides(fill=FALSE) +
@@ -126,40 +131,31 @@ ggplot(philly, aes(Month, Distance, fill = Month)) +
   facet_grid( ~ Marathon)
 ```
 
-Somewhat supringsly, my total mies in Novelmber was acutally shorter this time aroudn, while the other months were all larger. I expected septermebt and ocotber to be less than august this go aroudn due to the taking off of a couple days due to injiry, so that wasn't too much of a surpise
-
-
-```{r peak week, echo = FALSE, fig.align='center'}
-ggplot(data = philly, aes(Week, Distance, fill = Month)) + 
-  geom_bar(stat="identity") +
-  xlab("Week of Plan") + 
-  ylab("Total Miles") + 
-  ggtitle("Total Miles by Week of Plan") + 
-  facet_grid(~ Marathon)
-```
-
-Long drops in Nov = feeling beat up (easy days too hard)
+Somewhat against expectations, my mile total in November was actually shorter this time around, while the other months all did have higher totals. It makes sense in hindsight that September and October had lower totals than August, as August was the only month in which I did not take time off due to injury. But, I believe I also took some more days off in November this year because I was feeling quite fatigued and was worried I would go into the race too beat up, which I still think I did in the end (but it could've been worse, right?).
 
 ## Cadence
 
-Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a "good" cadence (running in the most efficient manner to maximize output while minimzing effort) seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
+
+Last year, my cadence generally increased month over month, albeit *barely*, and ended up averaging between 170 and 180. Let's look at how I fared this year.
 
 ```{r cadence by month, echo = FALSE, fig.align='center'} 
 #avg. cadence grouped by month
 ggplot(data = philly, aes(Month, Avg.Cadence)) + 
   geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), outlier.colour = "black", alpha = 0.5) +
+  theme_bw() + 
   xlab("") + 
   ylab("Cadence (Steps/Min)") + 
-  guides(fill=FALSE) +
+  theme(legend.position = "none") + 
   ggtitle("Cadence by Month") + 
   facet_grid(~ Marathon)
 ```
 
 Much more consisten cadence this time aorund, and much higher = GOOD, better form + focus on form, decrease in last 2 months???????, but still optimal
 
-#So, I can see that my cadence tended to generally increases month over month, albeit *barely*, and ended up averaging between 170 and 180, barring those outliers. I would assume the outliers were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume.
-
+barring those outliers. I would assume the outliers were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume.
+Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a "good" cadence (running in the most efficient manner to maximize output while minimzing effort) seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
+s
 ## Heart Rate
 
 Another metric to look at would be my **average heart rate** during runs over the course of my training. Compared to the rise of my cadence, I would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
@@ -171,6 +167,7 @@ philly %>%
     geom_line(aes(group=1, colour = Marathon)) +
     geom_smooth(method = "lm", se = T, aes(colour = Marathon)) + 
     theme(axis.text.x = element_blank()) +
+    theme_bw() +
     xlab("Time") + 
     ylab("Average Heart Rate") + 
     ggtitle("Average Heart Rate Over Time") + 
@@ -194,6 +191,8 @@ So, it looks like my average heart rate decreased over time, barring two random 
 ggplot(data = philly, aes(Month, Avg.HR)) + 
   geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), outlier.colour = "black", alpha = 0.5) + 
+  theme_bw() +
+  theme(legend.position = "none") + 
   xlab("Month") + 
   ylab("Avg. Heart Rate") + 
   ggtitle("Average Heart Rate per Month") + facet_grid(~ Marathon)
@@ -214,6 +213,8 @@ philly %>%
   ggplot(aes(RunType, Avg.Cadence)) + 
     geom_jitter(aes(colour = RunType)) +
     geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
+    theme_bw() +
+    theme(legend.position = "none") + 
     scale_colour_brewer(palette = "Set1") +
     scale_fill_brewer(palette = "Set1") +
     xlab("Run Type") + 
@@ -234,7 +235,7 @@ Now let's see if cadence and heart rate seem to have anything to do with each ot
 ```{r cadence by hr, echo = FALSE, messages = FALSE, fig.align='center'}
 ggplot(data = philly, aes(Avg.Cadence, Avg.HR)) + 
   geom_point(aes(colour = RunType), na.rm = TRUE) +
-  #geom_smooth() +
+  theme_bw() +
   xlab("Cadence") + 
   ylab("Average Heart Rate") + 
   scale_y_continuous(limits = c(110, 160)) +
@@ -252,6 +253,8 @@ philly %>%
   ggplot(aes(RunType, Avg.HR)) + 
     geom_jitter(aes(colour = RunType)) +
     geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
+    theme_bw() +
+    theme(legend.position = "none") + 
     xlab("Run Type") + 
     ylab("Avg Heart Rate") + 
     guides(fill=FALSE) +
@@ -287,8 +290,8 @@ philly %>%
                             Avg.Pace, colour = RunType)) + 
     geom_point() +
     geom_smooth(fill = NA) +  
-    theme(axis.text.x = element_blank()) +
-    theme(axis.text.y = element_blank()) +
+    theme_bw() +
+    theme(axis.text.x = element_blank(), axis.text.y = element_blank()) +
     xlab("Date") + 
     ylab("Average Pace (mile/minute)") + 
     ggtitle("Average Pace Over Time") + 
@@ -306,8 +309,8 @@ philly %>%
   ggplot(aes(Date, Avg.Pace, colour = RunType)) + 
     geom_point() +
     geom_smooth(fill = NA) +  
-    theme(axis.text.x = element_blank()) +
-    theme(axis.text.y = element_blank()) +
+    theme_bw() +
+    theme(legend.position = "none", axis.text.x = element_blank(), axis.text.y = element_blank()) +   
     xlab("Date") + 
     ylab("Average Pace (mile/minute)") + 
     ggtitle("Average Pace Over Time") + 
@@ -326,12 +329,12 @@ philly %>%
   ggplot(aes(RunType,(Avg.Cadence*((hour(Time)*60)+
                                      (minute(Time))+(second(Time)/60))))) + 
     geom_bar(aes(fill = RunType), stat = "identity") +
+    theme_bw() + 
     xlab("Run Type") + 
     ylab("Steps") + 
     guides(fill=FALSE) +
     ggtitle("Total Steps Taken by Run Type") +
     facet_grid(~Marathon)
-  
 ```
 # AVERAGE BY TIME
 
@@ -346,6 +349,7 @@ philly %>%
   ggplot(aes(Elev.Gain, Avg.HR)) + 
     geom_point(aes(colour = RunType), na.rm = TRUE) +
     geom_smooth(fill = NA, na.rm = TRUE) +
+    theme_bw() + 
     xlab("Elevation Gain (ft.)") + 
     ylab("Average Heart Rate (BPM)") +
     scale_y_continuous(limits = c(110, 160)) +
@@ -362,6 +366,8 @@ philly %>%
   ggplot(aes(RunType, Max.HR)) + 
     geom_jitter(aes(colour = RunType)) +
     geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
+    theme_bw() +
+    theme(legend.position = "none") +   
     xlab("Run Type") + 
     ylab("Max Heart Rate (BPM)") + 
     ggtitle("Max Heart Rate by Run Type") +
