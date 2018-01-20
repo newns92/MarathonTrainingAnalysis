@@ -4,10 +4,25 @@ author: "Steve Newns"
 date: 2017-1-02T21:13:14-05:00
 categories: ["R"]
 tags: ["R Markdown", "plot", "running","marathon","philadelphia","distance running","training"]
+#output:
+ #pdf_document:
+  #fig_caption: yes
 ---
+
+Marathons hurt and wind is the embodiment of all that is evil. That's what I've learned from the two marathons I've run thus far. Case in point:
+
+<center>
+##### *1st Marathon ever*
+![](./strava_marathon_16.PNG)
+
+##### *Not much has changed*
+![](./strava_marathon_17.PNG)
+</center>
 
 # *Initial Data Inspection*
 
+# SOME POINTLESS CHARasdfTS REMOVED
+fda
 First, I loaded in the CSV file created in the **R_Cleaning_Garmin_Strava** script file, which contains the combined dataset of runs from my Philadelphia Marathon training plan from both Strava and Garmin Connect. I then inspect the data to make sure I have all the correct data in the correct data types.
 
 ```{r load dataset, echo = FALSE, message = FALSE, warning=FALSE}
@@ -357,24 +372,7 @@ philly %>%
     facet_grid(~Marathon)
 ```
 
-So it looks like there was a very slight increase in average heart rate as elevation gain increased. And while the increase was not that large in magnitude, it seemed to be quite consistent for the majority of the x-axis. So this went in line with my expectation a bit. Let's see the max heart rate by elevation gain.
-
-```{r elevation and max hr, echo = FALSE, fig.align='center'}
-philly %>%
-  filter(RunType != "Race",
-         RunType != "Misc") %>%
-  ggplot(aes(RunType, Max.HR)) + 
-    geom_jitter(aes(colour = RunType)) +
-    geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
-    theme_bw() +
-    theme(legend.position = "none") +   
-    xlab("Run Type") + 
-    ylab("Max Heart Rate (BPM)") + 
-    ggtitle("Max Heart Rate by Run Type") +
-    facet_grid(~Marathon)
-```
-
-It's interesting to note that each run type has a very low variability in maximum heart rate with the exception of recovery runs. We see a good number of outliers for normal runs. There are also numerous maximum heart rates  that are up to about 200, which was due to an inaccurate heart rate monitor, since the only chance I had of reaching that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But since this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.
+So it looks like there was a very slight increase in average heart rate as elevation gain increased. And while the increase was not that large in magnitude, it seemed to be quite consistent for the majority of the x-axis. So this went in line with my expectation a bit.hing that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But since this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.
 
 # Conclusion
 That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know on [Twitter](https://twitter.com/s_newns92), [GitHub](https://github.com/newns92), or [LinkedIn!](https://www.linkedin.com/in/stephen-newns/) I can't wait to add to this dataset with my training runs for Philly 2017, with the hopes of breaking 3 hours!
