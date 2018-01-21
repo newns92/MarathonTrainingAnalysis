@@ -29,6 +29,7 @@ library(lubridate) # dates
 library(RColorBrewer) # plotting
 library(magrittr) # pipe operations
 library(knitr) # kable()
+library(gridExtra) # grid.arrange()
 
 ## load in data files for both races
 philly17 <- read.csv("../../Data/2017/cleanedMarathonTrainingData_philly17.csv", stringsAsFactors = F)
@@ -162,44 +163,57 @@ ggplot(data = philly, aes(Month, Avg.Cadence)) +
   geom_boxplot(aes(fill = Month), outlier.colour = "black", alpha = 0.5) +
   theme_bw() + 
   xlab("") + 
-  ylab("Cadence (Steps/Min)") + 
+  ylab("Avg. Cadence (Steps/Min)") + 
   theme(legend.position = "none") + 
-  ggtitle("Cadence by Month") + 
+  ggtitle("Average Cadence by Month") + 
   facet_grid(~ MarathonName)
 ```
 
-Much more consisten cadence this time aorund, and much higher = GOOD, better form + focus on form, decrease in last 2 months???????, but still optimal
+I had a much more consistent cadence this year, as indicated by the smaller boxes for each month, and also my median average cadence for each month in 2017 was highest than the highest median average cadence from last year, which is good. It suggests my running form has become more efficient. But, there was a decrease in those last 2 months. Could this have been due to fatigue? Or to due more speed workout which included recovery intervals, during which I was quite content to plod on during. Either way, the median average cadence was in the high 170's, which is an improvement compared to 2016.
 
-barring those outliers. I would assume the outliers were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume.
-Another important metric for runners is their **cadence**, which is the number of steps taken per minute. The general consensus for a "good" cadence (running in the most efficient manner to maximize output while minimzing effort) seems to be anywhere from 160 to 180 steps per minute, with more advanced and elite runners leaning towards the higher end.
-s
-## Heart Rate
+Also, I have some significant outliers in those first two months, which I again would assume were mainly recovery runs, as I was mainly concerned with keeping my heart rate down so I could actually recover on them than I was with making sure my cadence was optimal. 
+```{r check min cadence, echo = F}
+philly %>%
+  filter(Month %in% c("Jul","Aug"),
+         Marathon == "ph17") %>%
+  select(Name,Date,Avg.Cadence) %>%
+  arrange(Avg.Cadence) %>%
+  head(8) %>%
+  kable()
+```
+
+Huh, so my tempo runs, where I would've hoped my cadence would've been higher to better prepare me to run at a higher cadence during the actual marathon, were the only runs with an average cadence lower than 170. This should instruct me to focus more on picking up my pace during these types of workouts in my next build-up.
+
+I could investigate to see if this was due to having more speed workouts as the plan progressed, in which I would assume my cadence was typically higher), or could it have been due to improved form from an ever-increasing volume so as to average closer to the suggested 180 steps per minute.
+
+### *Heart Rate*
 
 Another metric to look at would be my **average heart rate** during runs over the course of my training. Compared to the rise of my cadence, I would expect that my average heart rate would have decreased over time, as my fitness would have increased due to higher mileage and an increasing number of workouts.
 
 ```{r heart rate over time, echo = FALSE, fig.align='center'}
-philly %>%
-  #filter(Marathon == "ph16") %>%
-  ggplot(data = , aes(as.POSIXct(paste(month(Date),'/',day(Date), sep=""),format="%m/%d"), Avg.HR)) + 
-    geom_line(aes(group=1, colour = MarathonName)) +
-    geom_smooth(method = "lm", se = T, aes(colour = MarathonName)) + 
-    theme(axis.text.x = element_blank()) +
-    theme_bw() +
-    xlab("Time") + 
+hr16 <- philly %>%
+  filter(Marathon == "ph16") %>%
+  ggplot(data = , aes(Date, Avg.HR)) + 
+    geom_line(aes(group=1, colour = "red")) +
+    geom_smooth(method = "lm", se = T, colour = "red") + 
+    theme(axis.text.x = element_blank(), legend.position = "none") +
+    xlab("2016") + 
     ylab("Average Heart Rate") + 
     ggtitle("Average Heart Rate Over Time") + 
-    coord_cartesian(ylim = c(110, 160))
-```
-philly %>%
+    coord_cartesian(ylim = c(100,160))
+
+hr17 <- philly %>%
   filter(Marathon == "ph17") %>%
   ggplot(data = , aes(Date, Avg.HR)) + 
     geom_line(aes(group=1)) +
     geom_smooth(method = "lm", se=T) + 
     theme(axis.text.x = element_blank()) +
-    xlab("Time") + 
+    xlab("2017") + 
     ylab("Average Heart Rate") + 
-    ggtitle("Average Heart Rate Over Time")
+    coord_cartesian(ylim = c(100,160))
 
+grid.arrange(hr16, hr17, nrow=2)
+```
 
 So, it looks like my average heart rate decreased over time, barring two random extreme drops (shout-out again to my heart rate monitor). Let's check it out by month.
 
