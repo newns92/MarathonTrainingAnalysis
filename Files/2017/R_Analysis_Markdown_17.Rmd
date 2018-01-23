@@ -26,7 +26,7 @@ Last year, I followed the 18-week, 55-70 mile plan from [<u>Pete Pfitzinger's Ad
 library(tidyverse) # data cleaning and manipulation
 library(ggplot2) # plotting
 library(lubridate) # dates
-library(RColorBrewer) # plotting
+library(RColorBrewer) # plotting colors
 library(magrittr) # pipe operations
 library(knitr) # kable()
 library(gridExtra) # grid.arrange()
@@ -69,13 +69,13 @@ I'll start off with a simple histogram of how many miles I ran throughout each m
 #distance histogram
 ggplot(data = philly, aes(x = Distance)) + 
   geom_histogram(binwidth = 2, aes(fill = MarathonName), colour = "black", boundary = 2) +
-  scale_fill_manual(values = c("red","#338dff")) + 
+  scale_fill_manual(values = c("red","#338dff")) + # custom colors
   theme_bw() + 
   scale_x_continuous(limits = c(0, 30)) +
   xlab("Distance (mi)") + 
   ylab("Frequency") + 
   ggtitle("Distribution of Miles Ran in All Runs") + 
-  guides(fill = FALSE) +
+  guides(fill = F) +
   facet_grid(~ MarathonName)
 ```
 
@@ -100,7 +100,7 @@ philly %>%
 ```
 
 4 of these runs were the warm up and cool downs to some tune-up race workouts, but the other 2 were runs I kept short due to injury, one physical, one mental. As mentioned earlier, I strained my quad twice in this build-up. I took a couple of days off in each instance, as I started to realize that I didn't have to hit *every* run on the schedule during the span of this plan and pushing through legitimate injury and not just some soreness or a niggle could have some legit long-term consequences. I can see the periods I took off highlighted by the empty spaces in the middle of September and October when looking at a plot of runs.
-```{r show rest days, echo = FALSE, fig.align='center'}
+```{r show rest days, echo = F, fig.align='center'}
 philly %>%
   filter(Marathon == "ph17") %>%
   ggplot(aes(Date, Distance)) + 
@@ -109,7 +109,7 @@ philly %>%
     xlab("Date") + 
     ylab("Miles") + 
     ggtitle("Runs Over Time :2017") +
-    guides(fill = FALSE) +
+    guides(fill = F) +
     coord_cartesian(xlim = c(as.POSIXct("2017-09-05", format = "%Y-%m-%d"),
                              as.POSIXct("2017-10-25", format = "%Y-%m-%d")))
 ```
@@ -135,7 +135,7 @@ philly %>%
   group_by(Month,MarathonName) %>% 
   summarise(sum = sum(Distance)) %>%
   ggplot(aes(x = Month, y = sum, fill = MarathonName)) +
-    geom_bar(stat = "identity", position = "dodge") +
+    geom_bar(stat = "identity", position = "dodge", colour = "black") +
     scale_fill_manual(values = c("red","#338dff")) + 
     theme_bw() + 
     xlab("") + 
@@ -227,6 +227,8 @@ So, it looks like my average heart rate stayed pretty steady over the course of 
 ggplot(data = philly, aes(Month, Avg.HR)) + 
   geom_jitter(aes(colour = Month)) +
   geom_boxplot(aes(fill = Month), outlier.colour = "black", alpha = 0.5) + 
+  scale_colour_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set1") +  
   theme_bw() +
   theme(legend.position = "none") + 
   xlab("Month") + 
@@ -268,6 +270,8 @@ philly %>%
          RunType != "Misc") %>%  
   ggplot(aes(Avg.Cadence, Avg.HR)) + 
     geom_point(aes(colour = RunType), na.rm = TRUE) +
+    scale_colour_brewer(palette = "Set2") +
+    scale_fill_brewer(palette = "Set2") +    
     theme_bw() +
     xlab("Cadence") + 
     ylab("Average Heart Rate") + 
@@ -288,6 +292,8 @@ philly %>%
   ggplot(aes(RunType, Avg.HR)) + 
     geom_jitter(aes(colour = RunType)) +
     geom_boxplot(aes(fill = RunType), outlier.colour = "black", alpha = 0.5) +
+    scale_colour_brewer(palette = "Set2") +
+    scale_fill_brewer(palette = "Set2") +  
     theme_bw() +
     theme(legend.position = "none") + 
     xlab("Run Type") + 
@@ -302,7 +308,7 @@ Well, barring those higher outliers in the recovery runs, which I cna only assum
 
 workout hear rate similar good b/c usually have targets to higt, low variance, much lower vraiance in recovery = more consistenet even if run too hard, long runs a bit more varies this year, GA much more varies. Overall each run type lower
 
-### Pace
+### *Pace*
 
 Let's now check out my average pace over time, split out by Run Type. I would hope that it would have decreased, just as average heart rate did, due to both increased form and increased fitness, as well as possibly due to decreased outside temperatures making it easier to run faster. 
 
@@ -310,39 +316,25 @@ Let's now check out my average pace over time, split out by Run Type. I would ho
 philly %>%
   filter(RunType != "Race",
          RunType != "Misc") %>%
-  ggplot(aes(as.POSIXct(paste(month(Date),'/',day(Date), sep=""),format="%m/%d"),
-                            Avg.Pace, colour = RunType)) + 
+  ggplot(aes(x = as.POSIXct(paste(month(Date),'/',day(Date), sep=""),format="%m/%d"),
+             y = as.numeric(format(Avg.Pace, "%M")) + as.numeric(format(Avg.Pace, "%S"))/60,
+             colour = RunType)) + 
+    scale_y_reverse(limits = c(9,7), breaks = c(9,8,7), labels = c("9:00","8:00","7:00")) +
     geom_point() +
     geom_smooth(fill = NA) +  
+    scale_colour_brewer(palette = "Set2") +
+    scale_fill_brewer(palette = "Set2") +   
     theme_bw() +
-    theme(axis.text.x = element_blank(), axis.text.y = element_blank()) +
+    theme(axis.text.x = element_blank()) +
     xlab("Date") + 
     ylab("Average Pace (mile/minute)") + 
-    ggtitle("Average Pace Over Time") + 
-    labs(caption="") + 
+    ggtitle("Average Pace Over Time") +
     facet_grid(~ MarathonName)
 ```
 
-So we see a very slight general decrease overall, but it's not very linear at all, so it does not seem to be that significant. Let's split these into seperate scatter plots by run type.
+It looks like the recovery runs slowed down the pace there as I approached the midpoint of the plan, but sped back up a tad at the end, but overall I kept them slower this year and more consitent. My other three types of runs were also slower, indicating that got better at taking it a bit easier during my runs this year, and I was much more consistent in my long runs. There was an uptick in the last third of the plan in general aerobic runs, but not as gradual as an increase. Long runs were more consistent, with some decrease, while workouts had a bit of a similar shape to last year but smoohter, same "phases" of workouts --> tempo --> speed --> race specific
 
-```{r avg pace by runs - seperate, echo = FALSE, message=FALSE, fig.align='center'}
-philly %>%
-  filter(Marathon == "ph17",
-         RunType != "Race",
-         RunType != "Misc") %>%
-  ggplot(aes(Date, Avg.Pace, colour = RunType)) + 
-    geom_point() +
-    geom_smooth(fill = NA) +  
-    theme_bw() +
-    theme(legend.position = "none", axis.text.x = element_blank(), axis.text.y = element_blank()) +   
-    xlab("Date") + 
-    ylab("Average Pace (mile/minute)") + 
-    ggtitle("Average Pace Over Time") + 
-    labs(caption="") + 
-    facet_grid(RunType ~ .)
-```
-
-And, we see that workouts had the lowest average pace, which seemed to actually decrease a tad until about halfway through the plan, but there was a variety of different workouts with different focuses, so this really isn't something we can glean anything out of. Long Runs start to decrease in average pace, possibly due to an increase in outside temperature from July to August causing me to slow down, but then we see a rapid increase, which start sto taper off at the end there. Normal runs seemed to have a more gradual increase over time, but it sped up a bit compared to at the start. Then we see that recovery runs increased down even more so compared to Long Runs, but also had a drop as temperatures cooled (or fitness increased, either or. Maybe both). There was then a quick uptick at the end there, which I would assume would be due to slowing down even more as I tapered for the race, with the 2 slowest recovery runs happening just before the race. We then see the race there, at about 7:10 min/mile, which, while I am happy with my results, I would *love* to get this down under 7:00 min/mile in my next marathon, Philly 2017, with the goal of running about 6:50 min/mile so as to break 3 hours!
+### *Elevation*
 
 Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
 
@@ -361,9 +353,9 @@ philly %>%
     facet_grid(~ MarathonName)
 ```
 
-So it looks like there was a very slight increase in average heart rate as elevation gain increased. And while the increase was not that large in magnitude, it seemed to be quite consistent for the majority of the x-axis. So this went in line with my expectation a bit.hing that heart rate would have been when I was pushing myself to max exertion, which would have only occured during a workout, or during the race. But since this was a marathon, and not a 5K, I will assume it was another heart rate monitor inaccuracy, which is something we just can't always prevent.
+Philly = flatter than Chalfont, as most points are below 250 ft of gain, but with some long runs creeping above 750 (forbidden drive), but there does seem to be an slight trend after arbout 150 ft of gain as in crease in BPM as elevation gain increases
 
-# Conclusion
+## Conclusion
 That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know on [Twitter](https://twitter.com/s_newns92), [GitHub](https://github.com/newns92), or [LinkedIn!](https://www.linkedin.com/in/stephen-newns/) I can't wait to add to this dataset with my training runs for Philly 2017, with the hopes of breaking 3 hours!
 
 The code for this can be found [here](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/Files/R_Analysis_script.R), as well as the code for the [cleaning and initial creation of the dataset](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/Files/R_CleaningScript.R) (WARNING: Please excuse it ugliness, it was before I was aware of the tidyverse.)
