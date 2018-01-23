@@ -129,18 +129,18 @@ philly %>%
 So, since I have a skewed distribution, I'd want to look at median to compare measures of center. I can see the median number of miles ran in a run for 2017 is 7 miles, which is lower than 10 miles for last year (this year's mean was also lower), which I can infer was due to the higher number of the shorter recovery runs this time around, especially during the double-run days. And again, we see that the max distance here is, of course, the actual marathon, even though something must have been up with my GPS watch or the course, as it says I ran about .15 miles more-so than the actual race distance. Like I needed *that*.
 
 Now let's look at the total number of miles ran each month, with an initial expectation to see the total rise month by month.
-
-## TO-DO:: BARS ON SAMPLE PLOT?
-```{r miles by month, echo = FALSE, fig.align='center'} 
-#miles by month bars
-ggplot(philly, aes(Month, Distance, fill = Month)) + 
-  geom_bar(stat="identity") +
-  theme_bw() + 
-  xlab("") + 
-  ylab("Total Miles") + 
-  guides(fill=FALSE) +
-  ggtitle("Total Miles by Month") +
-  facet_grid( ~ MarathonName)
+```{r}
+philly %>% 
+  select(Month,MarathonName,Distance) %>%
+  group_by(Month,MarathonName) %>% 
+  summarise(sum = sum(Distance)) %>%
+  ggplot(aes(x = Month, y = sum, fill = MarathonName)) +
+    geom_bar(stat = "identity", position = "dodge") +
+    scale_fill_manual(values = c("red","#338dff")) + 
+    theme_bw() + 
+    xlab("") + 
+    ylab("Total Miles") + 
+    ggtitle("Total Miles by Month")
 ```
 
 Somewhat against what was expected, my total mileage in November was actually shorter this time around, while the other months all did have higher totals. It makes sense in hindsight that September and October had a bit lower of total mileage than August, as August was the only month in which I did not take time off due to injury. But, I believe I also took some more days off in November this year because I was feeling quite fatigued and was worried I would go into the race too beat up, which I still think I did in the end (but it could've been worse, right?).
