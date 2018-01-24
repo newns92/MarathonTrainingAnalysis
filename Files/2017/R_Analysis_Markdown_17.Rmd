@@ -20,7 +20,7 @@ Marathons hurt and wind is the embodiment of all that is evil. That's what I've 
 </center>
 <br>
 <br>
-Last year, I followed the 18-week, 55-70 mile plan from [<u>Pete Pfitzinger's Advanced Marathoning</u>](https://smile.amazon.com/Advanced-Marathoning-2nd-Pete-Pfitzinger/dp/0736074600). I blew up pretty bad around mile 20 to mile 22 (I don't remember, exactly, *because. it. hurt.*), as is apparently typical of beginner marathoners that aren't sure of if/when they'll hit the dreaded Wall and not being prepared for it. I remember my calves screaming and my hips almost fully tightening up in that last 10k. From this I just assumed that maybe I just didn't have the muscular endurance to last the whole race, as I felt I was holding a pretty comfortably-hard pace prior to entering the pain cave. I decided to pick a higher mileage plan in hopes of remedying this, so I went with a sort-of ad-hoc modification based off of the 18 week 85 mile and 18 week, more than 85 mile plans from the same book, with most workouts taken as-is from the 85+ mile plan, with some extra miles here and there on some runs depending on how I felt at the time.
+So, last year, I followed the 18-week, 55-70 mile plan from [<u>Pete Pfitzinger's Advanced Marathoning</u>](https://smile.amazon.com/Advanced-Marathoning-2nd-Pete-Pfitzinger/dp/0736074600). I blew up pretty bad around mile 20 to mile 22 (I don't remember, exactly, as my mind was busy wandering ab it *because. it. hurt.*), as is apparently typical of beginner marathoners that aren't sure of if/when they'll hit the dreaded Wall and not being prepared to mentally and physically deal with it. I remember my calves screaming and my hips almost fully tightening up in that last 10k. From this I just assumed that maybe I just didn't have the muscular endurance to last the whole race, as I felt I was going to be able to maintain my comfortably-hard pace I was hitting, prior to entering the pain cave. I decided to pick a higher mileage plan in hopes of remedying this, so I went with a sort-of ad-hoc modification based off of the 18 week/85 mile and 18 week/more than 85 mile plans from the same book, with most of the workouts taken as-is from the 85+ mile plan, with some extra miles here and there on some runs depending on how I felt at the time.
 
 ```{r load dataset, echo = FALSE, message = FALSE, warning=FALSE}
 library(tidyverse) # data cleaning and manipulation
@@ -56,7 +56,8 @@ philly %<>% select(-X) %>%
 philly %>%
   group_by(MarathonName) %>%
   summarize(Count = n()) %>%
-  kable()
+  rename("Marathon Name" = MarathonName) %>%
+  kable(caption = "Total Number of Runs")
 ```
 
 There were a lot more runs and not just miles in this year's prep. This was pretty much all due to the double days (pretty much all double recovery runs), as well as the warm up and cool downs of two tune-up race workouts that for some reason I decided to count as separate activities. And even though I missed some days completely due to some injuries, I still had almost 40 more runs in this time around. I got hit with a real sharp quad pain around the middle of September and popped back up in October that *forced* my stubborn self to take some days off. I believe that I sustained this injured thanks to my impatient and running my "easy" runs too hard while also not having as long of a base-building period prior to this marathon plan compared to last year.
@@ -88,7 +89,8 @@ philly %>%
   group_by(MarathonName,RunCat) %>%
   summarize(Count = n()) %>%
   spread(key = RunCat, value = Count) %>%
-  kable() # print as table
+  rename("Marathon Name" = MarathonName) %>%
+  kable(caption = "Total Number of Runsby Run Type")
 ```
 
 The above shows that for 2017, I actually had less workouts, long runs, and middle long runs (runs that're longer than a "general aerobic" run but shorter than a long run), but more recovery runs and general aerobic runs. This makes me think that, following the plan *correctly*, I would've been taking it a bit easier overall in this build-up, with a higher number of easier runs.. I believe the lower numbers for the workouts were due to me missing these runs thanks to injury. For example, let's look at those runs that fall under `Misc`:
@@ -96,7 +98,9 @@ The above shows that for 2017, I actually had less workouts, long runs, and midd
 philly %>%
   filter(RunCat == "Misc") %>%
   select(Name,Date,RunCat) %>%
-  kable()
+  rename("Run Name" = Name,
+         "Run Category" = RunCat) %>%
+  kable(caption = "Miscellaneous Runs")
 ```
 
 4 of these runs were the warm up and cool downs to some tune-up race workouts, but the other 2 were runs I kept short due to injury, one physical, one mental. As mentioned earlier, I strained my quad twice in this build-up. I took a couple of days off in each instance, as I started to realize that I didn't have to hit *every* run on the schedule during the span of this plan and pushing through legitimate injury and not just some soreness or a niggle could have some legit long-term consequences. I can see the periods I took off highlighted by the empty spaces in the middle of September and October when looking at a plot of runs.
@@ -117,19 +121,20 @@ philly %>%
 That *very* tiny bar around September 14th was where I hurt my quad for the first time within a mile and a half of the planned run, with the run the following day being cut short after 10 miles when the pain came back (again, due to my stubbornness). Then again, in the second half of October, the same pain came back right before a tune-up race workout, so I took 2 days off to be safe and avoid any further aggravation of my quad so as to not miss another workout.
 
 Now, to look at the summary of both marathons plans' overall distance data:
-```{r distance summary, echo = F}
+```{r distance summary, echo = F, warning = F, message = F}
 philly %>%
   group_by(MarathonName) %>%
   select(Distance) %>%
   summarize(Mean = mean(Distance), Median = median(Distance), StdDev = sd(Distance),
             Min = min(Distance), Max = max(Distance), Count = n()) %>%
-  kable()
+  rename("Marathon Name" = MarathonName) %>%
+  kable(caption = "Statistical Summaries of Training Blocks")
 ```
 
 So, since I have a skewed distribution, I'd want to look at median to compare measures of center. I can see the median number of miles ran in a run for 2017 is 7 miles, which is lower than 10 miles for last year (this year's mean was also lower), which I can infer was due to the higher number of the shorter recovery runs this time around, especially during the double-run days. And again, we see that the max distance here is, of course, the actual marathon, even though something must have been up with my GPS watch or the course, as it says I ran about .15 miles more-so than the actual race distance. Like I needed *that*.
 
 Now let's look at the total number of miles ran each month, with an initial expectation to see the total rise month by month.
-```{r}
+```{r, echo = F}
 philly %>% 
   select(Month,MarathonName,Distance) %>%
   group_by(Month,MarathonName) %>% 
@@ -150,7 +155,8 @@ philly %>%
   filter(Month == "Nov") %>%
   group_by(MarathonName) %>%
   summarize(Count = n()) %>%
-  kable() # print as table
+  rename("Marathon Name" = MarathonName) %>%
+  kable(caption = "Total Number of Runs in November")
 ```
 
 Looks like I did look to rest up a bit more this year, so maybe I'm learning.
@@ -183,8 +189,10 @@ philly %>%
          Marathon == "ph17") %>%
   select(Name,Date,Avg.Cadence) %>%
   arrange(Avg.Cadence) %>%
-  head(8) %>%
-  kable()
+  head(10) %>%
+  rename("Run Name" = Name,
+         "Average Cadence" = Avg.Cadence) %>%
+  kable(caption = "10 Runs with Lowest Average Cadence")
 ```
 
 Huh, so my tempo runs, where I would've hoped my cadence would've been higher to better prepare me to run at a higher cadence during the actual marathon, were the only runs with an average cadence lower than 170. This should instruct me to focus more on picking up my pace during these types of workouts in my next build-up.
@@ -210,7 +218,7 @@ hr16 <- philly %>%
 hr17 <- philly %>%
   filter(Marathon == "ph17") %>%
   ggplot(data = , aes(Date, Avg.HR)) + 
-    geom_line(aes(group=1, colour = "green")) +
+    geom_line(aes(group=1), colour = "#338dff") +
     geom_smooth(method = "lm", se = T, colour = "#338dff") + 
     theme(axis.text.x = element_blank(), legend.position = "none") +
     xlab("2017") + 
@@ -241,7 +249,6 @@ Opposite to cadence, I had more variance this each month in 2017, but good = 1st
 Now let's look at cadence and heart rate by Run Type as well for comparisons.
 
 ```{r cadence by run type, echo = FALSE, fig.align='center'} 
-#avg. cadence grouped by month
 philly %>%
   filter(RunType != "Race",
          RunType != "Misc") %>%
@@ -285,7 +292,6 @@ Similar to last year, there is no concrete relationship here. But, we can note t
 We can now flip this run type analysis from cadence to hear rate.
 
 ```{r heart rate by run type, echo = FALSE, fig.align='center'}
-#avg. cadence grouped by month
 philly %>%
   filter(RunType != "Race",
          RunType != "Misc") %>%
@@ -312,7 +318,7 @@ workout hear rate similar good b/c usually have targets to higt, low variance, m
 
 Let's now check out my average pace over time, split out by Run Type. I would hope that it would have decreased, just as average heart rate did, due to both increased form and increased fitness, as well as possibly due to decreased outside temperatures making it easier to run faster. 
 
-```{r avg pace by runs, echo = FALSE, message=FALSE, fig.align='center'}
+```{r avg pace by runs, echo = F, message = F, warning = F, fig.align='center'}
 philly %>%
   filter(RunType != "Race",
          RunType != "Misc") %>%
@@ -338,7 +344,7 @@ It looks like the recovery runs slowed down the pace there as I approached the m
 
 Let's see if my elevation gain had any affect on my average heart rate. I expect that it would, since a larger eleveation gain meant I was climbing more, which requires more exertion, so I expect my average heart rate to be higher with a higher elevation gain.
 
-```{r elevation and avg hr, echo = FALSE, message=FALSE, fig.align='center'}
+```{r elevation and avg hr, echo=F, message=F, fig.align='center'}
 philly %>%
   filter(RunType != "Race",
          RunType != "Misc") %>%
