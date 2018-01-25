@@ -338,7 +338,7 @@ philly %>%
     facet_grid(~ MarathonName)
 ```
 
-It looks like the recovery runs slowed down the pace there as I approached the midpoint of the plan, but sped back up a tad at the end, but overall I kept them slower this year and more consitent. My other three types of runs were also slower, indicating that got better at taking it a bit easier during my runs this year, and I was much more consistent in my long runs. There was an uptick in the last third of the plan in general aerobic runs, but not as gradual as an increase. Long runs were more consistent, with some decrease, while workouts had a bit of a similar shape to last year but smoohter, same "phases" of workouts --> tempo --> speed --> race specific
+It looks like the recovery runs slowed down the pace there as I approached the midpoint of the plan, but sped back up a tad at the end, but overall I kept them slower this year and more consitent. My other three types of runs were also slower, indicating that got better at taking it a bit easier during my runs this year, and I was much more consistent in my long runs. There was an uptick in the last third of the plan in general aerobic runs, but not as gradual as an increase. Long runs were more consistent, with some decrease, while workouts had a bit of a similar shape to last year but with a smoother curve. It also looks like one could indicate the different phases of workouts. We started with tempo runs, so I was going at a pretty quick pace with no rests, so the pace was pretty high. Then I moved into speed workouts, which involved intervals with recovery jogs between. I took the recovery pretty seriously, so I slowed down quite a bit, which looks to have brought the average pace down. Then, as I moved to more race-specific workouts, the pace began to pick up again.
 
 ### *Elevation*
 
@@ -359,10 +359,29 @@ philly %>%
     facet_grid(~ MarathonName)
 ```
 
-Philly = flatter than Chalfont, as most points are below 250 ft of gain, but with some long runs creeping above 750 (forbidden drive), but there does seem to be an slight trend after arbout 150 ft of gain as in crease in BPM as elevation gain increases
+There does seem to be a slight trend of a sort-of linear increase in heart rate after arbout 300 ft. of gain for this year. as in crease in BPM as elevation gain increases. I decided to see if this had anything to do with the distance.
+
+It appears that Philadelphia is flatter than my little suburb, Chalfont, as noted by the fact that most points for 2017 are below 250 ft. of total elevation gain. But, it's also worth noting that the top four runs in terms of elevation gain were from 2017. I am certain that this was due to the fact that my longer runs in the training block took me through Forbidden Drive and the Wissahickon Valley Park Trail, which involved rolling hills througout. So while there may have been some more gain in the earlier parts of my runs back in the suburbs, as I went longer on some nice trails and hills, my elevation gain sigificantly increased.
+```{r elevation and avg hr, echo=F, message=F, warning=F, fig.align='center'}
+philly %>%
+  filter(RunType != "Race",
+         RunType != "Misc") %>%
+  ggplot(aes(Distance, Elev.Gain)) + 
+    geom_point(aes(color = MarathonName)) +
+    geom_smooth(fill = NA, na.rm = TRUE) +
+    scale_colour_manual(values = c("red","#338dff")) + 
+    theme_bw() + 
+    theme(legend.position = "none") +
+    xlab("Elevation Gain (ft.)") + 
+    ylab("Distance (mi)") +
+    ggtitle("Average Heart Rate by Total Distance") +
+    facet_grid(~ MarathonName)
+```
+
+Indeed, at just under what would be the halfway point of a marathon, we see the start of a linear increase in elevation as distance increased. This is something I should keep in mind while planning my runs for the Pittsburgh marathon this May, which involves a sharp hill about halfway through the race and continues with rolling hills throughout the second half of the race. Yippee. 
 
 ## Conclusion
-That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know on [Twitter](https://twitter.com/s_newns92), [GitHub](https://github.com/newns92), or [LinkedIn!](https://www.linkedin.com/in/stephen-newns/) I can't wait to add to this dataset with my training runs for Philly 2017, with the hopes of breaking 3 hours!
+That's all I can think of to check out so far. If you're reading this and can think of anything else, let me know on [Twitter](https://twitter.com/s_newns92) or [GitHub](https://github.com/newns92).
 
 The code for this can be found [here](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/Files/R_Analysis_script.R), as well as the code for the [cleaning and initial creation of the dataset](https://github.com/newns92/MarathonTrainingAnalysis/blob/master/Files/R_CleaningScript.R) (WARNING: Please excuse it ugliness, it was before I was aware of the tidyverse.)
  speed not staming into stamina not speed
