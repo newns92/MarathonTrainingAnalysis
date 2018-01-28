@@ -6,18 +6,18 @@ library(lubridate)
 # load strava data
 strava <- read.csv("../Data/2017/strava2017.csv", stringsAsFactors = F)
 
-# inspect
+## inspect
 #glimpse(strava)
 #summary(strava)
 
-# remove unneccessary cols
+## remove unneccessary cols
 strava %<>% select(Activity.Id, When, Type, Gear, Name, Dist.mi, Elv.ft,
                      Elapsed.Time, Moving.Time, Speed.mph, Pace..mi, 
                      Max.Pace..mi, Cad, Heart, Max.Heart, Elev.Dist.ft.mi,
                      Elev.Time.ft.h)
 #glimpse(strava)
 
-#split `When` into Date and Time fields in Strava data
+## split `When` into Date and Time fields in Strava data
 strava  %<>% separate(col = When, into = c("Date", "StartTime"), sep = " ") %>%
   mutate(Date = as.POSIXct(Date),
          StartTime = paste(substr(StartTime,1,6),"00",sep=""),
@@ -26,21 +26,21 @@ strava  %<>% separate(col = When, into = c("Date", "StartTime"), sep = " ") %>%
          Weekday = weekdays(Date))
 #str(strava)
 
-# load garmin data
+## load garmin data
 garmin <- read.csv("../Data/2017/garmin2017.csv", stringsAsFactors = F)
 
 #glimpse(garmin)
 #tail(garmin)
 #summary(garmin)
 
-# remove cols
+## remove cols
 keepCols_garmin <- c("Activity.Type","Date","Title","Distance","Calories","Time","Avg.HR","Max.HR",
                      "Avg.Cadence", "Max.Cadence","Avg.Pace", "Best.Pace", "Elev.Gain", "Elev.Loss",
                      "Avg.Stride.Length")
 garmin <- garmin[keepCols_garmin]
 #str(garmin)
 
-# Specify new column names:
+## Specify new column names:
 garmin  %<>% separate(col = Date, into = c("Date", "StartTime"), sep = " ") %>%
   mutate(Date = as.POSIXct(Date),
          StartTime = paste(substr(StartTime,1,6),"00",sep=""))#,
@@ -49,35 +49,35 @@ garmin  %<>% separate(col = Date, into = c("Date", "StartTime"), sep = " ") %>%
          #Weekday = weekdays(Date))
 #str(garmin)
 
-# Sort from earliest to last date
+## Sort from earliest to last date
 garmin <- garmin[order(garmin$Date, decreasing = F),] 
 strava <- strava[order(strava$Date, decreasing = F),]
 #head(garmin$Date)
 #head(strava$Date)
  
-# remove excess runs
+## remove excess runs
 strava %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
 garmin %<>% filter(Date >= "2017-07-17" & Date <= "2017-11-19")
 
-# #check row counts
+## check row counts
 nrow(garmin)
 nrow(strava)
 
-# mismach with missing watch vs manual entry
+## mismach with missing watch vs manual entry
 garmin$StartTime[c(43:45,47:51,110:113,127:130)] <- strava$StartTime[c(43:45,47:51,110:113,127:130)]
 
-# get full dataset
+## get full dataset
 fullData2 <- garmin %>% left_join(strava, by = c("Date","StartTime")) %>% 
   select(Name, Date, Month, Day, Weekday, StartTime, Distance, Time, Heart,
          Avg.HR, Max.HR, Cad, Avg.Cadence, Max.Cadence, Avg.Pace, Best.Pace, Elev.Gain, 
          Elev.Loss, Avg.Stride.Length)
 #head(fullData2)
 
-# check garmin runs 
+## check garmin runs 
 #table(fullData2$Distance)  
 #table(strava$Distance)  
 
-# new run categories
+## new run categories
 fullData2$Name[150] <- "dress rehearsal GA" 
 
 workouts <- c("tune","tempo","vo2","0","mp","race","lt")
@@ -85,7 +85,7 @@ extra <- c("warm","cool","mental","jog","hurt")
 ml <- c("medium","middle")
 ga <- c("gen","aer","ga","ge","short")
 
-# create new variables to categorize runs
+## create new variables to categorize runs
 fullData3 <- fullData2 %>% 
   mutate(RunCat =   ifelse(grepl(paste(extra, collapse="|"),  tolower(Name)),'Misc',                
                     ifelse(grepl(paste(workouts, collapse="|"),  tolower(Name)),'Workout',
@@ -114,7 +114,7 @@ fullData3 <- fullData2 %>%
 
 #glimpse(fullData3)
 
-# fix total time
+## fix total time
 fullData3$Time <- as.character(fullData3$Time)
 
 for (i in 1:nrow(fullData3)) {
@@ -131,7 +131,7 @@ for (i in 1:nrow(fullData3)) {
   }  
 }
 
-# final cleaning
+## final cleaning
 fullData4 <- fullData3 %>%
   # fix month + weekday ordering
   mutate(Month = factor(Month, ordered = T, levels = c(7:11),
@@ -168,6 +168,7 @@ fullData4 <- fullData3 %>%
  
 glimpse(fullData4)
 
+## impute missing data points
 library(mice)
 simple <- fullData4[c("Week","Distance","Avg.HR","Max.HR","Avg.Cadence","Max.Cadence"
                       ,"Elev.Gain","Elev.Loss","Avg.Stride.Length")]
@@ -193,6 +194,6 @@ fullData4$Time[c(which(is.na(fullData4$Time)))] <- c("2017-12-30 00:08:14 EST",
                                                      "2017-12-30 00:08:01 EST")
 summary(fullData4)
 
-# write data to file
+## write data to file
 write.csv(fullData4, file = "../Data/2017/cleanedMarathonTrainingData_philly17.csv",
           row.names = T)
