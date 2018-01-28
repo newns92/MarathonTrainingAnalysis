@@ -350,7 +350,7 @@ philly %>%
 There does seem to be a slight trend of a sort-of linear increase in heart rate after about 300 ft. of total gain in 2017. I'm not surprise to see the increase in average heart rate as elevation gain increased because of the change in required exertion, and as this also suggests longer runs which brings cardiac drift into play.
 
 Also, it appears that Philadelphia and the Kelly Drive trails are flatter than Chalfont, as noted by the fact that most data points for 2017 are below 250 feet of total elevation gain. But, it's also worth noting that the overall top four runs in terms of elevation gain were from 2017. I am certain that this was due to the fact that my longer runs in this year's training block took me through Forbidden Drive and the Wissahickon Valley Park Trail, which involved rolling hills througout. So while there may have been some more gain in the earlier parts of my runs back in the suburbs, as I went longer on some nice trails and hills, my elevation gain significantly increased.
-```{r distance and avg hr, echo=F, message=F, warning=F, fig.align='center'}
+```{r gain by distance, echo=F, message=F, warning=F, fig.align='center'}
 philly %>%
   filter(RunType != "Race",
          RunType != "Misc") %>%
