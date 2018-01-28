@@ -1,12 +1,9 @@
 ---
-title: "Marathon Training Plan Data Analysis - Philly 2017"
+title: "Philly Marathon 2017: Training Plan Data Analysis"
 author: "Steve Newns"
-date: 2017-1-02T21:13:14-05:00
+date: 2017-1-29T21:09:30
 categories: ["R"]
-tags: ["R Markdown", "plot", "running","marathon","philadelphia","distance running","training"]
-#output:
- #pdf_document:
-  #fig_caption: yes
+tags: ["R Markdown","plot","running","marathon","philadelphia","distance running","training","rstats"]
 ---
 
 Marathons hurt and wind is the embodiment of all that is evil. That's what I've learned from the two marathons I've run thus far. My case in point:
