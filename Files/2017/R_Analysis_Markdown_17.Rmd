@@ -205,7 +205,7 @@ Huh, so my tempo/lactate threshold runs, where I would've hoped my cadence would
 #### *Heart Rate*
 
 Another metric to look at would be my average heart rate during runs over the course of my training. Compared to the rise of my average cadence, I would hope that my average heart rate would have decreased over time like last year, as my fitness should have increased as a result to higher mileage and an increasing number of workouts.
-```{r heart rate over time, echo=F, fig.align='center'}
+```{r heart rate over time, echo=F, fig.align='center', message=FALSE}
 hr16 <- philly %>%
   filter(Marathon == "ph16") %>%
   ggplot(data = , aes(Date, Avg.HR)) + 
